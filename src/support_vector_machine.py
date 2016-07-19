@@ -1,5 +1,7 @@
 import pandas as pd
+from sklearn.svm import NuSVC
 from sklearn.svm import SVC
+from sklearn import preprocessing
 
 import constants as const
 from ml_statistics import MLStatistics
@@ -13,9 +15,19 @@ class SupportVectorMachine(MLTechnique):
         self.current_i = None
         self.ml_stats = MLStatistics()
 
+    @staticmethod
+    def apply_standardization(series):
+        if series.name == const.TREATMENT_OUTCOME:
+            return series
+        else:
+            min_max_scaler = preprocessing.MinMaxScaler()
+            return min_max_scaler.fit_transform(preprocessing.scale(series))
+
     def train_and_evaluate(self, defaulter_set):
         """Applies k-fold cross validation to train and evaluate the SVM"""
         defaulter_set_len = defaulter_set.shape[0]
+        defaulter_set = defaulter_set[const.CLASSIFICATION_FEATURES + [const.TREATMENT_OUTCOME]]
+        defaulter_set = defaulter_set.apply(self.apply_standardization)
 
         # Prepare data set
         input_set = defaulter_set[const.CLASSIFICATION_FEATURES]
@@ -36,16 +48,17 @@ class SupportVectorMachine(MLTechnique):
             test_dataframe = defaulter_set.iloc[min_range:max_range]
 
             # Assert that data is as expected
-            assert (x_train_dataframe.shape[0] == y_train_dataframe.shape[0])
-            assert (test_dataframe.shape[0] == defaulter_set_len - x_train_dataframe.shape[0])
+            # assert (x_train_dataframe.shape[0] == y_train_dataframe.shape[0])
+            # assert (test_dataframe.shape[0] == defaulter_set_len - x_train_dataframe.shape[0])
 
-            svm = SVC(kernel="rbf", gamma=1e-8)
+            svm = NuSVC(kernel="rbf", gamma=0.5, nu=0.01)
             svm.fit(x_train_dataframe.as_matrix(), y_train_dataframe.as_matrix())
 
             # Test accuracy
             test_classification = svm.predict(test_dataframe[const.CLASSIFICATION_FEATURES].as_matrix())
-            print(test_classification)
+
             actual_outcome = test_dataframe[const.TREATMENT_OUTCOME].as_matrix()
+            print(actual_outcome)
 
             self.ml_stats.calculate_and_append_fold_accuracy(test_classification, actual_outcome)
 
