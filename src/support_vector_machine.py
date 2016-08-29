@@ -27,7 +27,7 @@ class SupportVectorMachine(MLTechnique):
         """Applies k-fold cross validation to train and evaluate the SVM"""
         defaulter_set_len = defaulter_set.shape[0]
         defaulter_set = defaulter_set[const.CLASSIFICATION_FEATURES + [const.TREATMENT_OUTCOME]]
-        defaulter_set = defaulter_set.apply(self.apply_standardization)
+        # defaulter_set = defaulter_set.apply(self.apply_standardization)
 
         # Prepare data set
         input_set = defaulter_set[const.CLASSIFICATION_FEATURES]
@@ -58,7 +58,6 @@ class SupportVectorMachine(MLTechnique):
             test_classification = svm.predict(test_dataframe[const.CLASSIFICATION_FEATURES].as_matrix())
 
             actual_outcome = test_dataframe[const.TREATMENT_OUTCOME].as_matrix()
-            print(actual_outcome)
 
             self.ml_stats.calculate_and_append_fold_accuracy(test_classification, actual_outcome)
 

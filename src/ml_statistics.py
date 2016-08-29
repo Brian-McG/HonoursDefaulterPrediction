@@ -4,8 +4,9 @@ import constants as const
 class MLStatistics:
     """Contains functionality to calculate predictive accuracy rates"""
 
-    def __init__(self):
-        self.errors = []
+    def __init__(self, error_list=list()):
+        self.errors = error_list
+
 
     @staticmethod
     def calculate_classification_accuracy(test_classification, actual_outcome):
