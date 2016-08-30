@@ -12,9 +12,9 @@ def main():
 
     # Basic data set statistics
     print("== Basic Data Set Stats ==")
-    print("Total number of decision features: ", len(const.CLASSIFICATION_FEATURES))
+    print("Total number of decision features: ", len(const.LIMA_CLASSIFICATION_FEATURES))
     print("Total number of rows: ", defaulter_set.shape[0])
-    print("Total number of defaulters: ", len(defaulter_set[defaulter_set[const.TREATMENT_OUTCOME] == 1]))
+    print("Total number of defaulters: ", len(defaulter_set[defaulter_set[const.LIMA_TREATMENT_OUTCOME] == 1]))
 
     # Train and test ML techniques
     ann = ArtificialNeuralNetwork()
