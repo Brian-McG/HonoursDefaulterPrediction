@@ -1,78 +1,43 @@
 import pandas as pd
+from sklearn.preprocessing import Imputer
 from sklearn.svm import NuSVC
-from sklearn.svm import SVC
+from sklearn import svm
 from sklearn import preprocessing
 
 import constants as const
+from data_preprocessing import apply_preprocessing
 from ml_statistics import MLStatistics
-from ml_technique import MLTechnique
+from ml_technique import MLTechnique, train_and_evaluate_fold
 
 
 class SupportVectorMachine(MLTechnique):
     """Contains functionality to train and evaluate a support vector machine (SVM)."""
 
     def __init__(self):
-        self.current_i = None
         self.ml_stats = MLStatistics()
-
-    # @staticmethod
-    # def apply_standardization(series):
-    #     if series.name == const.LIMA_TREATMENT_OUTCOME:
-    #         return series
-    #     else:
-    #         min_max_scaler = preprocessing.MinMaxScaler()
-    #         return min_max_scaler.fit_transform(preprocessing.scale(series))
 
     def train_and_evaluate(self, defaulter_set):
         """Applies k-fold cross validation to train and evaluate the SVM"""
-        defaulter_set_len = defaulter_set.shape[0]
-        # defaulter_set = defaulter_set[const.LIMA_CLASSIFICATION_FEATURES + [const.LIMA_TREATMENT_OUTCOME]]
-        # defaulter_set = defaulter_set.apply(self.apply_standardization)
-
-        # Prepare data set
-        input_set = defaulter_set.iloc[:, :-1]
-        output_set = defaulter_set.iloc[:, -1:]
-
-        # Apply k-fold cross validation
-        fold_len = defaulter_set_len / const.NUMBER_OF_FOLDS
         for i in range(const.NUMBER_OF_FOLDS):
-            self.current_i = i
-            min_range = int(fold_len * i)
-            max_range = int(fold_len * (i + 1))
-
-            # Training data
-            x_train_dataframe = pd.concat([input_set.iloc[0:min_range], input_set.iloc[max_range:defaulter_set_len]])
-            y_train_dataframe = pd.concat([output_set.iloc[0:min_range], output_set.iloc[max_range:defaulter_set_len]])
-
-            # Testing data
-            test_dataframe = defaulter_set.iloc[min_range:max_range]
-
-            # Assert that data is as expected
-            # assert (x_train_dataframe.shape[0] == y_train_dataframe.shape[0])
-            # assert (test_dataframe.shape[0] == defaulter_set_len - x_train_dataframe.shape[0])
-
-            svm = NuSVC(kernel="rbf", gamma=0.01, nu=0.01)
-            svm.fit(x_train_dataframe.as_matrix(), y_train_dataframe.as_matrix())
-
-            # Test accuracy
-            test_classification = svm.predict(test_dataframe[test_dataframe.columns[:-1]].as_matrix())
-
-            actual_outcome = test_dataframe[test_dataframe.columns[-1]].as_matrix()
-
-            self.ml_stats.calculate_and_append_fold_accuracy(test_classification, actual_outcome)
+            data_balancer = None
+            svc = svm.SVC(cache_size=1000, gamma='auto', kernel='rbf', class_weight='balanced')
+            train_and_evaluate_fold(self, defaulter_set, i, svc, data_balancer=data_balancer)
 
         # Error rates
         avg_accuracy_dict = self.ml_stats.calculate_average_predictive_accuracy()
 
-        print("Average true positive rate:", avg_accuracy_dict["avg_true_positive_rate"])
+        print("\nAverage true positive rate:", avg_accuracy_dict["avg_true_positive_rate"])
         print("Average true negative rate:", avg_accuracy_dict["avg_true_negative_rate"])
         print("Average false positive rate:", avg_accuracy_dict["avg_false_positive_rate"])
         print("Average false negative rate:", avg_accuracy_dict["avg_false_negative_rate"])
 
 
 if __name__ == "__main__":
-    #input_defaulter_set = pd.DataFrame.from_csv("../data/lima_tb/Lima-TB-Treatment-v6.csv", index_col=None, encoding="UTF-8")
+    input_defaulter_set = pd.DataFrame.from_csv("../data/lima_tb/Lima-TB-Treatment-base.csv", index_col=None, encoding="UTF-8")
     #input_defaulter_set = pd.DataFrame.from_csv("../data/german_finance/german_dataset_numberised.csv", index_col=None, encoding="UTF-8")
-    input_defaulter_set = pd.DataFrame.from_csv("../data/australian_finance/australian_dataset.csv", index_col=None, encoding="UTF-8")
+    #input_defaulter_set = pd.DataFrame.from_csv("../data/australian_finance/australian.csv", index_col=None, encoding="UTF-8")
+    #input_defaulter_set = pd.DataFrame.from_csv("../data/credit_screening/credit_screening.csv", index_col=None, encoding="UTF-8")
+
+    input_defaulter_set = apply_preprocessing(input_defaulter_set)
     svm_imp = SupportVectorMachine()
     svm_imp.train_and_evaluate(input_defaulter_set)
