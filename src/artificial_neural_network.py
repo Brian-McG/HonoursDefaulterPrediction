@@ -63,7 +63,7 @@ class ArtificialNeuralNetwork(MLTechnique):
         # Error rates
         avg_accuracy_dict = self.ml_stats.calculate_average_predictive_accuracy()
 
-        print("\Average true positive rate:", avg_accuracy_dict["avg_true_positive_rate"])
+        print("\nAverage true positive rate:", avg_accuracy_dict["avg_true_positive_rate"])
         print("Average true negative rate:", avg_accuracy_dict["avg_true_negative_rate"])
         print("Average false positive rate:", avg_accuracy_dict["avg_false_positive_rate"])
         print("Average false negative rate:", avg_accuracy_dict["avg_false_negative_rate"])

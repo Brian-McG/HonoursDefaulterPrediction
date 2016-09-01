@@ -1,6 +1,10 @@
 from abc import ABC, abstractmethod
+
 import constants as const
 import pandas as pd
+
+from visualisation import visualise_two_data_sets
+
 
 def train_and_evaluate_fold(self, defaulter_set, index, classifier, data_balancer=None):
     defaulter_set_len = defaulter_set.shape[0]
@@ -19,8 +23,12 @@ def train_and_evaluate_fold(self, defaulter_set, index, classifier, data_balance
 
     # Apply Data balancing
     x_resampled, y_resampled = x_train_dataframe.as_matrix(), y_train_dataframe.as_matrix().ravel()
+
     if data_balancer is not None:
         x_resampled, y_resampled = data_balancer.fit_sample(x_resampled, y_resampled)
+
+    # Visualise the two data-sets
+    visualise_two_data_sets(x_train_dataframe.as_matrix(), y_train_dataframe.as_matrix().ravel(), x_resampled, y_resampled)
 
     # Testing data
     test_dataframe = defaulter_set.iloc[min_range:max_range]
@@ -48,8 +56,7 @@ def train_and_evaluate_fold(self, defaulter_set, index, classifier, data_balance
 
 class MLTechnique(ABC):
     """An abstract class that encapsulates the concept of a machine learning technique"""
+
     @abstractmethod
     def train_and_evaluate(self, defaulter_set):
         pass
-
-
