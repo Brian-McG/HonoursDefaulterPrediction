@@ -1,22 +1,19 @@
 """Primary script used to execute the defaulter prediction"""
 import pandas as pd
 
-# User imports
-from multiprocessing import freeze_support
-
-from artificial_neural_network import ArtificialNeuralNetwork
-import constants as const
-from data_preprocessing import apply_preprocessing
 import classifiers as cfr
+from artificial_neural_network import ArtificialNeuralNetwork
+from data_preprocessing import apply_preprocessing
 from generic_classifier import GenericClassifier
 
 
 def main():
     # Load in data set
-    input_defaulter_set = pd.DataFrame.from_csv("../data/lima_tb/Lima-TB-Treatment-base.csv", index_col=None, encoding="UTF-8")
-    #input_defaulter_set = pd.DataFrame.from_csv("../data/german_finance/german_dataset_numberised.csv", index_col=None, encoding="UTF-8")
-    #input_defaulter_set = pd.DataFrame.from_csv("../data/australian_finance/australian.csv", index_col=None, encoding="UTF-8")
-    #input_defaulter_set = pd.DataFrame.from_csv("../data/credit_screening/credit_screening.csv", index_col=None, encoding="UTF-8")
+    input_defaulter_set = pd.DataFrame.from_csv("../data/lima_tb/Lima-TB-Treatment-base.csv", index_col=None,
+                                                encoding="UTF-8")
+    # input_defaulter_set = pd.DataFrame.from_csv("../data/german_finance/german_dataset_numberised.csv", index_col=None, encoding="UTF-8")
+    # input_defaulter_set = pd.DataFrame.from_csv("../data/australian_finance/australian.csv", index_col=None, encoding="UTF-8")
+    # input_defaulter_set = pd.DataFrame.from_csv("../data/credit_screening/credit_screening.csv", index_col=None, encoding="UTF-8")
 
     # Preprocess data set
     input_defaulter_set = apply_preprocessing(input_defaulter_set)
@@ -31,7 +28,7 @@ def main():
         if classifier_dict['status']:
             result_dictionary = (classifier_dict['classifier']).train_and_evaluate(input_defaulter_set)
 
-    # TODO: record results
+            # TODO: record results
 
 
 if __name__ == "__main__":

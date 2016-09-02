@@ -1,26 +1,20 @@
+import multiprocessing
+from multiprocessing import Manager
+from multiprocessing import Process
 from time import sleep
 
-import matplotlib.pyplot as plt
-import multiprocessing
-import pandas as pd
-from multiprocessing import Manager
-
 from imblearn.combine import SMOTEENN
-from sklearn import preprocessing
-from sknn.platform import cpu32, threading
 from sknn.mlp import Classifier, Layer
-from multiprocessing import Process
-from sklearn.preprocessing import Imputer
 
 import constants as const
 from constants import verbose_print
-from data_preprocessing import apply_preprocessing
-from ml_technique import MLTechnique, train_and_evaluate_fold
 from ml_statistics import MLStatistics
+from ml_technique import MLTechnique, train_and_evaluate_fold
 
 
 class ArtificialNeuralNetwork(MLTechnique):
     """Contains functionality to train and evaluate an artificial neural network (ANN)"""
+
     def __init__(self):
         manager = Manager()
         self.errors = manager.list(range(const.NUMBER_OF_FOLDS))
@@ -50,8 +44,10 @@ class ArtificialNeuralNetwork(MLTechnique):
             process_count = min(number_of_concurrent_processes, remaining_runs)
             for i in range(process_count):
                 data_balancer = SMOTEENN()
-                nn = Classifier(layers=[Layer("Rectifier", units=10), Layer("Softmax")], learning_rate=0.001, n_iter=1000, n_stable=100)
-                p = Process(target=train_and_evaluate_fold, args=(self, defaulter_set, (const.NUMBER_OF_FOLDS - remaining_runs) + i, nn, data_balancer))
+                nn = Classifier(layers=[Layer("Rectifier", units=10), Layer("Softmax")], learning_rate=0.001,
+                                n_iter=1000, n_stable=100)
+                p = Process(target=train_and_evaluate_fold,
+                            args=(self, defaulter_set, (const.NUMBER_OF_FOLDS - remaining_runs) + i, nn, data_balancer))
                 process_pool.append(p)
                 p.start()
                 sleep(3)
@@ -70,14 +66,3 @@ class ArtificialNeuralNetwork(MLTechnique):
         verbose_print("Average false negative rate: {0}".format(avg_accuracy_dict["avg_false_negative_rate"]))
 
         return avg_accuracy_dict
-
-if __name__ == "__main__":
-    input_defaulter_set = pd.DataFrame.from_csv("../data/lima_tb/Lima-TB-Treatment-base.csv", index_col=None, encoding="UTF-8")
-
-    #input_defaulter_set = pd.DataFrame.from_csv("../data/german_finance/german_dataset_numberised.csv", index_col=None, encoding="UTF-8")
-    #input_defaulter_set = pd.DataFrame.from_csv("../data/australian_finance/australian_dataset.csv", index_col=None, encoding="UTF-8")
-    #input_defaulter_set = pd.DataFrame.from_csv("../data/credit_screening/credit_screening_data_fill_missing_data.csv", index_col=None, encoding="UTF-8")
-
-    input_defaulter_set = apply_preprocessing(input_defaulter_set)
-    ann = ArtificialNeuralNetwork()
-    ann.train_and_evaluate(input_defaulter_set)

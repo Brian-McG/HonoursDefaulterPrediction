@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 
-import constants as const
 import pandas as pd
 
-from visualisation import visualise_two_data_sets
+import constants as const
 
 
 def train_and_evaluate_fold(self, defaulter_set, index, classifier, data_balancer=None):

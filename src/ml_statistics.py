@@ -7,7 +7,6 @@ class MLStatistics:
     def __init__(self, error_list=list()):
         self.errors = error_list
 
-
     @staticmethod
     def calculate_classification_accuracy(test_classification, actual_outcome):
         """Compares the test_classification and actual_outcome. It returns a dictionary with the true positive,
@@ -65,4 +64,3 @@ class MLStatistics:
         avg_accuracy_dict["avg_false_negative_rate"] = avg_false_negative_rate / float(const.NUMBER_OF_FOLDS)
 
         return avg_accuracy_dict
-

@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
+import seaborn as sns
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.decomposition import PCA
-import seaborn as sns
 
 almost_black = '#262626'
 palette = sns.color_palette()
