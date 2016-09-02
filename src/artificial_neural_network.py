@@ -13,6 +13,7 @@ from multiprocessing import Process
 from sklearn.preprocessing import Imputer
 
 import constants as const
+from constants import verbose_print
 from data_preprocessing import apply_preprocessing
 from ml_technique import MLTechnique, train_and_evaluate_fold
 from ml_statistics import MLStatistics
@@ -48,7 +49,7 @@ class ArtificialNeuralNetwork(MLTechnique):
             process_pool = []
             process_count = min(number_of_concurrent_processes, remaining_runs)
             for i in range(process_count):
-                data_balancer = None
+                data_balancer = SMOTEENN()
                 nn = Classifier(layers=[Layer("Rectifier", units=10), Layer("Softmax")], learning_rate=0.001, n_iter=1000, n_stable=100)
                 p = Process(target=train_and_evaluate_fold, args=(self, defaulter_set, (const.NUMBER_OF_FOLDS - remaining_runs) + i, nn, data_balancer))
                 process_pool.append(p)
@@ -63,19 +64,12 @@ class ArtificialNeuralNetwork(MLTechnique):
         # Error rates
         avg_accuracy_dict = self.ml_stats.calculate_average_predictive_accuracy()
 
-        print("\nAverage true positive rate:", avg_accuracy_dict["avg_true_positive_rate"])
-        print("Average true negative rate:", avg_accuracy_dict["avg_true_negative_rate"])
-        print("Average false positive rate:", avg_accuracy_dict["avg_false_positive_rate"])
-        print("Average false negative rate:", avg_accuracy_dict["avg_false_negative_rate"])
+        verbose_print("\nAverage true positive rate: {0}".format(avg_accuracy_dict["avg_true_positive_rate"]))
+        verbose_print("Average true negative rate: {0}".format(avg_accuracy_dict["avg_true_negative_rate"]))
+        verbose_print("Average false positive rate: {0}".format(avg_accuracy_dict["avg_false_positive_rate"]))
+        verbose_print("Average false negative rate: {0}".format(avg_accuracy_dict["avg_false_negative_rate"]))
 
-        # Plot training error
-        # error_map = {}
-        # for i in range(const.NUMBER_OF_FOLDS):
-        #     error_map[i + 1] = self.errors[i][const.TRAINING_ERROR]
-        #
-        # error_df = pd.DataFrame({k: pd.Series(v) for k, v in error_map.items()})
-        # error_df.plot()
-        # plt.show()
+        return avg_accuracy_dict
 
 if __name__ == "__main__":
     input_defaulter_set = pd.DataFrame.from_csv("../data/lima_tb/Lima-TB-Treatment-base.csv", index_col=None, encoding="UTF-8")

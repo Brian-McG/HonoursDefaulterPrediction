@@ -1,11 +1,16 @@
 import pandas as pd
 from imblearn.combine import SMOTEENN
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearDiscriminantAnalysis
 from sklearn.ensemble import AdaBoostClassifier
-from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier, VotingClassifier
+from sklearn.linear_model import RANSACRegressor
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import Imputer
 from sklearn.svm import NuSVC
 from sklearn import svm
 from sklearn import preprocessing
+from sklearn.tree import DecisionTreeClassifier
 
 import constants as const
 from constants import verbose_print
@@ -14,18 +19,18 @@ from ml_statistics import MLStatistics
 from ml_technique import MLTechnique, train_and_evaluate_fold
 
 
-class LogisticRegressionClassification(MLTechnique):
-    """Contains functionality to train and evaluate a logistic regression classifier."""
+class PolynomialSupportVectorMachineClassification(MLTechnique):
+    """Contains functionality to train and evaluate a classifier."""
 
     def __init__(self):
         self.ml_stats = MLStatistics()
 
     def train_and_evaluate(self, defaulter_set):
-        """Applies k-fold cross validation to train and evaluate the logistic regression classifier"""
+        """Applies k-fold cross validation to train and evaluate the classifier"""
         for i in range(const.NUMBER_OF_FOLDS):
             data_balancer = SMOTEENN()
-            logistic_regression = LogisticRegression(penalty='l2', dual=False, fit_intercept=True, intercept_scaling=1, solver='newton-cg', max_iter=100, multi_class='ovr')
-            train_and_evaluate_fold(self, defaulter_set, i, logistic_regression, data_balancer=data_balancer)
+            rfc = svm.SVC(cache_size=1000, gamma='auto', kernel='poly', degree=3, class_weight='balanced')
+            train_and_evaluate_fold(self, defaulter_set, i, rfc, data_balancer=data_balancer)
 
         # Error rates
         avg_accuracy_dict = self.ml_stats.calculate_average_predictive_accuracy()
@@ -43,5 +48,5 @@ if __name__ == "__main__":
     #input_defaulter_set = pd.DataFrame.from_csv("../data/credit_screening/credit_screening.csv", index_col=None, encoding="UTF-8")
 
     input_defaulter_set = apply_preprocessing(input_defaulter_set)
-    svm_imp = LogisticRegressionClassification()
+    svm_imp = PolynomialSupportVectorMachineClassification()
     svm_imp.train_and_evaluate(input_defaulter_set)

@@ -28,7 +28,7 @@ def train_and_evaluate_fold(self, defaulter_set, index, classifier, data_balance
         x_resampled, y_resampled = data_balancer.fit_sample(x_resampled, y_resampled)
 
     # Visualise the two data-sets
-    visualise_two_data_sets(x_train_dataframe.as_matrix(), y_train_dataframe.as_matrix().ravel(), x_resampled, y_resampled)
+    # visualise_two_data_sets(x_train_dataframe.as_matrix(), y_train_dataframe.as_matrix().ravel(), x_resampled, y_resampled)
 
     # Testing data
     test_dataframe = defaulter_set.iloc[min_range:max_range]

@@ -7,6 +7,7 @@ from sklearn import svm
 from sklearn import preprocessing
 
 import constants as const
+from constants import verbose_print
 from data_preprocessing import apply_preprocessing
 from ml_statistics import MLStatistics
 from ml_technique import MLTechnique, train_and_evaluate_fold
@@ -28,10 +29,10 @@ class AdaBoost(MLTechnique):
         # Error rates
         avg_accuracy_dict = self.ml_stats.calculate_average_predictive_accuracy()
 
-        print("\nAverage true positive rate:", avg_accuracy_dict["avg_true_positive_rate"])
-        print("Average true negative rate:", avg_accuracy_dict["avg_true_negative_rate"])
-        print("Average false positive rate:", avg_accuracy_dict["avg_false_positive_rate"])
-        print("Average false negative rate:", avg_accuracy_dict["avg_false_negative_rate"])
+        verbose_print("\nAverage true positive rate: {0}".format(avg_accuracy_dict["avg_true_positive_rate"]))
+        verbose_print("Average true negative rate: {0}".format(avg_accuracy_dict["avg_true_negative_rate"]))
+        verbose_print("Average false positive rate: {0}".format(avg_accuracy_dict["avg_false_positive_rate"]))
+        verbose_print("Average false negative rate: {0}".format(avg_accuracy_dict["avg_false_negative_rate"]))
 
 
 if __name__ == "__main__":
