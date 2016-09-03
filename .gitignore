@@ -1,3 +1,4 @@
+*.csv
 .idea
 *.iml
 prelimanary_optimisation
