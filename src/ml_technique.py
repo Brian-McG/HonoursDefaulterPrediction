@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 import pandas as pd
 
 import constants as const
+from constants import verbose_print
 
 
 def train_and_evaluate_fold(self, defaulter_set, index, classifier, data_balancer=None):
@@ -33,24 +34,23 @@ def train_and_evaluate_fold(self, defaulter_set, index, classifier, data_balance
     test_dataframe = defaulter_set.iloc[min_range:max_range]
 
     # Training fold specific statistics
-    print("\n== Training Stats Fold {0} ==".format(index + 1))
-    print("Number of rows for training fold {0}: ".format(index + 1), x_resampled.shape[0])
-    print("Number of defaulters for training fold {0}: ".format(index + 1),
-          y_resampled[y_resampled == 1].shape[0])
+    verbose_print("\n== Training Stats Fold {0} ==".format(index + 1))
+    verbose_print("Number of rows for training fold {0}: {1}".format(index + 1, x_resampled.shape[0]))
+    verbose_print("Number of defaulters for training fold {0}: {1}".format(index + 1, y_resampled[y_resampled == 1].shape[0]))
 
-    classifier.fit(x_resampled, y_resampled)
+    classifier.fit(x_resampled[0], y_resampled[0])
 
     # Testing fold specific statistics
-    print("== Testing Stats Fold {0} ==".format(index + 1))
-    print("Number of rows for training fold {0}: ".format(index + 1), test_dataframe.shape[0])
-    print("Number of defaulters for training fold {0}: ".format(index + 1),
-          test_dataframe[test_dataframe[test_dataframe.columns[-1]] == 1].shape[0])
+    verbose_print("== Testing Stats Fold {0} ==".format(index + 1))
+    verbose_print("Number of rows for training fold {0}: {1}".format(index + 1, test_dataframe.shape[0]))
+    verbose_print("Number of defaulters for training fold {0}: {1}".format(index + 1, test_dataframe[test_dataframe[test_dataframe.columns[-1]] == 1].shape[0]))
 
     # Test accuracy
     test_classification = classifier.predict(test_dataframe[test_dataframe.columns[:-1]].as_matrix())
+    test_probabilities = classifier.predict_proba(test_dataframe[test_dataframe.columns[:-1]].as_matrix())
     actual_outcome = test_dataframe[test_dataframe.columns[-1]].as_matrix()
 
-    self.ml_stats.calculate_and_append_fold_accuracy(test_classification, actual_outcome)
+    self.ml_stats.calculate_and_append_fold_accuracy(test_classification, actual_outcome, test_probabilities=test_probabilities)
 
 
 class MLTechnique(ABC):

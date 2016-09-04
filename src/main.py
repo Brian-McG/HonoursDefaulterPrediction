@@ -2,6 +2,7 @@
 import pandas as pd
 
 import classifiers as cfr
+import constants as const
 from artificial_neural_network import ArtificialNeuralNetwork
 from data_preprocessing import apply_preprocessing
 from generic_classifier import GenericClassifier
@@ -32,7 +33,8 @@ def main():
             result_dictionary = (classifier_dict['classifier']).train_and_evaluate(input_defaulter_set)
             result_recorder.record_results(result_dictionary, classifier_dict)
 
-    result_recorder.save_results_to_file()
+    if const.RECORD_RESULTS:
+        result_recorder.save_results_to_file()
 
 
 if __name__ == "__main__":

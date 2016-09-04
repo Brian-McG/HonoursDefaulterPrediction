@@ -25,6 +25,7 @@ class ArtificialNeuralNetwork(MLTechnique):
         error_list = manager.list()
         self.ml_stats = MLStatistics(error_list)
         self.logical_cpu_count = multiprocessing.cpu_count()
+        self.data_balancer = SMOTEENN()
 
     def store_stats(self, avg_train_error, **_):
         """Stores average training error. Called at the end of each training iteration."""
@@ -37,17 +38,19 @@ class ArtificialNeuralNetwork(MLTechnique):
     def train_and_evaluate(self, defaulter_set):
         """Applies k-fold cross validation to train and evaluate the ANN"""
 
+        self.ml_stats.clear_errors()
+
         number_of_concurrent_processes = min(const.NUMBER_OF_FOLDS, self.logical_cpu_count)
         remaining_runs = const.NUMBER_OF_FOLDS
         while remaining_runs > 0:
             process_pool = []
             process_count = min(number_of_concurrent_processes, remaining_runs)
             for i in range(process_count):
-                data_balancer = SMOTEENN()
+
                 nn = Classifier(layers=[Layer("Rectifier", units=10), Layer("Softmax")], learning_rate=0.001,
                                 n_iter=1000, n_stable=100)
                 p = Process(target=train_and_evaluate_fold,
-                            args=(self, defaulter_set, (const.NUMBER_OF_FOLDS - remaining_runs) + i, nn, data_balancer))
+                            args=(self, defaulter_set, (const.NUMBER_OF_FOLDS - remaining_runs) + i, nn, self.data_balancer))
                 process_pool.append(p)
                 p.start()
                 sleep(3)
@@ -64,5 +67,11 @@ class ArtificialNeuralNetwork(MLTechnique):
         verbose_print("Average true negative rate: {0}".format(avg_accuracy_dict["avg_true_negative_rate"]))
         verbose_print("Average false positive rate: {0}".format(avg_accuracy_dict["avg_false_positive_rate"]))
         verbose_print("Average false negative rate: {0}".format(avg_accuracy_dict["avg_false_negative_rate"]))
+
+        verbose_print("\nAverage true positive rate (with cutoff {0}): {1}".format(const.CUTOFF_RATE, avg_accuracy_dict["avg_true_positive_rate_with_prob_cutoff"]))
+        verbose_print("Average true negative rate (with cutoff {0}): {1}".format(const.CUTOFF_RATE, avg_accuracy_dict["avg_true_negative_rate_with_prob_cutoff"]))
+        verbose_print("Average false positive rate (with cutoff {0}): {1}".format(const.CUTOFF_RATE, avg_accuracy_dict["avg_false_positive_rate_with_prob_cutoff"]))
+        verbose_print("Average false negative rate (with cutoff {0}): {1}".format(const.CUTOFF_RATE, avg_accuracy_dict["avg_false_negative_rate_with_prob_cutoff"]))
+        verbose_print("Average unclassified (with cutoff {0}): {1}".format(const.CUTOFF_RATE, avg_accuracy_dict["avg_unclassified_with_prob_cutoff"]))
 
         return avg_accuracy_dict

@@ -1,5 +1,7 @@
 """Contains all classifiers used (except ANNs)"""
 from imblearn.combine import SMOTEENN
+from imblearn.under_sampling import CondensedNearestNeighbour
+from imblearn.under_sampling import InstanceHardnessThreshold
 from sklearn import svm
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -26,20 +28,20 @@ ann_enabled = False
 
 # Generic Classifiers
 # Support Vector Machines (with RDF kernel)
-svm_rdf_data_balancer = None
-svc_rdf = svm.SVC(cache_size=1000, gamma='auto', kernel='rbf', class_weight='balanced')
+svm_rdf_data_balancer = CondensedNearestNeighbour()
+svc_rdf = svm.SVC(cache_size=1000, gamma='auto', kernel='rbf', class_weight='balanced', probability=True)
 svc_rdf_enabled = True
 append_classifier_details(svm_rdf_data_balancer, svc_rdf, svc_rdf_enabled, "SVM (RDF)", generic_classifiers)
 
 # Support Vector Machines (with linear kernel)
 svm_linear_data_balancer = None
-svm_linear = svm.SVC(cache_size=1000, gamma='auto', kernel='linear', class_weight='balanced')
+svm_linear = svm.SVC(cache_size=1000, gamma='auto', kernel='linear', class_weight='balanced', probability=True)
 svm_linear_enabled = False
 append_classifier_details(svm_linear_data_balancer, svm_linear, svm_linear_enabled, "SVM (linear)", generic_classifiers)
 
 # Support Vector Machines (with polynomial kernel)
 svm_poly_data_balancer = SMOTEENN()
-svm_poly = svm.SVC(cache_size=1000, gamma='auto', kernel='poly', degree=3, class_weight='balanced')
+svm_poly = svm.SVC(cache_size=1000, gamma='auto', kernel='poly', degree=3, class_weight='balanced', probability=True)
 svm_poly_enabled = False
 append_classifier_details(svm_poly_data_balancer, svm_poly, svm_poly_enabled, "SVM (polynomial)", generic_classifiers)
 
@@ -82,7 +84,7 @@ append_classifier_details(k_nearest_data_balancer, k_nearest, k_nearest_enabled,
 multinomial_naive_bayes_data_balancer = SMOTEENN()
 multinomial_naive_bayes = MultinomialNB()
 multinomial_naive_bayes_enabled = False
-append_classifier_details(multinomial_naive_bayes_data_balancer, k_nearest, k_nearest_enabled,
+append_classifier_details(multinomial_naive_bayes_data_balancer, multinomial_naive_bayes, multinomial_naive_bayes_enabled,
                           "Multinomial Naive Bayes", generic_classifiers)
 
 # Voting classifier
