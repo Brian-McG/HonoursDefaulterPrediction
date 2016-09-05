@@ -52,6 +52,7 @@ class ArtificialNeuralNetwork(MLTechnique):
                         p = Process(target=train_and_evaluate_fold, args=(self, defaulter_set, (const.NUMBER_OF_FOLDS - remaining_runs) + i, nn, self.data_balancer))
                         p.start()
                         process_pool.append(p)
+                        sleep(3)
                         break
                     except Exception:
                         if x + 1 >= const.RETRY_COUNT:
