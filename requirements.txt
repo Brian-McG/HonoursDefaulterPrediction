@@ -1,0 +1,17 @@
+colorama
+cycler
+imbalanced-learn
+Lasagne
+matplotlib
+nose
+numpy
+pandas
+pyparsing
+python-dateutil
+pytz
+scikit-learn
+scikit-neuralnetwork
+scipy
+seaborn
+six
+Theano
