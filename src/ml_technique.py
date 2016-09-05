@@ -38,7 +38,7 @@ def train_and_evaluate_fold(self, defaulter_set, index, classifier, data_balance
     verbose_print("Number of rows for training fold {0}: {1}".format(index + 1, x_resampled.shape[0]))
     verbose_print("Number of defaulters for training fold {0}: {1}".format(index + 1, y_resampled[y_resampled == 1].shape[0]))
 
-    classifier.fit(x_resampled[0], y_resampled[0])
+    classifier.fit(x_resampled, y_resampled)
 
     # Testing fold specific statistics
     verbose_print("== Testing Stats Fold {0} ==".format(index + 1))
@@ -47,7 +47,10 @@ def train_and_evaluate_fold(self, defaulter_set, index, classifier, data_balance
 
     # Test accuracy
     test_classification = classifier.predict(test_dataframe[test_dataframe.columns[:-1]].as_matrix())
-    test_probabilities = classifier.predict_proba(test_dataframe[test_dataframe.columns[:-1]].as_matrix())
+    try:
+        test_probabilities = classifier.predict_proba(test_dataframe[test_dataframe.columns[:-1]].as_matrix())
+    except AttributeError:
+        test_probabilities = [[-1, -1]] * len(test_classification)
     actual_outcome = test_dataframe[test_dataframe.columns[-1]].as_matrix()
 
     self.ml_stats.calculate_and_append_fold_accuracy(test_classification, actual_outcome, test_probabilities=test_probabilities)

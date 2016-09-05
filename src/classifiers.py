@@ -1,5 +1,6 @@
 """Contains all classifiers used (except ANNs)"""
 from imblearn.combine import SMOTEENN
+from imblearn.under_sampling import ClusterCentroids
 from imblearn.under_sampling import CondensedNearestNeighbour
 from imblearn.under_sampling import InstanceHardnessThreshold
 from sklearn import svm
@@ -7,7 +8,7 @@ from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import VotingClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 
@@ -24,13 +25,14 @@ def append_classifier_details(data_balancer, classifier, status, classifier_desc
 
 # Non-generic Classifiers
 # Artificial Neural network - is added in main.py due to use of Processes which requires it be declared in the main method
-ann_enabled = False
+ann_enabled = True
+ann_data_balancer = SMOTEENN()
 
 # Generic Classifiers
 # Support Vector Machines (with RDF kernel)
-svm_rdf_data_balancer = CondensedNearestNeighbour()
+svm_rdf_data_balancer = ClusterCentroids()
 svc_rdf = svm.SVC(cache_size=1000, gamma='auto', kernel='rbf', class_weight='balanced', probability=True)
-svc_rdf_enabled = True
+svc_rdf_enabled = False
 append_classifier_details(svm_rdf_data_balancer, svc_rdf, svc_rdf_enabled, "SVM (RDF)", generic_classifiers)
 
 # Support Vector Machines (with linear kernel)
@@ -80,17 +82,17 @@ k_nearest_enabled = False
 append_classifier_details(k_nearest_data_balancer, k_nearest, k_nearest_enabled, "K-nearest neighbours",
                           generic_classifiers)
 
-# Multinomial Naive Bayes
-multinomial_naive_bayes_data_balancer = SMOTEENN()
-multinomial_naive_bayes = MultinomialNB()
-multinomial_naive_bayes_enabled = False
-append_classifier_details(multinomial_naive_bayes_data_balancer, multinomial_naive_bayes, multinomial_naive_bayes_enabled,
-                          "Multinomial Naive Bayes", generic_classifiers)
+# Bernoulli Naive Bayes
+bernoulli_naive_bayes_data_balancer = SMOTEENN()
+bernoulli_naive_bayes = BernoulliNB()
+bernoulli_naive_bayes_enabled = False
+append_classifier_details(bernoulli_naive_bayes_data_balancer, bernoulli_naive_bayes, bernoulli_naive_bayes_enabled,
+                          "Bernoulli Naive Bayes", generic_classifiers)
 
 # Voting classifier
 voting_classifier_data_balancer = SMOTEENN()
 classifier_one = AdaBoostClassifier(n_estimators=3000, learning_rate=0.01)
-classifier_two = MultinomialNB()
+classifier_two = BernoulliNB()
 classifier_three = RandomForestClassifier(n_estimators=10, n_jobs=-1)
 classifier_four = KNeighborsClassifier(n_neighbors=100)
 voting_classifier = VotingClassifier(estimators=[('classifier_one', classifier_one), ('classifier_two', classifier_two),

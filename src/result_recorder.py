@@ -15,7 +15,7 @@ class ResultRecorder:
         """Records results to file. If file_name is None, then a default filename of data_<number of folds>_<timestamp>.csv"""
         if len(self.results) > 0:
             if file_name is None:
-                current_time = datetime.now().strftime('%H-%M-%S_%d-%m-%Y')
+                current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
                 file_name = "data_{0}-folds_{1}.csv".format(const.NUMBER_OF_FOLDS, current_time)
             output_file = open(file_name, "w", newline="")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)

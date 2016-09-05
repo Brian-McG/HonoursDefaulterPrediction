@@ -7,9 +7,6 @@ class MLStatistics:
     def __init__(self, error_list=list()):
         self.errors = error_list
 
-    def clear_errors(self):
-        self.errors = []
-
     @staticmethod
     def calculate_classification_accuracy(test_classification, actual_outcome, test_probabilities=None, probability_cutoff=const.CUTOFF_RATE):
         """Compares the test_classification and actual_outcome. It returns a dictionary with the true positive,

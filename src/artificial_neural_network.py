@@ -15,7 +15,7 @@ from ml_technique import MLTechnique, train_and_evaluate_fold
 class ArtificialNeuralNetwork(MLTechnique):
     """Contains functionality to train and evaluate an artificial neural network (ANN)"""
 
-    def __init__(self):
+    def __init__(self, data_balancer):
         manager = Manager()
         self.errors = manager.list(range(const.NUMBER_OF_FOLDS))
         for error in self.errors:
@@ -25,7 +25,7 @@ class ArtificialNeuralNetwork(MLTechnique):
         error_list = manager.list()
         self.ml_stats = MLStatistics(error_list)
         self.logical_cpu_count = multiprocessing.cpu_count()
-        self.data_balancer = SMOTEENN()
+        self.data_balancer = data_balancer
 
     def store_stats(self, avg_train_error, **_):
         """Stores average training error. Called at the end of each training iteration."""
@@ -35,10 +35,10 @@ class ArtificialNeuralNetwork(MLTechnique):
         self.errors[self.current_i][const.TRAINING_ERROR].append(avg_train_error)
         self.errors[self.current_i]["training_error_count"] += 1
 
-    def train_and_evaluate(self, defaulter_set):
+    def train_and_evaluate(self, defaulter_set, hidden_layer='Rectifier', number_of_hidden_nodes=10, output_layer='Softmax'):
         """Applies k-fold cross validation to train and evaluate the ANN"""
-
-        self.ml_stats.clear_errors()
+        manager = Manager()
+        self.ml_stats.errors = manager.list()
 
         number_of_concurrent_processes = min(const.NUMBER_OF_FOLDS, self.logical_cpu_count)
         remaining_runs = const.NUMBER_OF_FOLDS
@@ -46,14 +46,17 @@ class ArtificialNeuralNetwork(MLTechnique):
             process_pool = []
             process_count = min(number_of_concurrent_processes, remaining_runs)
             for i in range(process_count):
-
-                nn = Classifier(layers=[Layer("Rectifier", units=10), Layer("Softmax")], learning_rate=0.001,
-                                n_iter=1000, n_stable=100)
-                p = Process(target=train_and_evaluate_fold,
-                            args=(self, defaulter_set, (const.NUMBER_OF_FOLDS - remaining_runs) + i, nn, self.data_balancer))
-                process_pool.append(p)
-                p.start()
-                sleep(3)
+                for x in range(const.RETRY_COUNT):
+                    try:
+                        nn = Classifier(layers=[Layer(hidden_layer, units=number_of_hidden_nodes), Layer(output_layer)], learning_rate=0.001, n_iter=1000)
+                        p = Process(target=train_and_evaluate_fold, args=(self, defaulter_set, (const.NUMBER_OF_FOLDS - remaining_runs) + i, nn, self.data_balancer))
+                        p.start()
+                        process_pool.append(p)
+                        break
+                    except Exception:
+                        if x + 1 >= const.RETRY_COUNT:
+                            raise
+                        sleep(1)
 
             for process in process_pool:
                 process.join()

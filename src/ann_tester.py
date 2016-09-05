@@ -21,6 +21,7 @@ from imblearn.under_sampling import TomekLinks
 import classifiers as cfr
 import constants as const
 from artificial_neural_network import ArtificialNeuralNetwork
+from classifier_result_recorder import ClassifierResultRecorder
 from data_balancer_result_recorder import DataBalancerResultRecorder
 from data_preprocessing import apply_preprocessing
 from generic_classifier import GenericClassifier
@@ -37,37 +38,32 @@ def main():
 
     # Preprocess data set
     input_defaulter_set = apply_preprocessing(input_defaulter_set)
+    result_recorder = ResultRecorder()
 
-    data_balancers = [None, ClusterCentroids(), EditedNearestNeighbours(), InstanceHardnessThreshold(), NearMiss(), NeighbourhoodCleaningRule(),
-                      OneSidedSelection(), RandomUnderSampler(), TomekLinks(), ADASYN(), RandomOverSampler(), SMOTE(), SMOTEENN(), SMOTETomek()]
-    result_recorder = DataBalancerResultRecorder()
+    result_recorder = ClassifierResultRecorder()
+    middle_layer_types = ['Rectifier', 'Sigmoid', 'Tanh', 'ExpLin']
+    output_layer_types = ['Softmax']
+    number_of_hidden_nodes = [1, 2, 3, 4, 5, 8, 10, 15, 20, 25, 50, 75, 100]
 
     # Execute enabled classifiers
-    run_test(cfr.non_generic_classifiers, input_defaulter_set, data_balancers, result_recorder, is_generic=False)
-    run_test(cfr.generic_classifiers, input_defaulter_set, data_balancers, result_recorder, is_generic=True)
+    run_test(cfr.non_generic_classifiers[0]['classifier'], input_defaulter_set, result_recorder, middle_layer_types, output_layer_types, number_of_hidden_nodes)
 
     print(result_recorder.results)
     if const.RECORD_RESULTS is True:
-        result_recorder.save_results_to_file()
+        result_recorder.save_results_to_file(["Hidden layer", "Number of hidden nodes", "Output layer"])
 
 
-def run_test(classifiers, input_defaulter_set, data_balancers, result_recorder, is_generic=True):
-    for classifier_dict in classifiers:
-        if classifier_dict['status'] is True:
-            print("== {0} ==".format(classifier_dict['classifier_description']))
-            for data_balancer in data_balancers:
-                print("=== {0} ===".format(data_balancer.__class__.__name__))
-                overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
-                    false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
+def run_test(classifier, input_defaulter_set, result_recorder, middle_layer_types, output_layer_types, number_of_hidden_nodes):
 
+    for middle_layer_type in middle_layer_types:
+        for number_of_hidden_node in number_of_hidden_nodes:
+            for output_layer_type in output_layer_types:
                 # Execute classifier TEST_REPEAT number of times
+                overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
                 for i in range(const.TEST_REPEAT):
-                    print("==== Run {0} ====".format(i+1))
-                    if is_generic is True:
-                        classifier = GenericClassifier(classifier_dict['classifier'], data_balancer)
-                    else:
-                        classifier = classifier_dict['classifier']
-                    result_dictionary = classifier.train_and_evaluate(input_defaulter_set)
+                    print("==== Run {0} - {1} - {2} - {3} ====".format(i+1, middle_layer_type, number_of_hidden_node, output_layer_type))
+
+                    result_dictionary = classifier.train_and_evaluate(input_defaulter_set, output_layer=output_layer_type, hidden_layer=middle_layer_type, number_of_hidden_nodes=number_of_hidden_node)
                     overall_true_rate += result_dictionary["avg_true_positive_rate"] + result_dictionary["avg_true_negative_rate"]
                     true_positive_rate += result_dictionary["avg_true_positive_rate"]
                     true_negative_rate += result_dictionary["avg_true_negative_rate"]
@@ -80,18 +76,17 @@ def run_test(classifiers, input_defaulter_set, data_balancers, result_recorder, 
                     unclassified_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
 
                 individual_data_balancer_results = [None, None, None, None, None, None, None, None, None, None]
-                individual_data_balancer_results[0] = ("overall_true_rate", overall_true_rate / const.TEST_REPEAT)
-                individual_data_balancer_results[1] = ("true_positive_rate", true_positive_rate / const.TEST_REPEAT)
-                individual_data_balancer_results[2] = ("true_negative_rate", true_negative_rate / const.TEST_REPEAT)
-                individual_data_balancer_results[3] = ("false_positive_rate", false_positive_rate / const.TEST_REPEAT)
-                individual_data_balancer_results[4] = ("false_negative_rate", false_negative_rate / const.TEST_REPEAT)
-                individual_data_balancer_results[5] = ("true_positive_rate_cutoff", true_positive_rate_cutoff / const.TEST_REPEAT)
-                individual_data_balancer_results[6] = ("true_negative_rate_cutoff", true_negative_rate_cutoff / const.TEST_REPEAT)
-                individual_data_balancer_results[7] = ("false_positive_rate_cutoff", false_positive_rate_cutoff / const.TEST_REPEAT)
-                individual_data_balancer_results[8] = ("false_negative_rate_cutoff", false_negative_rate_cutoff / const.TEST_REPEAT)
-                individual_data_balancer_results[9] = ("unclassified_cutoff", unclassified_cutoff / const.TEST_REPEAT)
-                classifier_tuple = (data_balancer.__class__.__name__, individual_data_balancer_results)
-                result_recorder.record_results((classifier_dict['classifier_description'], classifier_tuple))
+                individual_data_balancer_results[0] = overall_true_rate / const.TEST_REPEAT
+                individual_data_balancer_results[1] = true_positive_rate / const.TEST_REPEAT
+                individual_data_balancer_results[2] = true_negative_rate / const.TEST_REPEAT
+                individual_data_balancer_results[3] = false_positive_rate / const.TEST_REPEAT
+                individual_data_balancer_results[4] = false_negative_rate / const.TEST_REPEAT
+                individual_data_balancer_results[5] = true_positive_rate_cutoff / const.TEST_REPEAT
+                individual_data_balancer_results[6] = true_negative_rate_cutoff / const.TEST_REPEAT
+                individual_data_balancer_results[7] = false_positive_rate_cutoff / const.TEST_REPEAT
+                individual_data_balancer_results[8] = false_negative_rate_cutoff / const.TEST_REPEAT
+                individual_data_balancer_results[9] = unclassified_cutoff / const.TEST_REPEAT
+                result_recorder.record_results([middle_layer_type, number_of_hidden_node, output_layer_type] + individual_data_balancer_results)
 
 
 if __name__ == "__main__":

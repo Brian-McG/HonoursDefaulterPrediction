@@ -15,7 +15,7 @@ class GenericClassifier(MLTechnique):
     def train_and_evaluate(self, defaulter_set):
         """Applies k-fold cross validation to train and evaluate a classifier"""
 
-        self.ml_stats.clear_errors()
+        self.ml_stats.errors.clear()
 
         for i in range(const.NUMBER_OF_FOLDS):
             train_and_evaluate_fold(self, defaulter_set, i, self.classifier, data_balancer=self.data_balancer)
