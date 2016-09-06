@@ -3,6 +3,7 @@ from multiprocessing import Manager
 from multiprocessing import Process
 from time import sleep
 
+import random
 from imblearn.combine import SMOTEENN
 from sknn.mlp import Classifier, Layer
 
@@ -27,6 +28,18 @@ class ArtificialNeuralNetwork(MLTechnique):
         self.logical_cpu_count = multiprocessing.cpu_count()
         self.data_balancer = data_balancer
 
+    def train_and_evaluate_fold_with_failover(self, defaulter_set, index, classifier, data_balancer=None):
+        for x in range(const.RETRY_COUNT):
+            try:
+                train_and_evaluate_fold(self, defaulter_set, index, classifier, data_balancer)
+                return
+            except Exception:
+                if x + 1 >= const.RETRY_COUNT:
+                    raise
+                sleep_time = random.uniform(1, 3)
+                sleep(sleep_time)
+                continue
+
     def store_stats(self, avg_train_error, **_):
         """Stores average training error. Called at the end of each training iteration."""
         if const.TRAINING_ERROR not in self.errors[self.current_i]:
@@ -46,18 +59,10 @@ class ArtificialNeuralNetwork(MLTechnique):
             process_pool = []
             process_count = min(number_of_concurrent_processes, remaining_runs)
             for i in range(process_count):
-                for x in range(const.RETRY_COUNT):
-                    try:
-                        nn = Classifier(layers=[Layer(hidden_layer, units=number_of_hidden_nodes), Layer(output_layer)], learning_rate=0.001, n_iter=1000)
-                        p = Process(target=train_and_evaluate_fold, args=(self, defaulter_set, (const.NUMBER_OF_FOLDS - remaining_runs) + i, nn, self.data_balancer))
-                        p.start()
-                        process_pool.append(p)
-                        sleep(3)
-                        break
-                    except Exception:
-                        if x + 1 >= const.RETRY_COUNT:
-                            raise
-                        sleep(1)
+                nn = Classifier(layers=[Layer(hidden_layer, units=number_of_hidden_nodes), Layer(output_layer)], learning_rate=0.001, n_iter=1000)
+                p = Process(target=self.train_and_evaluate_fold_with_failover, args=(defaulter_set, (const.NUMBER_OF_FOLDS - remaining_runs) + i, nn, self.data_balancer))
+                p.start()
+                process_pool.append(p)
 
             for process in process_pool:
                 process.join()
