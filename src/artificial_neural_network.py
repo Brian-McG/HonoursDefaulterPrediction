@@ -35,7 +35,7 @@ class ArtificialNeuralNetwork(MLTechnique):
         self.errors[self.current_i][const.TRAINING_ERROR].append(avg_train_error)
         self.errors[self.current_i]["training_error_count"] += 1
 
-    def train_and_evaluate(self, defaulter_set, hidden_layer='Rectifier', number_of_hidden_nodes=10, output_layer='Softmax'):
+    def train_and_evaluate(self, defaulter_set, hidden_layer='Rectifier', number_of_hidden_nodes=75, output_layer='Softmax'):
         """Applies k-fold cross validation to train and evaluate the ANN"""
         manager = Manager()
         self.ml_stats.errors = manager.list()
