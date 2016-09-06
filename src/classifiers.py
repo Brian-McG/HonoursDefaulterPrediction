@@ -58,7 +58,7 @@ append_classifier_details(logistic_regression_data_balancer, logistic_regression
 # Decision Tree
 decision_tree_data_balancer = SMOTEENN()
 decision_tree = DecisionTreeClassifier(max_features='auto', class_weight='balanced')
-decision_tree_enabled = False
+decision_tree_enabled = True
 append_classifier_details(decision_tree_data_balancer, decision_tree, decision_tree_enabled, "Decision Tree",
                           generic_classifiers)
 
