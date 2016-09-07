@@ -2,6 +2,7 @@ import csv
 from datetime import datetime
 
 import constants as const
+import sys
 
 
 class DataBalancerResultRecorder:
@@ -17,7 +18,7 @@ class DataBalancerResultRecorder:
             if file_name is None:
                 current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
                 file_name = "data_balancer_{0}-folds_{1}.csv".format(const.NUMBER_OF_FOLDS, current_time)
-            output_file = open(file_name, "w", newline="")
+            output_file = open(sys.path[0] + "/../results/" + file_name, "w", newline="")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
             title_row = ["Classifier description", "Data balancer", "Average true rate", "Average true positive rate",
                          "Average true negative rate", "Average false positive rate", "Average false negative rate", "Average true positive with cutoff",

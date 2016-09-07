@@ -1,5 +1,6 @@
 import csv
 from datetime import datetime
+import sys
 
 import constants as const
 
@@ -17,7 +18,7 @@ class ClassifierResultRecorder:
             if file_name is None:
                 current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
                 file_name = "{0}_classifier_result_recorder_{1}-folds_{2}.csv".format(prepend_name_description, const.NUMBER_OF_FOLDS, current_time)
-            output_file = open(file_name, "w", newline="")
+            output_file = open(sys.path[0] + "/../results/" + file_name, "w", newline="")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
             title_row = classifier_details + ["Average true rate", "Average true positive rate",
                          "Average true negative rate", "Average false positive rate", "Average false negative rate", "Average true positive with cutoff",
