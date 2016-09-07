@@ -16,43 +16,19 @@ from data_preprocessing import apply_preprocessing
 from generic_classifier import GenericClassifier
 
 
-def main():
-    # Load in data set
-    input_defaulter_set = pd.DataFrame.from_csv("../data/lima_tb/Lima-TB-Treatment-base.csv", index_col=None,
-                                                encoding="UTF-8")
-    # input_defaulter_set = pd.DataFrame.from_csv("../data/german_finance/german_dataset_numberised.csv", index_col=None, encoding="UTF-8")
-    # input_defaulter_set = pd.DataFrame.from_csv("../data/australian_finance/australian.csv", index_col=None, encoding="UTF-8")
-    # input_defaulter_set = pd.DataFrame.from_csv("../data/credit_screening/credit_screening.csv", index_col=None, encoding="UTF-8")
-
-    # Preprocess data set
-    input_defaulter_set = apply_preprocessing(input_defaulter_set)
-
-    #assert(len(ctp.generic_classifier_parameter_arr) == len(cfr.generic_classifiers))
-
-    for i in range(len(ctp.generic_classifier_parameter_arr)):
-        if cfr.generic_classifiers[i]['status'] is True and cfr.generic_classifiers[i] is not None:
-            manager = Manager()
-            result_recorder = ClassifierResultRecorder(result_arr=manager.list())
-
-            # Execute enabled classifiers
-            logical_cpu_count = multiprocessing.cpu_count()
-            parameter_grid = ParameterGrid(ctp.generic_classifier_parameter_arr[i])
-            Parallel(n_jobs=logical_cpu_count)(delayed(execute_loop)(cfr.generic_classifiers[i], parameter_dict, input_defaulter_set, result_recorder) for parameter_dict in parameter_grid)
-
-            print(result_recorder.results)
-            if const.RECORD_RESULTS is True:
-                result_recorder.save_results_to_file(sorted(parameter_grid[0]), prepend_name_description=cfr.generic_classifiers[i]['classifier_description'])
-
-
-def execute_loop(classifier_dict, parameter_dict, input_defaulter_set, result_recorder):
+def execute_loop(classifier_dict, parameter_dict, input_defaulter_set, result_recorder, z, paramater_grid_len):
     classifier = classifier_dict['classifier'].__class__(**parameter_dict)
     generic_classifier = GenericClassifier(classifier, classifier_dict['data_balancer'])
     overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
         false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
+    if z % 5 == 0:
+        print("==== {0}% ====".format(format((z/paramater_grid_len) * 100, '.2f')))
     for i in range(const.TEST_REPEAT):
-        print("==== Run {0} - {1} ====".format(i + 1, parameter_dict))
-
-        result_dictionary = generic_classifier.train_and_evaluate(input_defaulter_set)
+        try:
+            result_dictionary = generic_classifier.train_and_evaluate(input_defaulter_set)
+        except Exception:
+            const.verbose_print("WARNING: incompatible input parameters")
+            return
         overall_true_rate += result_dictionary["avg_true_positive_rate"] + result_dictionary["avg_true_negative_rate"]
         true_positive_rate += result_dictionary["avg_true_positive_rate"]
         true_negative_rate += result_dictionary["avg_true_negative_rate"]
@@ -79,10 +55,33 @@ def execute_loop(classifier_dict, parameter_dict, input_defaulter_set, result_re
     values = [parameter_dict.get(k) for k in sorted_keys if k in parameter_dict]
     result_recorder.record_results(values + individual_data_balancer_results)
 
+
 if __name__ == "__main__":
     # Add ANN to classifier list - this needs to be here due to the use of Processes in ArtificialNeuralNetwork
     ann = ArtificialNeuralNetwork(cfr.ann_data_balancer)
     cfr.append_classifier_details(None, ann, cfr.ann_enabled, "Artificial neural network", cfr.non_generic_classifiers)
 
-    # Run main
-    main()
+    input_defaulter_set = pd.DataFrame.from_csv("../data/lima_tb/Lima-TB-Treatment-base.csv", index_col=None,
+                                                encoding="UTF-8")
+    # input_defaulter_set = pd.DataFrame.from_csv("../data/german_finance/german_dataset_numberised.csv", index_col=None, encoding="UTF-8")
+    # input_defaulter_set = pd.DataFrame.from_csv("../data/australian_finance/australian.csv", index_col=None, encoding="UTF-8")
+    # input_defaulter_set = pd.DataFrame.from_csv("../data/credit_screening/credit_screening.csv", index_col=None, encoding="UTF-8")
+
+    # Preprocess data set
+    input_defaulter_set = apply_preprocessing(input_defaulter_set)
+
+    #assert(len(ctp.generic_classifier_parameter_arr) == len(cfr.generic_classifiers))
+    logical_cpu_count = multiprocessing.cpu_count()
+
+    for i in range(len(ctp.generic_classifier_parameter_arr)):
+        if cfr.generic_classifiers[i]['status'] is True and cfr.generic_classifiers[i] is not None:
+            manager = Manager()
+            result_recorder = ClassifierResultRecorder(result_arr=manager.list())
+
+            # Execute enabled classifiers
+            parameter_grid = ParameterGrid(ctp.generic_classifier_parameter_arr[i])
+            Parallel(n_jobs=logical_cpu_count)(delayed(execute_loop)(cfr.generic_classifiers[i], parameter_grid[z], input_defaulter_set, result_recorder, z, len(parameter_grid)) for z in range(len(parameter_grid)))
+
+            print(result_recorder.results)
+            if const.RECORD_RESULTS is True:
+                result_recorder.save_results_to_file(sorted(parameter_grid[0]), prepend_name_description=cfr.generic_classifiers[i]['classifier_description'])

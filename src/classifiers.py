@@ -25,7 +25,7 @@ def append_classifier_details(data_balancer, classifier, status, classifier_desc
 
 # Non-generic Classifiers
 # Artificial Neural network - is added in main.py due to use of Processes which requires it be declared in the main method
-ann_enabled = True
+ann_enabled = False
 ann_data_balancer = SMOTEENN()
 
 # Generic Classifiers
@@ -58,7 +58,7 @@ append_classifier_details(logistic_regression_data_balancer, logistic_regression
 # Decision Tree
 decision_tree_data_balancer = SMOTEENN()
 decision_tree = DecisionTreeClassifier(max_features='auto', class_weight='balanced')
-decision_tree_enabled = True
+decision_tree_enabled = False
 append_classifier_details(decision_tree_data_balancer, decision_tree, decision_tree_enabled, "Decision Tree",
                           generic_classifiers)
 
@@ -85,7 +85,7 @@ append_classifier_details(k_nearest_data_balancer, k_nearest, k_nearest_enabled,
 # Bernoulli Naive Bayes
 bernoulli_naive_bayes_data_balancer = SMOTEENN()
 bernoulli_naive_bayes = BernoulliNB()
-bernoulli_naive_bayes_enabled = False
+bernoulli_naive_bayes_enabled = True
 append_classifier_details(bernoulli_naive_bayes_data_balancer, bernoulli_naive_bayes, bernoulli_naive_bayes_enabled,
                           "Bernoulli Naive Bayes", generic_classifiers)
 
