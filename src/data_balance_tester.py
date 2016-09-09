@@ -68,7 +68,7 @@ def run_test(classifiers, input_defaulter_set, data_balancers, result_recorder, 
                     else:
                         classifier = classifier_dict['classifier']
                     result_dictionary = classifier.train_and_evaluate(input_defaulter_set)
-                    overall_true_rate += result_dictionary["avg_true_positive_rate"] + result_dictionary["avg_true_negative_rate"]
+                    overall_true_rate += (result_dictionary["avg_true_positive_rate"] + result_dictionary["avg_true_negative_rate"]) / 2.0
                     true_positive_rate += result_dictionary["avg_true_positive_rate"]
                     true_negative_rate += result_dictionary["avg_true_negative_rate"]
                     false_positive_rate += result_dictionary["avg_false_positive_rate"]

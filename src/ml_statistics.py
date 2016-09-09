@@ -1,3 +1,4 @@
+import numpy as np
 import constants as const
 
 
@@ -34,10 +35,10 @@ class MLStatistics:
             else:
                 raise RuntimeError("Unexpected classification")
 
-        fold_accuracy_dict["true positive rate"] = true_positive_count / float(len(test_classification))
-        fold_accuracy_dict["true negative rate"] = true_negative_count / float(len(test_classification))
-        fold_accuracy_dict["false positive rate"] = false_positive_count / float(len(test_classification))
-        fold_accuracy_dict["false negative rate"] = false_negative_count / float(len(test_classification))
+        fold_accuracy_dict["true positive rate"] = true_positive_count / float(np.count_nonzero(actual_outcome == 1))
+        fold_accuracy_dict["true negative rate"] = true_negative_count / float(np.count_nonzero(actual_outcome == 0))
+        fold_accuracy_dict["false positive rate"] = false_positive_count / float(np.count_nonzero(actual_outcome == 0))
+        fold_accuracy_dict["false negative rate"] = false_negative_count / float(np.count_nonzero(actual_outcome == 1))
 
         # Probabilities
         true_positive_count_with_probability_cutoff = 0
@@ -62,11 +63,11 @@ class MLStatistics:
             else:
                 unclassified += 1
 
-        fold_accuracy_dict["true positive rate with probability cutoff"] = true_positive_count_with_probability_cutoff / float(len(test_probabilities))
-        fold_accuracy_dict["true negative rate with probability cutoff"] = true_negative_count_with_probability_cutoff / float(len(test_probabilities))
-        fold_accuracy_dict["false positive rate with probability cutoff"] = false_positive_count_with_probability_cutoff / float(len(test_probabilities))
-        fold_accuracy_dict["false negative rate with probability cutoff"] = false_negative_count_with_probability_cutoff / float(len(test_probabilities))
-        fold_accuracy_dict["unclassified with probability cutoff"] = unclassified / float(len(test_probabilities))
+        fold_accuracy_dict["true positive rate with probability cutoff"] = true_positive_count_with_probability_cutoff / float(np.count_nonzero(actual_outcome == 1))
+        fold_accuracy_dict["true negative rate with probability cutoff"] = true_negative_count_with_probability_cutoff / float(np.count_nonzero(actual_outcome == 0))
+        fold_accuracy_dict["false positive rate with probability cutoff"] = false_positive_count_with_probability_cutoff / float(np.count_nonzero(actual_outcome == 0))
+        fold_accuracy_dict["false negative rate with probability cutoff"] = false_negative_count_with_probability_cutoff / float(np.count_nonzero(actual_outcome == 1))
+        fold_accuracy_dict["unclassified with probability cutoff"] = unclassified / float(len(actual_outcome))
 
         return fold_accuracy_dict
 
