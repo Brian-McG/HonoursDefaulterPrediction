@@ -8,6 +8,7 @@ from sklearn.decomposition import PCA
 from scipy import interp
 from sklearn.metrics import auc
 import sys
+import constants as const
 
 almost_black = "#262626"
 palette = sns.color_palette()
@@ -70,29 +71,58 @@ def visualise_two_data_sets(x_arr, y_arr, x_arr_two, y_arr_two):
     plt.show()
 
 
-def plot_roc_curve(roc_list, description="classifier"):
-    mean_tpr = 0.0
-    mean_fpr = np.linspace(0, 1, 100)
-    plt.figure()
-    i = 1
-    for (tpr, fpr) in roc_list:
-        mean_tpr += interp(mean_fpr, fpr, tpr)
-        mean_tpr[0] = 0.0
-        roc_auc = auc(fpr, tpr)
-        plt.plot(fpr, tpr, lw=1, label="ROC fold %d (area = %0.2f)" % (i, roc_auc))
-        i += 1
+def plot_roc_curve_of_classifier(roc_list, description="classifier"):
+    if const.RECORD_RESULTS is True:
+        mean_tpr = 0.0
+        mean_fpr = np.linspace(0, 1, 100)
+        plt.figure()
+        i = 1
+        for (tpr, fpr) in roc_list:
+            mean_tpr += interp(mean_fpr, fpr, tpr)
+            mean_tpr[0] = 0.0
+            roc_auc = auc(fpr, tpr)
+            plt.plot(fpr, tpr, lw=1, label="ROC fold %d (area = %0.2f)" % (i, roc_auc))
+            i += 1
 
-    mean_tpr /= len(roc_list)
-    mean_tpr[-1] = 1.0
-    mean_auc = auc(mean_fpr, mean_tpr)
-    plt.plot(mean_fpr, mean_tpr, "k--", dashes=[8, 4, 2, 4, 2, 4], label="Mean ROC (area = %0.2f)" % mean_auc, lw=2)
-    plt.plot([0, 1], [0, 1], "k--", label="Random selection")
-    plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.05])
-    plt.xlabel("False Positive Rate")
-    plt.ylabel("True Positive Rate")
-    plt.title("{0} ROC curve".format(description))
-    plt.legend(loc="lower right")
-    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    plt.savefig(sys.path[0] + "/../results/{0}_roc_plot_{1}.png".format(description, current_time), bbox_inches="tight")
+        mean_tpr /= len(roc_list)
+        mean_tpr[-1] = 1.0
+        mean_auc = auc(mean_fpr, mean_tpr)
+        plt.plot(mean_fpr, mean_tpr, "k--", dashes=[8, 4, 2, 4, 2, 4], label="Mean ROC (area = %0.2f)" % mean_auc, lw=2)
+        plt.plot([0, 1], [0, 1], "k--", label="Random selection")
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+        plt.xlabel("False Positive Rate")
+        plt.ylabel("True Positive Rate")
+        plt.title("{0} ROC curve".format(description))
+        plt.legend(loc="lower right")
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        plt.savefig(sys.path[0] + "/../results/{0}_roc_plot_{1}.png".format(description, current_time), bbox_inches="tight")
+
+
+def plot_mean_roc_curve_of_balancers(balancer_roc_list, description):
+    if const.RECORD_RESULTS is True:
+        plt.figure()
+
+        for (test_run_roc_list, balancer) in balancer_roc_list:
+            mean_tpr = 0.0
+            mean_fpr = np.linspace(0, 1, 100)
+            for test_result in test_run_roc_list:
+                for (tpr, fpr) in test_result:
+                    mean_tpr += interp(mean_fpr, fpr, tpr)
+                    mean_tpr[0] = 0.0
+
+            mean_tpr /= (const.NUMBER_OF_FOLDS * const.TEST_REPEAT)
+            mean_tpr[-1] = 1.0
+            mean_auc = auc(mean_fpr, mean_tpr)
+            plt.plot(mean_fpr, mean_tpr, lw=1, label="{0} (area = {1:.4f})".format(balancer, mean_auc))
+
+        plt.plot([0, 1], [0, 1], "k--", label="Random selection")
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+        plt.xlabel("False Positive Rate")
+        plt.ylabel("True Positive Rate")
+        plt.title("{0} ROC curve for each balancer".format(description))
+        plt.legend(loc="lower right")
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        plt.savefig(sys.path[0] + "/../results/{0}_roc_balancer_plot_{1}.png".format(description, current_time), bbox_inches="tight")
 

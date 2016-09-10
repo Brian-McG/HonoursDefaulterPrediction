@@ -25,14 +25,14 @@ def append_classifier_details(data_balancer, classifier, status, classifier_desc
 
 # Non-generic Classifiers
 # Artificial Neural network - is added in main.py due to use of Processes which requires it be declared in the main method
-ann_enabled = True
+ann_enabled = False
 ann_data_balancer = SMOTEENN()
 
 # Generic Classifiers
 # Support Vector Machines (with RDF kernel)
 svm_rdf_data_balancer = ClusterCentroids()
 svc_rdf = svm.SVC(cache_size=1000, gamma='auto', kernel='rbf', class_weight='balanced', probability=True)
-svc_rdf_enabled = False
+svc_rdf_enabled = True
 append_classifier_details(svm_rdf_data_balancer, svc_rdf, svc_rdf_enabled, "SVM (RDF)", generic_classifiers)
 
 # Support Vector Machines (with linear kernel)

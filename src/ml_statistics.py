@@ -2,7 +2,6 @@ import numpy as np
 from sklearn.metrics import auc
 
 import constants as const
-from visualisation import plot_roc_curve
 
 
 class MLStatistics:

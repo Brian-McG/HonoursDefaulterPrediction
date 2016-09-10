@@ -6,7 +6,7 @@ from ml_statistics import MLStatistics
 from ml_technique import MLTechnique, train_and_evaluate_fold
 
 
-class GenericClassifier(MLTechnique):
+class GenericClassifier():
     """Contains functionality to train and evaluate a classifier."""
 
     def __init__(self, classifier, data_balancer):
@@ -17,11 +17,11 @@ class GenericClassifier(MLTechnique):
     def train_and_evaluate(self, defaulter_set):
         """Applies k-fold cross validation to train and evaluate a classifier"""
 
-        self.ml_stats.errors.clear()
-        self.ml_stats.roc_list.clear()
+        self.ml_stats.errors = []
+        self.ml_stats.roc_list = []
 
         kf = StratifiedKFold(defaulter_set.iloc[:, -1:].as_matrix().flatten(), n_folds=const.NUMBER_OF_FOLDS, shuffle=True)
-        index = 1
+        index = 0
         for train, test in kf:
             train_and_evaluate_fold(self, defaulter_set, train, test, self.classifier, index, data_balancer=self.data_balancer)
             index += 1

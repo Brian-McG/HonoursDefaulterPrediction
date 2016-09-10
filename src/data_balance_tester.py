@@ -17,6 +17,7 @@ from imblearn.under_sampling import OneSidedSelection
 from imblearn.under_sampling import RandomUnderSampler
 from imblearn.under_sampling import RepeatedEditedNearestNeighbours
 from imblearn.under_sampling import TomekLinks
+from sklearn.metrics import auc
 
 import classifiers as cfr
 import constants as const
@@ -25,6 +26,7 @@ from data_balancer_result_recorder import DataBalancerResultRecorder
 from data_preprocessing import apply_preprocessing
 from generic_classifier import GenericClassifier
 from result_recorder import ResultRecorder
+import visualisation as vis
 
 
 def main():
@@ -54,8 +56,10 @@ def main():
 def run_test(classifiers, input_defaulter_set, data_balancers, result_recorder, is_generic=True):
     for classifier_dict in classifiers:
         if classifier_dict['status'] is True:
+            data_balance_roc_results = []
             print("== {0} ==".format(classifier_dict['classifier_description']))
             for data_balancer in data_balancers:
+                classifier_roc_results = []
                 print("=== {0} ===".format(data_balancer.__class__.__name__))
                 overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
                     false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
@@ -68,6 +72,10 @@ def run_test(classifiers, input_defaulter_set, data_balancers, result_recorder, 
                     else:
                         classifier = classifier_dict['classifier']
                     result_dictionary = classifier.train_and_evaluate(input_defaulter_set)
+
+                    # Add ROC results
+                    classifier_roc_results.append(classifier.ml_stats.roc_list)
+
                     overall_true_rate += (result_dictionary["avg_true_positive_rate"] + result_dictionary["avg_true_negative_rate"]) / 2.0
                     true_positive_rate += result_dictionary["avg_true_positive_rate"]
                     true_negative_rate += result_dictionary["avg_true_negative_rate"]
@@ -78,6 +86,8 @@ def run_test(classifiers, input_defaulter_set, data_balancers, result_recorder, 
                     false_positive_rate_cutoff += result_dictionary["avg_false_positive_rate_with_prob_cutoff"]
                     false_negative_rate_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
                     unclassified_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
+
+                data_balance_roc_results.append((classifier_roc_results, data_balancer.__class__.__name__))
 
                 individual_data_balancer_results = [None, None, None, None, None, None, None, None, None, None]
                 individual_data_balancer_results[0] = ("overall_true_rate", overall_true_rate / const.TEST_REPEAT)
@@ -92,6 +102,9 @@ def run_test(classifiers, input_defaulter_set, data_balancers, result_recorder, 
                 individual_data_balancer_results[9] = ("unclassified_cutoff", unclassified_cutoff / const.TEST_REPEAT)
                 classifier_tuple = (data_balancer.__class__.__name__, individual_data_balancer_results)
                 result_recorder.record_results((classifier_dict['classifier_description'], classifier_tuple))
+
+            # Plot ROC results of each balancer
+            vis.plot_mean_roc_curve_of_balancers(data_balance_roc_results, classifier_dict['classifier_description'])
 
 
 if __name__ == "__main__":

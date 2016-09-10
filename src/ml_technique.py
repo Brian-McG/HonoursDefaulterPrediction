@@ -57,7 +57,7 @@ def train_and_evaluate_fold(self, defaulter_set, training_set_indices, testing_s
 
     fpr, tpr, _ = roc_curve(y_testing, outcome_decision_values)
 
-    self.ml_stats.calculate_and_append_fold_accuracy(test_classification, y_testing, tpr, fpr, test_probabilities=test_probabilities)
+    self.ml_stats.calculate_and_append_fold_accuracy(test_classification, y_testing, tpr.tolist(), fpr.tolist(), test_probabilities=test_probabilities)
 
 
 class MLTechnique(ABC):

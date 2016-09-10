@@ -29,16 +29,14 @@ def main():
             generic_classifier = GenericClassifier(classifier_dict['classifier'], classifier_dict['data_balancer'])
             result_dictionary = generic_classifier.train_and_evaluate(input_defaulter_set)
             result_recorder.record_results(result_dictionary, classifier_dict)
-            if const.RECORD_RESULTS:
-                vis.plot_roc_curve(generic_classifier.ml_stats.roc_list, classifier_dict['classifier_description'])
+            vis.plot_roc_curve_of_classifier(generic_classifier.ml_stats.roc_list, classifier_dict['classifier_description'])
 
 
     for classifier_dict in cfr.non_generic_classifiers:
         if classifier_dict['status']:
             result_dictionary = (classifier_dict['classifier']).train_and_evaluate(input_defaulter_set)
             result_recorder.record_results(result_dictionary, classifier_dict)
-            if const.RECORD_RESULTS:
-                vis.plot_roc_curve(classifier_dict['classifier'].ml_stats.roc_list, classifier_dict['classifier_description'])
+            vis.plot_roc_curve_of_classifier(classifier_dict['classifier'].ml_stats.roc_list, classifier_dict['classifier_description'])
 
     if const.RECORD_RESULTS:
         result_recorder.save_results_to_file()
