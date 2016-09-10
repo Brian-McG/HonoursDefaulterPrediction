@@ -1,4 +1,5 @@
-*.csv
+results/*
+!results/.gitkeep
 .idea
 *.iml
 prelimanary_optimisation

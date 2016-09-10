@@ -5,6 +5,7 @@ from time import sleep
 
 import random
 from imblearn.combine import SMOTEENN
+from sklearn.cross_validation import StratifiedKFold
 from sknn.mlp import Classifier, Layer
 
 import constants as const
@@ -24,14 +25,15 @@ class ArtificialNeuralNetwork(MLTechnique):
 
         self.current_i = None
         error_list = manager.list()
-        self.ml_stats = MLStatistics(error_list)
+        roc_list = manager.list()
+        self.ml_stats = MLStatistics(error_list, roc_list)
         self.logical_cpu_count = multiprocessing.cpu_count()
         self.data_balancer = data_balancer
 
-    def train_and_evaluate_fold_with_failover(self, defaulter_set, index, classifier, data_balancer=None):
+    def train_and_evaluate_fold_with_failover(self, defaulter_set, training_indices, testing_indices, classifier, index, data_balancer=None):
         for x in range(const.RETRY_COUNT):
             try:
-                train_and_evaluate_fold(self, defaulter_set, index, classifier, data_balancer)
+                train_and_evaluate_fold(self, defaulter_set, training_indices, testing_indices, classifier, index, data_balancer)
                 return
             except Exception:
                 if x + 1 >= const.RETRY_COUNT:
@@ -52,15 +54,21 @@ class ArtificialNeuralNetwork(MLTechnique):
         """Applies k-fold cross validation to train and evaluate the ANN"""
         manager = Manager()
         self.ml_stats.errors = manager.list()
+        self.ml_stats.roc_list = manager.list()
 
         number_of_concurrent_processes = min(const.NUMBER_OF_FOLDS, self.logical_cpu_count)
         remaining_runs = const.NUMBER_OF_FOLDS
+        kf = StratifiedKFold(defaulter_set.iloc[:, -1:].as_matrix().flatten(), n_folds=const.NUMBER_OF_FOLDS, shuffle=True)
+        kf = list(kf)
+
         while remaining_runs > 0:
             process_pool = []
             process_count = min(number_of_concurrent_processes, remaining_runs)
             for i in range(process_count):
                 nn = Classifier(layers=[Layer(hidden_layer, units=number_of_hidden_nodes), Layer(output_layer)], learning_rate=0.001, n_iter=1000)
-                p = Process(target=self.train_and_evaluate_fold_with_failover, args=(defaulter_set, (const.NUMBER_OF_FOLDS - remaining_runs) + i, nn, self.data_balancer))
+                index = (const.NUMBER_OF_FOLDS - remaining_runs) + i
+                training_indices, testing_indices = kf[index]
+                p = Process(target=self.train_and_evaluate_fold_with_failover, args=(defaulter_set, training_indices, testing_indices, nn, index, self.data_balancer))
                 p.start()
                 process_pool.append(p)
 
@@ -72,7 +80,8 @@ class ArtificialNeuralNetwork(MLTechnique):
         # Error rates
         avg_accuracy_dict = self.ml_stats.calculate_average_predictive_accuracy()
 
-        verbose_print("\nAverage true positive rate: {0}".format(avg_accuracy_dict["avg_true_positive_rate"]))
+        verbose_print("\nAverage true rate: {0}".format((avg_accuracy_dict["avg_true_positive_rate"] + avg_accuracy_dict["avg_true_negative_rate"]) / 2.0))
+        verbose_print("Average true positive rate: {0}".format(avg_accuracy_dict["avg_true_positive_rate"]))
         verbose_print("Average true negative rate: {0}".format(avg_accuracy_dict["avg_true_negative_rate"]))
         verbose_print("Average false positive rate: {0}".format(avg_accuracy_dict["avg_false_positive_rate"]))
         verbose_print("Average false negative rate: {0}".format(avg_accuracy_dict["avg_false_negative_rate"]))

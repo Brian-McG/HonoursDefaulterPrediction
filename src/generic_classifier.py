@@ -1,3 +1,5 @@
+from sklearn.cross_validation import KFold, StratifiedKFold
+
 import constants as const
 from constants import verbose_print
 from ml_statistics import MLStatistics
@@ -16,9 +18,13 @@ class GenericClassifier(MLTechnique):
         """Applies k-fold cross validation to train and evaluate a classifier"""
 
         self.ml_stats.errors.clear()
+        self.ml_stats.roc_list.clear()
 
-        for i in range(const.NUMBER_OF_FOLDS):
-            train_and_evaluate_fold(self, defaulter_set, i, self.classifier, data_balancer=self.data_balancer)
+        kf = StratifiedKFold(defaulter_set.iloc[:, -1:].as_matrix().flatten(), n_folds=const.NUMBER_OF_FOLDS, shuffle=True)
+        index = 1
+        for train, test in kf:
+            train_and_evaluate_fold(self, defaulter_set, train, test, self.classifier, index, data_balancer=self.data_balancer)
+            index += 1
 
         # Error rates
         avg_accuracy_dict = self.ml_stats.calculate_average_predictive_accuracy()

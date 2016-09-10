@@ -1,12 +1,16 @@
 import numpy as np
+from sklearn.metrics import auc
+
 import constants as const
+from visualisation import plot_roc_curve
 
 
 class MLStatistics:
     """Contains functionality to calculate predictive accuracy rates"""
 
-    def __init__(self, error_list=list()):
+    def __init__(self, error_list=list(), roc_list=list()):
         self.errors = error_list
+        self.roc_list = roc_list
 
     @staticmethod
     def calculate_classification_accuracy(test_classification, actual_outcome, test_probabilities=None, probability_cutoff=const.CUTOFF_RATE):
@@ -71,9 +75,10 @@ class MLStatistics:
 
         return fold_accuracy_dict
 
-    def calculate_and_append_fold_accuracy(self, test_classification, actual_outcome, test_probabilities=None):
+    def calculate_and_append_fold_accuracy(self, test_classification, actual_outcome, roc_tpr, roc_fpr, test_probabilities=None):
         """Calculates predictive accuracy for fold data and appends it to errors list"""
         self.errors.append(self.calculate_classification_accuracy(test_classification, actual_outcome, test_probabilities=test_probabilities))
+        self.roc_list.append((roc_tpr, roc_fpr))
 
     def calculate_average_predictive_accuracy(self):
         """Averages true positive, true negative, false positive and false negative rate contained in errors"""

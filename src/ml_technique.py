@@ -1,37 +1,28 @@
 from abc import ABC, abstractmethod
 
 import pandas as pd
+from sklearn.metrics import auc
+from sklearn.metrics import roc_curve
+import matplotlib.pyplot as plt
+import numpy as np
 
 import constants as const
 from constants import verbose_print
 
 
-def train_and_evaluate_fold(self, defaulter_set, index, classifier, data_balancer=None):
-    defaulter_set_len = defaulter_set.shape[0]
-
+def train_and_evaluate_fold(self, defaulter_set, training_set_indices, testing_set_indices, classifier, index, data_balancer=None):
     # Prepare data set
-    input_set = defaulter_set.iloc[:, :-1]
-    output_set = defaulter_set.iloc[:, -1:]
-
-    fold_len = defaulter_set_len / const.NUMBER_OF_FOLDS
-    min_range = int(fold_len * index)
-    max_range = int(fold_len * (index + 1))
-
-    # Training data
-    x_train_dataframe = pd.concat([input_set.iloc[0:min_range], input_set.iloc[max_range:defaulter_set_len]])
-    y_train_dataframe = pd.concat([output_set.iloc[0:min_range], output_set.iloc[max_range:defaulter_set_len]])
+    input_set = defaulter_set.iloc[:, :-1].as_matrix()
+    output_set = defaulter_set.iloc[:, -1:].as_matrix().flatten()
 
     # Apply Data balancing
-    x_resampled, y_resampled = x_train_dataframe.as_matrix(), y_train_dataframe.as_matrix().ravel()
+    x_resampled, y_resampled = input_set[training_set_indices], output_set[training_set_indices]
 
     if data_balancer is not None:
         x_resampled, y_resampled = data_balancer.fit_sample(x_resampled, y_resampled)
 
     # Visualise the two data-sets
     # visualise_two_data_sets(x_train_dataframe.as_matrix(), y_train_dataframe.as_matrix().ravel(), x_resampled, y_resampled)
-
-    # Testing data
-    test_dataframe = defaulter_set.iloc[min_range:max_range]
 
     # Training fold specific statistics
     verbose_print("\n== Training Stats Fold {0} ==".format(index + 1))
@@ -40,20 +31,33 @@ def train_and_evaluate_fold(self, defaulter_set, index, classifier, data_balance
 
     classifier.fit(x_resampled, y_resampled)
 
+    # Testing set
+    x_testing = input_set[testing_set_indices]
+    y_testing = output_set[testing_set_indices]
+
     # Testing fold specific statistics
     verbose_print("== Testing Stats Fold {0} ==".format(index + 1))
-    verbose_print("Number of rows for training fold {0}: {1}".format(index + 1, test_dataframe.shape[0]))
-    verbose_print("Number of defaulters for training fold {0}: {1}".format(index + 1, test_dataframe[test_dataframe[test_dataframe.columns[-1]] == 1].shape[0]))
+    verbose_print("Number of rows for training fold {0}: {1}".format(index + 1, len(y_testing)))
+    verbose_print("Number of defaulters for training fold {0}: {1}".format(index + 1, np.count_nonzero(y_testing == 1)))
 
     # Test accuracy
-    test_classification = classifier.predict(test_dataframe[test_dataframe.columns[:-1]].as_matrix())
+    test_classification = classifier.predict(x_testing)
+    test_classification = np.array(test_classification)
+    test_classification = test_classification.flatten()
     try:
-        test_probabilities = classifier.predict_proba(test_dataframe[test_dataframe.columns[:-1]].as_matrix())
+        test_probabilities = classifier.predict_proba(x_testing)
     except AttributeError:
         test_probabilities = [[-1, -1]] * len(test_classification)
-    actual_outcome = test_dataframe[test_dataframe.columns[-1]].as_matrix()
 
-    self.ml_stats.calculate_and_append_fold_accuracy(test_classification, actual_outcome, test_probabilities=test_probabilities)
+    try:
+        outcome_decision_values = classifier.decision_function(x_testing)
+    except AttributeError:
+        verbose_print("INFO: using predict_proba instead of decision_function")
+        outcome_decision_values = classifier.predict_proba(x_testing)[:, 1]
+
+    fpr, tpr, _ = roc_curve(y_testing, outcome_decision_values)
+
+    self.ml_stats.calculate_and_append_fold_accuracy(test_classification, y_testing, tpr, fpr, test_probabilities=test_probabilities)
 
 
 class MLTechnique(ABC):
