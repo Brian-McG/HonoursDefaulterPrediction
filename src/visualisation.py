@@ -9,6 +9,8 @@ from scipy import interp
 from sklearn.metrics import auc
 import sys
 import constants as const
+from cycler import cycler
+from matplotlib.pyplot import cm
 
 almost_black = "#262626"
 palette = sns.color_palette()
@@ -75,7 +77,7 @@ def plot_roc_curve_of_classifier(roc_list, description="classifier"):
     if const.RECORD_RESULTS is True:
         mean_tpr = 0.0
         mean_fpr = np.linspace(0, 1, 100)
-        plt.figure()
+        plt.figure(figsize=(12, 10))
         i = 1
         for (tpr, fpr) in roc_list:
             mean_tpr += interp(mean_fpr, fpr, tpr)
@@ -101,7 +103,12 @@ def plot_roc_curve_of_classifier(roc_list, description="classifier"):
 
 def plot_mean_roc_curve_of_balancers(balancer_roc_list, description):
     if const.RECORD_RESULTS is True:
-        plt.figure()
+        plt.figure(figsize=(12, 10))
+        monochrome = (cycler('color', ['k']) * cycler('marker', ['']) *
+                      cycler('linestyle', ['-', '--', '-.']))
+        color=iter(cm.brg(np.linspace(0,1,len(balancer_roc_list))))
+        plt.rc('axes', prop_cycle=monochrome)
+
 
         for (test_run_roc_list, balancer) in balancer_roc_list:
             mean_tpr = 0.0
@@ -114,7 +121,8 @@ def plot_mean_roc_curve_of_balancers(balancer_roc_list, description):
             mean_tpr /= (const.NUMBER_OF_FOLDS * const.TEST_REPEAT)
             mean_tpr[-1] = 1.0
             mean_auc = auc(mean_fpr, mean_tpr)
-            plt.plot(mean_fpr, mean_tpr, lw=1, label="{0} (area = {1:.4f})".format(balancer, mean_auc))
+            c = next(color)
+            plt.plot(mean_fpr, mean_tpr, c=c, lw=1, alpha=0.7, label="{0} (area = {1:.4f})".format(balancer, mean_auc))
 
         plt.plot([0, 1], [0, 1], "k--", label="Random selection")
         plt.xlim([0.0, 1.0])
