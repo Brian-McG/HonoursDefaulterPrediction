@@ -25,7 +25,7 @@ def append_classifier_details(data_balancer, classifier, status, classifier_desc
 
 # Non-generic Classifiers
 # Artificial Neural network - is added in main.py due to use of Processes which requires it be declared in the main method
-ann_enabled = False
+ann_enabled = True
 ann_data_balancer = SMOTEENN()
 
 # Generic Classifiers

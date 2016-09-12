@@ -12,34 +12,34 @@ non_generic_classifier_parameter_arr.append(ann_parameter_dict)
 
 # Generic classifiers
 # Support Vector Machines (RBF)
-rbf_svm_parameter_dict = {"cache_size": [2048], "decision_function_shape": ['ovo', "ovr"], "kernel": ["rbf"], "C": np.linspace(0.01, 10, 100).tolist(),
-                          "gamma": ["auto"] + np.linspace(0.001, 2, 100).tolist(), 'class_weight': [None, 'balanced']}
+rbf_svm_parameter_dict = {"cache_size": [2048], "decision_function_shape": ['ovo', "ovr"], "kernel": ["rbf"], "C": np.linspace(0.01, 10, 20).tolist(),
+                          "gamma": ["auto"] + np.linspace(0.001, 2, 20).tolist(), 'class_weight': [None, 'balanced']}
 generic_classifier_parameter_arr.append(rbf_svm_parameter_dict)
 
 # Support Vector Machines (linear)
-linear_svm_parameter_dict = {"cache_size": [2048], "decision_function_shape": ['ovo', "ovr"], "kernel": ["linear"], "C": np.linspace(0.01, 10, 100).tolist(),
-                             "gamma": ["auto"] + np.linspace(0.001, 2, 100).tolist(), 'class_weight': [None, 'balanced']}
+linear_svm_parameter_dict = {"cache_size": [2048], "decision_function_shape": ['ovo', "ovr"], "kernel": ["linear"], "C": np.linspace(0.01, 10, 20).tolist(),
+                             "gamma": ["auto"] + np.linspace(0.001, 2, 20).tolist(), 'class_weight': [None, 'balanced']}
 generic_classifier_parameter_arr.append(linear_svm_parameter_dict)
 
 # Support Vector Machines (poly)
-poly_svm_parameter_dict = {"cache_size": [2048], "decision_function_shape": ['ovo', "ovr"], "kernel": ["poly"], "C": np.linspace(0.01, 10, 100).tolist(),
-                           "gamma": ["auto"] + np.linspace(0.001, 2, 100).tolist(), 'class_weight': [None, 'balanced'], 'degree': [1, 2, 3, 4, 5],
-                           'coef0': np.linspace(0, 5, 20).tolist()}
+poly_svm_parameter_dict = {"cache_size": [2048], "decision_function_shape": ['ovo', "ovr"], "kernel": ["poly"], "C": np.linspace(0.01, 10, 20).tolist(),
+                           "gamma": ["auto"] + np.linspace(0.001, 2, 10).tolist(), 'class_weight': [None, 'balanced'], 'degree': [1, 2, 3, 4, 5],
+                           'coef0': np.linspace(0, 5, 5).tolist()}
 generic_classifier_parameter_arr.append(poly_svm_parameter_dict)
 
 # Logistic regression
-logistic_regression_dict = {"C": np.linspace(0.01, 10, 100).tolist(), "fit_intercept": [True, False], "intercept_scaling": np.linspace(0.01, 10, 100).tolist(),
+logistic_regression_dict = {"C": np.linspace(0.01, 10, 20).tolist(), "fit_intercept": [True, False], "intercept_scaling": np.linspace(0.01, 10, 20).tolist(),
                             "class_weight": [None, "balanced"], "solver": ["newton-cg", "lbfgs", "liblinear", "sag"]}
 generic_classifier_parameter_arr.append(logistic_regression_dict)
 
 # Decision tree
 decision_tree_dict = {"criterion": ["gini", "entropy"], "splitter": ["best", "random"], "max_features": ["auto", "sqrt", "log2"], "class_weight": [None, "balanced"],
-                      "max_depth": ([None] + list(range(3, 11))), "min_samples_split": list(range(1, 4)), "min_samples_leaf": list(range(1, 3)),
-                      "max_leaf_nodes": [None] + list(range(5, 20))}
+                      "max_depth": ([None] + list(range(3, 9))), "min_samples_split": list(range(1, 4)), "min_samples_leaf": list(range(1, 3)),
+                      "max_leaf_nodes": [None] + list(range(5, 10))}
 generic_classifier_parameter_arr.append(decision_tree_dict)
 
 # AdaBoost
-adaboost_dict = {"base_estimator": ["AdaBoostClassifier", "BernoulliNB", "DecisionTreeClassifier", "ExtraTreeClassifier", "ExtraTreesClassifier", "MultinomialNB", "NuSVC", "Perceptron", "RandomForestClassifier", "RidgeClassifierCV", "SGDClassifier", "SVC"], "n_estimators": list(range(10, 3000, 50)), "learning_rate": np.linspace(0.01, 1, 10).tolist(), "algorithm": ["SAMME", "SAMME.R"]}
+adaboost_dict = {"base_estimator": ["AdaBoostClassifier", "BernoulliNB", "DecisionTreeClassifier", "ExtraTreeClassifier", "ExtraTreesClassifier", "MultinomialNB", "NuSVC", "Perceptron", "RandomForestClassifier", "RidgeClassifierCV", "SGDClassifier", "SVC"], "n_estimators": list(range(10, 3000, 200)), "learning_rate": np.linspace(0.01, 1, 10).tolist(), "algorithm": ["SAMME", "SAMME.R"]}
 generic_classifier_parameter_arr.append(adaboost_dict)
 
 # Random forest

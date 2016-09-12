@@ -1,6 +1,19 @@
 """Primary script used to execute the defaulter prediction"""
 import multiprocessing
 import pandas as pd
+from imblearn.combine import SMOTEENN
+from imblearn.combine import SMOTETomek
+from imblearn.over_sampling import ADASYN
+from imblearn.over_sampling import RandomOverSampler
+from imblearn.over_sampling import SMOTE
+from imblearn.under_sampling import ClusterCentroids
+from imblearn.under_sampling import EditedNearestNeighbours
+from imblearn.under_sampling import InstanceHardnessThreshold
+from imblearn.under_sampling import NearMiss
+from imblearn.under_sampling import NeighbourhoodCleaningRule
+from imblearn.under_sampling import OneSidedSelection
+from imblearn.under_sampling import RandomUnderSampler
+from imblearn.under_sampling import TomekLinks
 from joblib import Parallel
 from joblib import delayed
 from multiprocessing import Manager
@@ -17,43 +30,47 @@ from generic_classifier import GenericClassifier
 
 
 def execute_loop(classifier_dict, parameter_dict, input_defaulter_set, result_recorder, z, paramater_grid_len):
-    classifier = classifier_dict['classifier'].__class__(**parameter_dict)
-    generic_classifier = GenericClassifier(classifier, classifier_dict['data_balancer'])
-    overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
-        false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
+    data_balancers = [None, ClusterCentroids(), EditedNearestNeighbours(), InstanceHardnessThreshold(), NearMiss(), NeighbourhoodCleaningRule(),
+                      OneSidedSelection(), RandomUnderSampler(), TomekLinks(), ADASYN(), RandomOverSampler(), SMOTE(), SMOTEENN(), SMOTETomek()]
     if z % 5 == 0:
         print("==== {0}% ====".format(format((z/paramater_grid_len) * 100, '.2f')))
-    for i in range(const.TEST_REPEAT):
-        try:
-            result_dictionary = generic_classifier.train_and_evaluate(input_defaulter_set)
-        except Exception:
-            const.verbose_print("WARNING: incompatible input parameters")
-            return
-        overall_true_rate += (result_dictionary["avg_true_positive_rate"] + result_dictionary["avg_true_negative_rate"]) / 2.0
-        true_positive_rate += result_dictionary["avg_true_positive_rate"]
-        true_negative_rate += result_dictionary["avg_true_negative_rate"]
-        false_positive_rate += result_dictionary["avg_false_positive_rate"]
-        false_negative_rate += result_dictionary["avg_false_negative_rate"]
-        true_positive_rate_cutoff += result_dictionary["avg_true_positive_rate_with_prob_cutoff"]
-        true_negative_rate_cutoff += result_dictionary["avg_true_negative_rate_with_prob_cutoff"]
-        false_positive_rate_cutoff += result_dictionary["avg_false_positive_rate_with_prob_cutoff"]
-        false_negative_rate_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
-        unclassified_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
 
-    individual_data_balancer_results = [None, None, None, None, None, None, None, None, None, None]
-    individual_data_balancer_results[0] = overall_true_rate / const.TEST_REPEAT
-    individual_data_balancer_results[1] = true_positive_rate / const.TEST_REPEAT
-    individual_data_balancer_results[2] = true_negative_rate / const.TEST_REPEAT
-    individual_data_balancer_results[3] = false_positive_rate / const.TEST_REPEAT
-    individual_data_balancer_results[4] = false_negative_rate / const.TEST_REPEAT
-    individual_data_balancer_results[5] = true_positive_rate_cutoff / const.TEST_REPEAT
-    individual_data_balancer_results[6] = true_negative_rate_cutoff / const.TEST_REPEAT
-    individual_data_balancer_results[7] = false_positive_rate_cutoff / const.TEST_REPEAT
-    individual_data_balancer_results[8] = false_negative_rate_cutoff / const.TEST_REPEAT
-    individual_data_balancer_results[9] = unclassified_cutoff / const.TEST_REPEAT
-    sorted_keys = sorted(parameter_dict)
-    values = [parameter_dict.get(k) for k in sorted_keys if k in parameter_dict]
-    result_recorder.record_results(values + individual_data_balancer_results)
+    for data_balancer in data_balancers:
+        classifier = classifier_dict['classifier'].__class__(**parameter_dict)
+        generic_classifier = GenericClassifier(classifier, data_balancer)
+        overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
+            false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
+        for x in range(const.TEST_REPEAT):
+            try:
+                result_dictionary = generic_classifier.train_and_evaluate(input_defaulter_set)
+            except Exception:
+                const.verbose_print("WARNING: incompatible input parameters")
+                return
+            overall_true_rate += (result_dictionary["avg_true_positive_rate"] + result_dictionary["avg_true_negative_rate"]) / 2.0
+            true_positive_rate += result_dictionary["avg_true_positive_rate"]
+            true_negative_rate += result_dictionary["avg_true_negative_rate"]
+            false_positive_rate += result_dictionary["avg_false_positive_rate"]
+            false_negative_rate += result_dictionary["avg_false_negative_rate"]
+            true_positive_rate_cutoff += result_dictionary["avg_true_positive_rate_with_prob_cutoff"]
+            true_negative_rate_cutoff += result_dictionary["avg_true_negative_rate_with_prob_cutoff"]
+            false_positive_rate_cutoff += result_dictionary["avg_false_positive_rate_with_prob_cutoff"]
+            false_negative_rate_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
+            unclassified_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
+
+        individual_results = [None, None, None, None, None, None, None, None, None, None]
+        individual_results[0] = overall_true_rate / const.TEST_REPEAT
+        individual_results[1] = true_positive_rate / const.TEST_REPEAT
+        individual_results[2] = true_negative_rate / const.TEST_REPEAT
+        individual_results[3] = false_positive_rate / const.TEST_REPEAT
+        individual_results[4] = false_negative_rate / const.TEST_REPEAT
+        individual_results[5] = true_positive_rate_cutoff / const.TEST_REPEAT
+        individual_results[6] = true_negative_rate_cutoff / const.TEST_REPEAT
+        individual_results[7] = false_positive_rate_cutoff / const.TEST_REPEAT
+        individual_results[8] = false_negative_rate_cutoff / const.TEST_REPEAT
+        individual_results[9] = unclassified_cutoff / const.TEST_REPEAT
+        sorted_keys = sorted(parameter_dict)
+        values = [parameter_dict.get(k) for k in sorted_keys if k in parameter_dict] + [data_balancer.__class__.__name__]
+        result_recorder.record_results(values + individual_results)
 
 
 if __name__ == "__main__":
@@ -84,4 +101,4 @@ if __name__ == "__main__":
 
             print(result_recorder.results)
             if const.RECORD_RESULTS is True:
-                result_recorder.save_results_to_file(sorted(parameter_grid[0]), prepend_name_description=cfr.generic_classifiers[i]['classifier_description'])
+                result_recorder.save_results_to_file(sorted(parameter_grid[0]) + ["Data balancer"], prepend_name_description=cfr.generic_classifiers[i]['classifier_description'])

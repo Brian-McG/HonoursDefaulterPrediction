@@ -90,7 +90,7 @@ def plot_roc_curve_of_classifier(roc_list, description="classifier"):
         mean_tpr[-1] = 1.0
         mean_auc = auc(mean_fpr, mean_tpr)
         plt.plot(mean_fpr, mean_tpr, "k--", dashes=[8, 4, 2, 4, 2, 4], label="Mean ROC (area = %0.2f)" % mean_auc, lw=2)
-        plt.plot([0, 1], [0, 1], "k--", label="Random selection")
+        plt.plot([0, 1], [0, 1], "k--", label="Random classification")
         plt.xlim([0.0, 1.0])
         plt.ylim([0.0, 1.05])
         plt.xlabel("False Positive Rate")
@@ -106,9 +106,8 @@ def plot_mean_roc_curve_of_balancers(balancer_roc_list, description):
         plt.figure(figsize=(12, 10))
         monochrome = (cycler('color', ['k']) * cycler('marker', ['']) *
                       cycler('linestyle', ['-', '--', '-.']))
-        color=iter(cm.brg(np.linspace(0,1,len(balancer_roc_list))))
+        color = iter(cm.brg(np.linspace(0, 1, len(balancer_roc_list))))
         plt.rc('axes', prop_cycle=monochrome)
-
 
         for (test_run_roc_list, balancer) in balancer_roc_list:
             mean_tpr = 0.0
@@ -124,7 +123,7 @@ def plot_mean_roc_curve_of_balancers(balancer_roc_list, description):
             c = next(color)
             plt.plot(mean_fpr, mean_tpr, c=c, lw=1, alpha=0.7, label="{0} (area = {1:.4f})".format(balancer, mean_auc))
 
-        plt.plot([0, 1], [0, 1], "k--", label="Random selection")
+        plt.plot([0, 1], [0, 1], "k--", label="Random classification")
         plt.xlim([0.0, 1.0])
         plt.ylim([0.0, 1.05])
         plt.xlabel("False Positive Rate")
@@ -134,3 +133,34 @@ def plot_mean_roc_curve_of_balancers(balancer_roc_list, description):
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         plt.savefig(sys.path[0] + "/../results/{0}_roc_balancer_plot_{1}.png".format(description, current_time), bbox_inches="tight")
 
+
+def plot_mean_roc_curve_of_classifiers(classifier_roc_list):
+    if const.RECORD_RESULTS is True:
+        plt.figure(figsize=(12, 10))
+        monochrome = (cycler('color', ['k']) * cycler('marker', ['']) *
+                      cycler('linestyle', ['-', '--', '-.']))
+        color = iter(cm.brg(np.linspace(0, 1, len(classifier_roc_list))))
+        plt.rc('axes', prop_cycle=monochrome)
+
+        for (test_run_roc_list, classifier_description) in classifier_roc_list:
+            mean_tpr = 0.0
+            mean_fpr = np.linspace(0, 1, 100)
+            for (tpr, fpr) in test_run_roc_list:
+                mean_tpr += interp(mean_fpr, fpr, tpr)
+                mean_tpr[0] = 0.0
+
+            mean_tpr /= const.NUMBER_OF_FOLDS
+            mean_tpr[-1] = 1.0
+            mean_auc = auc(mean_fpr, mean_tpr)
+            c = next(color)
+            plt.plot(mean_fpr, mean_tpr, c=c, lw=1, alpha=0.7, label="{0} (area = {1:.4f})".format(classifier_description, mean_auc))
+
+        plt.plot([0, 1], [0, 1], "k--", label="Random classification")
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+        plt.xlabel("False Positive Rate")
+        plt.ylabel("True Positive Rate")
+        plt.title("ROC curve for each classifier")
+        plt.legend(loc="lower right")
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        plt.savefig(sys.path[0] + "/../results/roc_classifier_plot_{0}.png".format(current_time), bbox_inches="tight")

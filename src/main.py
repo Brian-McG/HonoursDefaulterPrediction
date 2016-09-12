@@ -22,6 +22,7 @@ def main():
     # Preprocess data set
     input_defaulter_set = apply_preprocessing(input_defaulter_set)
     result_recorder = ResultRecorder()
+    roc_plot = []
 
     # Execute enabled classifiers
     for classifier_dict in cfr.generic_classifiers:
@@ -30,15 +31,17 @@ def main():
             result_dictionary = generic_classifier.train_and_evaluate(input_defaulter_set)
             result_recorder.record_results(result_dictionary, classifier_dict)
             vis.plot_roc_curve_of_classifier(generic_classifier.ml_stats.roc_list, classifier_dict['classifier_description'])
-
+            roc_plot.append((generic_classifier.ml_stats.roc_list, classifier_dict['classifier_description']))
 
     for classifier_dict in cfr.non_generic_classifiers:
         if classifier_dict['status']:
             result_dictionary = (classifier_dict['classifier']).train_and_evaluate(input_defaulter_set)
             result_recorder.record_results(result_dictionary, classifier_dict)
             vis.plot_roc_curve_of_classifier(classifier_dict['classifier'].ml_stats.roc_list, classifier_dict['classifier_description'])
+            roc_plot.append((classifier_dict['classifier'].ml_stats.roc_list, classifier_dict['classifier_description']))
 
     if const.RECORD_RESULTS:
+        vis.plot_mean_roc_curve_of_classifiers(roc_plot)
         result_recorder.save_results_to_file()
 
 
