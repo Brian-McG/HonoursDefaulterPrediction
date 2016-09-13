@@ -96,7 +96,7 @@ def run_test(classifier, input_defaulter_set, result_recorder, parameter_dict, z
         individual_results[9] = unclassified_cutoff / const.TEST_REPEAT
         sorted_keys = sorted(parameter_dict)
         values = [parameter_dict.get(k) for k in sorted_keys if k in parameter_dict] + [data_balancer.__class__.__name__]
-        result_recorder.record_results(values + [data_balancer.__class__.__name__] + individual_results)
+        result_recorder.record_results(values + individual_results)
 
 
 if __name__ == "__main__":

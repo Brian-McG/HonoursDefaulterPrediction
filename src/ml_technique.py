@@ -49,11 +49,19 @@ def train_and_evaluate_fold(self, defaulter_set, training_set_indices, testing_s
     except AttributeError:
         test_probabilities = [[-1, -1]] * len(test_classification)
 
-    try:
-        outcome_decision_values = classifier.decision_function(x_testing)
-    except AttributeError:
-        verbose_print("INFO: using predict_proba instead of decision_function")
-        outcome_decision_values = classifier.predict_proba(x_testing)[:, 1]
+    outcome_decision_values = None
+    if "SVC" in classifier.__class__.__name__:
+        try:
+            outcome_decision_values = classifier.decision_function(x_testing)
+        except AttributeError:
+            pass
+
+    if outcome_decision_values is None:
+        try:
+            outcome_decision_values = classifier.predict_proba(x_testing)[:, 1]
+        except AttributeError:
+            outcome_decision_values = [-1] * len(test_classification)
+            verbose_print("WARNING: unable to calculate classification accuracy")
 
     fpr, tpr, _ = roc_curve(y_testing, outcome_decision_values)
 
