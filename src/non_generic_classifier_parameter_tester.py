@@ -64,7 +64,7 @@ def run_test(classifier, input_defaulter_set, result_recorder, parameter_dict, z
                       OneSidedSelection(), RandomUnderSampler(), TomekLinks(), ADASYN(), RandomOverSampler(), SMOTE(), SMOTEENN(), SMOTETomek()]
 
     if z % 5 == 0:
-        print("==== {0}% ====".format(format((z/paramater_grid_len) * 100, '.2f')))
+        print("==== {0} - {1}% ====".format(classifier.__class__.__name__, format((z/paramater_grid_len) * 100, '.2f')))
 
     for data_balancer in data_balancers:
         # Execute classifier TEST_REPEAT number of times

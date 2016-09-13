@@ -33,7 +33,7 @@ def execute_loop(classifier_dict, parameter_dict, input_defaulter_set, result_re
     data_balancers = [None, ClusterCentroids(), EditedNearestNeighbours(), InstanceHardnessThreshold(), NearMiss(), NeighbourhoodCleaningRule(),
                       OneSidedSelection(), RandomUnderSampler(), TomekLinks(), ADASYN(), RandomOverSampler(), SMOTE(), SMOTEENN(), SMOTETomek()]
     if z % 5 == 0:
-        print("==== {0}% ====".format(format((z/paramater_grid_len) * 100, '.2f')))
+        print("==== {0} - {1}% ====".format(classifier_dict['classifier_description'], format((z/paramater_grid_len) * 100, '.2f')))
 
     for data_balancer in data_balancers:
         classifier = classifier_dict['classifier'].__class__(**parameter_dict)
