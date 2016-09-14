@@ -143,7 +143,8 @@ Brian Mc George\\
 %\keywords{ACM proceedings; \LaTeX; text tagging}
 
 \section{Introduction}
-South Africa has the second highest incidence rate of Tuberculosis (TB) per 100 000 of the population \cite{world2015TB}. Its neighbour, Lesotho, has the highest rate of TB per 100 000 of the population \cite{world2015TB}. South Africa has the sixth highest incidence rate of TB in terms of absolute occurrences \cite{world2015TB}. The consequences of defaulting TB treatment include: increased drug resistance, increased health system costs \cite{Lackey:10356751520150601, muture:6660173120110101}, higher risk of mortality, continued risk of transmitting the disease to others \cite{Lackey:10356751520150601} and increased rate of recurrent disease \cite{Jha:10.1371/journal.pone.0008873}. The spread of TB can be reduced if the individuals who have a high risk of defaulting can be predicted. This will also reduce health system costs.
+In 2013 over 210\hspace*{1mm}000 patients defaulted from Tuberculosis (TB) treatment.
+South Africa has the second highest incidence rate of Tuberculosis (TB) per 100\hspace*{1mm}000 of the population \cite{world2015TB}. Its neighbour, Lesotho, has the highest rate of TB per 100\hspace*{1mm}000 of the population \cite{world2015TB}. South Africa has the sixth highest incidence rate of TB in terms of absolute occurrences \cite{world2015TB}. The consequences of defaulting TB treatment include: increased drug resistance, increased health system costs \cite{Lackey:10356751520150601, muture:6660173120110101}, higher risk of mortality, continued risk of transmitting the disease to others \cite{Lackey:10356751520150601} and increased rate of recurrent disease \cite{Jha:10.1371/journal.pone.0008873}. The spread of TB can be reduced if the individuals who have a high risk of defaulting can be predicted. This will also reduce health system costs.
 
 \begin{enumerate}
 	\item Discuss datasets used and possibly expansion of TB issues in those specific counties (Peru and Malawi)
@@ -161,15 +162,27 @@ South Africa has the second highest incidence rate of Tuberculosis (TB) per 100 
 
 \section{Method}
 \begin{enumerate}
-	\item Outline 
+	\item Outline testing procedure and optimisation strategy for each classification technique. To optimise each classification technique, a grid search is conducted across a reasonable parameter space. For each parameter set, the results are averaged over 3 runs, this is done because of the stochastic nature of initialising the training of each classifier.
 	\item Brief overview of each classification technique and possibly give a reason why this technique may work well for our application
 \end{enumerate}
 
 \section{Results}
+\begin{enumerate}
+	\item Tables with true positive, true negative, false positive and false negative rate for each classifier on each dataset
+	\item ROC curves which can be used to determine true positive for an acceptable amount of false positives
+\end{enumerate}
 
 \section{Discussion}
+\begin{enumerate}
+	\item Discussion on best classification technique
+	\item Outline similarities and differences in results between the two TB datasets and between TB and financial datasets and determine if they are similar enough that results for the German and Australian credit scoring datasets could be used for the two TB datasets.
+	
+\end{enumerate}
 
 \section{Future Work}
+\begin{enumerate}
+	\item Likely something along the lines of utilising more temporal based data so that classification is not just done at registration but also at each check-up for example. Future work may also be the testing of more classification techniques as well as datasets from other parts of the world.
+\end{enumerate}
 
 \section{Conclusions}
 
