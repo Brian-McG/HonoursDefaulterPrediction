@@ -145,7 +145,9 @@ Brian Mc George\\
 \section{Introduction}
 In 2013 over 210\hspace*{1mm}000 patients defaulted from Tuberculosis (TB) treatment worldwide \cite{world2015TB}. The rate of default in the Americas is the highest at 8\% with Africa at 5\% \cite{world2015TB}. The consequences of defaulting TB treatment include: increased drug resistance, increased health system costs \cite{Lackey:10356751520150601, muture:6660173120110101}, higher risk of mortality, continued risk of transmitting the disease to others \cite{Lackey:10356751520150601} and increased rate of recurrent disease \cite{Jha:10.1371/journal.pone.0008873}. The spread of TB can be reduced if the individuals who have a high risk of defaulting can be predicted. This will also reduce health system costs.
 
-The field of credit scoring in the financial space aims to determine if a financial institution should provide credit to an individual. This area has been well researched. This paper aims to determine if classification techniques that have been shown to work well for that problem will work well at predicting TB defaulters. There are notable similarities in these problems which could make them comparable. Both problems typically have a labelled dataset consisting of both nominal and ordinal data [citation needed]. While the data format is similar, the TB datasets are more prone to missing data as well as inaccuracies due to the nature of the data collection [citation needed].
+The field of credit scoring in the financial space aims to determine if a financial institution should provide credit to an individual. This area has been well researched. This paper aims to determine if classification techniques that have been shown to work well for that problem will work well at predicting TB defaulters. There are notable similarities in these problems which could make them comparable. Both problems typically have a labelled dataset consisting of both nominal and numerical data [citation needed]. While the data format is similar, the TB datasets are more prone to missing data as well as inaccuracies due to the nature of the data collection [citation needed].
+
+The aim of this paper is to take a number of classification techniques that have been used for the credit scoring problem and evaluate them on real-world treatment default datasets and the commonly used financial datasets. The paper will evaluate how the techniques differ across the datasets. If the relative results are similar then future credit scoring research could be applicable to treatment default prediction too.
 
 \begin{enumerate}
 	\item Discuss datasets used and possibly expansion of TB issues in those specific counties (Peru and Malawi)
@@ -163,6 +165,7 @@ The field of credit scoring in the financial space aims to determine if a financ
 
 \section{Method}
 \begin{enumerate}
+	\item Outline each dataset fully, number of nominal and numerical fields and number of entries. How balanced the datasets are etc.
 	\item Outline testing procedure and optimisation strategy for each classification technique. To optimise each classification technique, a grid search is conducted across a reasonable parameter space. For each parameter set, the results are averaged over 3 runs, this is done because of the stochastic nature of initialising the training of each classifier.
 	\item Brief overview of each classification technique and possibly give a reason why this technique may work well for our application
 \end{enumerate}
