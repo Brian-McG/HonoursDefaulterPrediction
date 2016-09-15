@@ -50,7 +50,7 @@ class ArtificialNeuralNetwork(MLTechnique):
         self.errors[self.current_i][const.TRAINING_ERROR].append(avg_train_error)
         self.errors[self.current_i]["training_error_count"] += 1
 
-    def train_and_evaluate(self, defaulter_set, hidden_layer='Rectifier', number_of_hidden_nodes=75, output_layer='Softmax', number_of_threads=-1):
+    def train_and_evaluate(self, defaulter_set, hidden_layer='Rectifier', number_of_hidden_nodes=75, output_layer='Softmax', number_of_threads=-1, state=0):
         """Applies k-fold cross validation to train and evaluate the ANN"""
 
         if number_of_threads == -1:
@@ -63,7 +63,7 @@ class ArtificialNeuralNetwork(MLTechnique):
 
             number_of_concurrent_processes = min(const.NUMBER_OF_FOLDS, number_of_threads)
             remaining_runs = const.NUMBER_OF_FOLDS
-            kf = StratifiedKFold(defaulter_set.iloc[:, -1:].as_matrix().flatten(), n_folds=const.NUMBER_OF_FOLDS, shuffle=True)
+            kf = StratifiedKFold(defaulter_set.iloc[:, -1:].as_matrix().flatten(), n_folds=const.NUMBER_OF_FOLDS, shuffle=state)
             kf = list(kf)
 
             while remaining_runs > 0:

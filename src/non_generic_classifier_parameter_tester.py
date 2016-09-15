@@ -70,8 +70,8 @@ def run_test(classifier, input_defaulter_set, result_recorder, parameter_dict, z
         # Execute classifier TEST_REPEAT number of times
         overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
             false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
-        for i in range(const.TEST_REPEAT):
-            result_dictionary = classifier.train_and_evaluate(input_defaulter_set, number_of_threads=1, **parameter_dict)
+        for x in range(const.TEST_REPEAT):
+            result_dictionary = classifier.train_and_evaluate(input_defaulter_set, number_of_threads=1, state=x, **parameter_dict)
             overall_true_rate += (result_dictionary["avg_true_positive_rate"] + result_dictionary["avg_true_negative_rate"]) / 2.0
             true_positive_rate += result_dictionary["avg_true_positive_rate"]
             true_negative_rate += result_dictionary["avg_true_negative_rate"]

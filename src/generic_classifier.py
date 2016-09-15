@@ -14,13 +14,13 @@ class GenericClassifier():
         self.classifier = classifier
         self.data_balancer = data_balancer
 
-    def train_and_evaluate(self, defaulter_set):
+    def train_and_evaluate(self, defaulter_set, state=0):
         """Applies k-fold cross validation to train and evaluate a classifier"""
 
         self.ml_stats.errors = []
         self.ml_stats.roc_list = []
 
-        kf = StratifiedKFold(defaulter_set.iloc[:, -1:].as_matrix().flatten(), n_folds=const.NUMBER_OF_FOLDS, shuffle=True)
+        kf = StratifiedKFold(defaulter_set.iloc[:, -1:].as_matrix().flatten(), n_folds=const.NUMBER_OF_FOLDS, shuffle=True, random_state=state)
         index = 0
         for train, test in kf:
             train_and_evaluate_fold(self, defaulter_set, train, test, self.classifier, index, data_balancer=self.data_balancer)

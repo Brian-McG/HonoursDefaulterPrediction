@@ -42,7 +42,7 @@ def execute_loop(classifier_dict, parameter_dict, input_defaulter_set, result_re
             false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
         for x in range(const.TEST_REPEAT):
             try:
-                result_dictionary = generic_classifier.train_and_evaluate(input_defaulter_set)
+                result_dictionary = generic_classifier.train_and_evaluate(input_defaulter_set, state=x)
             except Exception:
                 const.verbose_print("WARNING: incompatible input parameters")
                 return
