@@ -1,6 +1,18 @@
 import numpy as np
 
 # List of classifier information
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import Perceptron
+from sklearn.linear_model import RidgeClassifierCV
+from sklearn.linear_model import SGDClassifier
+from sklearn.naive_bayes import BernoulliNB, MultinomialNB
+from sklearn.svm import NuSVC
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import ExtraTreeClassifier
+
 generic_classifier_parameter_arr = []
 non_generic_classifier_parameter_arr = []
 
@@ -39,7 +51,7 @@ decision_tree_dict = {"criterion": ["gini", "entropy"], "splitter": ["best", "ra
 generic_classifier_parameter_arr.append(decision_tree_dict)
 
 # AdaBoost
-adaboost_dict = {"base_estimator": ["AdaBoostClassifier", "BernoulliNB", "DecisionTreeClassifier", "ExtraTreeClassifier", "ExtraTreesClassifier", "MultinomialNB", "NuSVC", "Perceptron", "RandomForestClassifier", "RidgeClassifierCV", "SGDClassifier", "SVC"], "n_estimators": list(range(10, 3000, 200)), "learning_rate": np.linspace(0.01, 1, 10).tolist(), "algorithm": ["SAMME", "SAMME.R"]}
+adaboost_dict = {"base_estimator": [AdaBoostClassifier(), BernoulliNB(), DecisionTreeClassifier(), ExtraTreeClassifier(), ExtraTreesClassifier(), MultinomialNB(), NuSVC(), Perceptron(), RandomForestClassifier(), RidgeClassifierCV(), SGDClassifier(), SVC()], "n_estimators": list(range(10, 3000, 200)), "learning_rate": np.linspace(0.01, 1, 10).tolist(), "algorithm": ["SAMME", "SAMME.R"]}
 generic_classifier_parameter_arr.append(adaboost_dict)
 
 # Random forest

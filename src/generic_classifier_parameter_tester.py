@@ -43,8 +43,8 @@ def execute_loop(classifier_dict, parameter_dict, input_defaulter_set, result_re
         for x in range(const.TEST_REPEAT):
             try:
                 result_dictionary = generic_classifier.train_and_evaluate(input_defaulter_set, state=x)
-            except Exception:
-                const.verbose_print("WARNING: incompatible input parameters")
+            except Exception as e:
+                const.verbose_print("WARNING: incompatible input parameters - {0}".format(e))
                 return
             overall_true_rate += (result_dictionary["avg_true_positive_rate"] + result_dictionary["avg_true_negative_rate"]) / 2.0
             true_positive_rate += result_dictionary["avg_true_positive_rate"]
