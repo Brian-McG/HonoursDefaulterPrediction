@@ -1,9 +1,12 @@
 import multiprocessing
+import os
 from multiprocessing import Manager
 from multiprocessing import Process
 from time import sleep
 
 import random
+
+import sys
 from imblearn.combine import SMOTEENN
 from sklearn.cross_validation import StratifiedKFold
 from sknn.mlp import Classifier, Layer
@@ -33,7 +36,11 @@ class ArtificialNeuralNetwork(MLTechnique):
     def train_and_evaluate_fold_with_failover(self, defaulter_set, training_indices, testing_indices, classifier, index, data_balancer=None):
         for x in range(const.RETRY_COUNT):
             try:
+                old_stdout = sys.stdout
+                f = open(os.devnull, 'w')
+                sys.stdout = f
                 train_and_evaluate_fold(self, defaulter_set, training_indices, testing_indices, classifier, index, data_balancer)
+                sys.stdout = old_stdout
                 return
             except Exception:
                 if x + 1 >= const.RETRY_COUNT:
