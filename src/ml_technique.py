@@ -1,6 +1,8 @@
+from datetime import datetime
 from abc import ABC, abstractmethod
 
 import pandas as pd
+import sys
 from sklearn.metrics import auc
 from sklearn.metrics import roc_curve
 import matplotlib.pyplot as plt
@@ -42,8 +44,10 @@ def train_and_evaluate_fold(self, defaulter_set, training_set_indices, testing_s
 
     # Test accuracy
     test_classification = classifier.predict(x_testing)
+
     test_classification = np.array(test_classification)
     test_classification = test_classification.flatten()
+
     try:
         test_probabilities = classifier.predict_proba(x_testing)
     except AttributeError:

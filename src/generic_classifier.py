@@ -19,6 +19,8 @@ class GenericClassifier():
 
         self.ml_stats.errors = []
         self.ml_stats.roc_list = []
+        if self.data_balancer is not None:
+            self.data_balancer = self.data_balancer(random_state=state)
 
         kf = StratifiedKFold(defaulter_set.iloc[:, -1:].as_matrix().flatten(), n_folds=const.NUMBER_OF_FOLDS, shuffle=True, random_state=state)
         index = 0

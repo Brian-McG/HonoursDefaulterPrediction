@@ -60,6 +60,9 @@ class ArtificialNeuralNetwork(MLTechnique):
     def train_and_evaluate(self, defaulter_set, hidden_layer='Rectifier', number_of_hidden_nodes=75, output_layer='Softmax', number_of_threads=-1, state=0):
         """Applies k-fold cross validation to train and evaluate the ANN"""
 
+        if self.data_balancer is not None:
+            self.data_balancer = self.data_balancer(random_state=state)
+
         if number_of_threads == -1:
             number_of_threads = self.logical_cpu_count
 
