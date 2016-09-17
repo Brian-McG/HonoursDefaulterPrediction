@@ -1,16 +1,17 @@
+import sys
 from datetime import datetime
 
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
-from mpl_toolkits.mplot3d import Axes3D
-from sklearn.decomposition import PCA
-from scipy import interp
-from sklearn.metrics import auc
-import sys
-import constants as const
+import seaborn as sns
 from cycler import cycler
 from matplotlib.pyplot import cm
+from mpl_toolkits.mplot3d import Axes3D
+from scipy import interp
+from sklearn.decomposition import PCA
+from sklearn.metrics import auc
+
+import constants as const
 
 almost_black = "#262626"
 palette = sns.color_palette()

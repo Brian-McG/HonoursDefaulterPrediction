@@ -2,31 +2,25 @@
 import pandas as pd
 from imblearn.combine import SMOTEENN
 from imblearn.combine import SMOTETomek
-from imblearn.ensemble import BalanceCascade
-from imblearn.ensemble import EasyEnsemble
 from imblearn.over_sampling import ADASYN
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.over_sampling import SMOTE
 from imblearn.under_sampling import ClusterCentroids
-from imblearn.under_sampling import CondensedNearestNeighbour
 from imblearn.under_sampling import EditedNearestNeighbours
 from imblearn.under_sampling import InstanceHardnessThreshold
 from imblearn.under_sampling import NearMiss
 from imblearn.under_sampling import NeighbourhoodCleaningRule
 from imblearn.under_sampling import OneSidedSelection
 from imblearn.under_sampling import RandomUnderSampler
-from imblearn.under_sampling import RepeatedEditedNearestNeighbours
 from imblearn.under_sampling import TomekLinks
-from sklearn.metrics import auc
 
 import classifiers as cfr
 import constants as const
+import visualisation as vis
 from artificial_neural_network import ArtificialNeuralNetwork
 from data_balancer_result_recorder import DataBalancerResultRecorder
 from data_preprocessing import apply_preprocessing
 from generic_classifier import GenericClassifier
-from result_recorder import ResultRecorder
-import visualisation as vis
 
 
 def main():

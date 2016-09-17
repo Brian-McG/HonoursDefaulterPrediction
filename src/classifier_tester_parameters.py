@@ -51,15 +51,20 @@ decision_tree_dict = {"criterion": ["gini", "entropy"], "splitter": ["best", "ra
 generic_classifier_parameter_arr.append(decision_tree_dict)
 
 # AdaBoost
-adaboost_dict = {"base_estimator": [AdaBoostClassifier(), BernoulliNB(), DecisionTreeClassifier(), ExtraTreeClassifier(), ExtraTreesClassifier(), MultinomialNB(), NuSVC(), Perceptron(), RandomForestClassifier(), RidgeClassifierCV(), SGDClassifier(), SVC()], "n_estimators": list(range(10, 3000, 200)), "learning_rate": np.linspace(0.01, 1, 10).tolist(), "algorithm": ["SAMME", "SAMME.R"]}
+adaboost_dict = {
+    "base_estimator": [AdaBoostClassifier(), BernoulliNB(), DecisionTreeClassifier(), ExtraTreeClassifier(), ExtraTreesClassifier(), MultinomialNB(), NuSVC(), Perceptron(),
+                       RandomForestClassifier(), RidgeClassifierCV(), SGDClassifier(), SVC()], "n_estimators": list(range(10, 3000, 200)),
+    "learning_rate": np.linspace(0.01, 1, 10).tolist(), "algorithm": ["SAMME", "SAMME.R"]}
 generic_classifier_parameter_arr.append(adaboost_dict)
 
 # Random forest
-random_forest_dict = {"n_estimators": list(range(5, 120, 10)), "criterion": ["gini", "entropy"], "max_features": ["auto", "sqrt", "log2", None], "max_depth": [None] + list(range(5, 120, 20)), "oob_score": [True, False], "class_weight": [None, "balanced"]}
+random_forest_dict = {"n_estimators": list(range(5, 120, 10)), "criterion": ["gini", "entropy"], "max_features": ["auto", "sqrt", "log2", None],
+                      "max_depth": [None] + list(range(5, 120, 20)), "oob_score": [True, False], "class_weight": [None, "balanced"]}
 generic_classifier_parameter_arr.append(random_forest_dict)
 
 # K-nearest neighbours
-k_nearest_dict = {"n_neighbors": list(range(5, 120, 10)), "weights": ["uniform", "distance"], "algorithm": ["ball_tree", "kd_tree", "brute", "auto"], "leaf_size": list(range(20, 50, 5)), "p": list(range(1, 5))}
+k_nearest_dict = {"n_neighbors": list(range(5, 120, 10)), "weights": ["uniform", "distance"], "algorithm": ["ball_tree", "kd_tree", "brute", "auto"],
+                  "leaf_size": list(range(20, 50, 5)), "p": list(range(1, 5))}
 generic_classifier_parameter_arr.append(k_nearest_dict)
 
 # Bernoulli Naive Bayes

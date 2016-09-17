@@ -1,14 +1,14 @@
 """Primary script used to execute the defaulter prediction"""
 import pandas as pd
-from imblearn.combine import SMOTEENN
 
 import classifiers as cfr
 import constants as const
+import visualisation as vis
 from artificial_neural_network import ArtificialNeuralNetwork
 from data_preprocessing import apply_preprocessing
+from extreme_learning_machines import ExtremeLearningMachine
 from generic_classifier import GenericClassifier
 from result_recorder import ResultRecorder
-import visualisation as vis
 
 
 def main():
@@ -48,6 +48,9 @@ if __name__ == "__main__":
     # Add ANN to classifier list - this needs to be here due to the use of Processes in ArtificialNeuralNetwork
     ann = ArtificialNeuralNetwork(cfr.ann_data_balancer)
     cfr.append_classifier_details(None, ann, cfr.ann_enabled, "Artificial neural network", cfr.non_generic_classifiers)
+
+    elm = ExtremeLearningMachine(cfr.elm_data_balancer)
+    cfr.append_classifier_details(None, elm, cfr.elm_enabled, "Extreme learning machine", cfr.non_generic_classifiers)
 
     # Run main
     main()

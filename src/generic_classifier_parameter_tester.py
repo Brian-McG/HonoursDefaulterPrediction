@@ -1,5 +1,7 @@
 """Primary script used to execute the defaulter prediction"""
 import multiprocessing
+from multiprocessing import Manager
+
 import pandas as pd
 from imblearn.combine import SMOTEENN
 from imblearn.combine import SMOTETomek
@@ -16,11 +18,9 @@ from imblearn.under_sampling import RandomUnderSampler
 from imblearn.under_sampling import TomekLinks
 from joblib import Parallel
 from joblib import delayed
-from multiprocessing import Manager
 from sklearn.grid_search import ParameterGrid
 
 import classifier_tester_parameters as ctp
-
 import classifiers as cfr
 import constants as const
 from artificial_neural_network import ArtificialNeuralNetwork
@@ -33,13 +33,13 @@ def execute_loop(classifier_dict, parameter_dict, input_defaulter_set, result_re
     data_balancers = [None, ClusterCentroids(), EditedNearestNeighbours(), InstanceHardnessThreshold(), NearMiss(), NeighbourhoodCleaningRule(),
                       OneSidedSelection(), RandomUnderSampler(), TomekLinks(), ADASYN(), RandomOverSampler(), SMOTE(), SMOTEENN(), SMOTETomek()]
     if z % 5 == 0:
-        print("==== {0} - {1}% ====".format(classifier_dict['classifier_description'], format((z/paramater_grid_len) * 100, '.2f')))
+        print("==== {0} - {1}% ====".format(classifier_dict['classifier_description'], format((z / paramater_grid_len) * 100, '.2f')))
 
     for data_balancer in data_balancers:
         classifier = classifier_dict['classifier'].__class__(**parameter_dict)
         generic_classifier = GenericClassifier(classifier, data_balancer)
         overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
-            false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
+        false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
         for x in range(const.TEST_REPEAT):
             try:
                 result_dictionary = generic_classifier.train_and_evaluate(input_defaulter_set, state=x)
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     # Preprocess data set
     input_defaulter_set = apply_preprocessing(input_defaulter_set)
 
-    #assert(len(ctp.generic_classifier_parameter_arr) == len(cfr.generic_classifiers))
+    # assert(len(ctp.generic_classifier_parameter_arr) == len(cfr.generic_classifiers))
     logical_cpu_count = multiprocessing.cpu_count()
 
     for i in range(len(ctp.generic_classifier_parameter_arr)):
@@ -97,7 +97,9 @@ if __name__ == "__main__":
 
             # Execute enabled classifiers
             parameter_grid = ParameterGrid(ctp.generic_classifier_parameter_arr[i])
-            Parallel(n_jobs=logical_cpu_count)(delayed(execute_loop)(cfr.generic_classifiers[i], parameter_grid[z], input_defaulter_set, result_recorder, z, len(parameter_grid)) for z in range(len(parameter_grid)))
+            Parallel(n_jobs=logical_cpu_count)(
+                delayed(execute_loop)(cfr.generic_classifiers[i], parameter_grid[z], input_defaulter_set, result_recorder, z, len(parameter_grid)) for z in
+                range(len(parameter_grid)))
 
             print(result_recorder.results)
             if const.RECORD_RESULTS is True:

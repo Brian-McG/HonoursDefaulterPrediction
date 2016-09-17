@@ -1,11 +1,10 @@
 import os
+import re
 import subprocess
+import sys
+from datetime import datetime
 
 import pandas as pd
-from datetime import datetime
-import sys
-
-import re
 
 
 class ClusteringLaunchedClassifier:

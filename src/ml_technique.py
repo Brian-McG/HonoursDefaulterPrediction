@@ -1,14 +1,8 @@
-from datetime import datetime
-from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
 
-import pandas as pd
-import sys
-from sklearn.metrics import auc
-from sklearn.metrics import roc_curve
-import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.metrics import roc_curve
 
-import constants as const
 from constants import verbose_print
 
 
@@ -31,7 +25,15 @@ def train_and_evaluate_fold(self, defaulter_set, training_set_indices, testing_s
     verbose_print("Number of rows for training fold {0}: {1}".format(index + 1, x_resampled.shape[0]))
     verbose_print("Number of defaulters for training fold {0}: {1}".format(index + 1, y_resampled[y_resampled == 1].shape[0]))
 
-    classifier.fit(x_resampled, y_resampled)
+    try:
+        classifier.fit(x_resampled, y_resampled)
+    except AttributeError:
+        y_resampled2 = np.array([0 if item == 1 else 1 for item in y_resampled])
+        class_arr = [None] * len(y_resampled)
+        for i in range(len(y_resampled)):
+            class_arr[i] = [y_resampled[i], y_resampled2[i]]
+        class_arr = np.array(class_arr)
+        classifier.train(x_resampled, class_arr,"CV" "OP", 'wc',k=10)
 
     # Testing set
     x_testing = input_set[testing_set_indices]
@@ -44,9 +46,13 @@ def train_and_evaluate_fold(self, defaulter_set, training_set_indices, testing_s
 
     # Test accuracy
     test_classification = classifier.predict(x_testing)
+    if (type(test_classification[0]) == list or type(test_classification[0]) == np.ndarray) and len(test_classification[0]) > 1:
+        test_classification = np.array([1 if item[0] > item[1] else 0 for item in test_classification])
 
     test_classification = np.array(test_classification)
     test_classification = test_classification.flatten()
+
+
 
     try:
         test_probabilities = classifier.predict_proba(x_testing)
@@ -72,7 +78,8 @@ def train_and_evaluate_fold(self, defaulter_set, training_set_indices, testing_s
     self.ml_stats.calculate_and_append_fold_accuracy(test_classification, y_testing, tpr.tolist(), fpr.tolist(), test_probabilities=test_probabilities)
 
 
-class MLTechnique(ABC):
+class MLTechnique:
+    __metaclass__ = ABCMeta
     """An abstract class that encapsulates the concept of a machine learning technique"""
 
     @abstractmethod

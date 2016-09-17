@@ -1,5 +1,7 @@
 """Primary script used to execute the defaulter prediction"""
 import multiprocessing
+from multiprocessing import Manager
+
 import pandas as pd
 from imblearn.combine import SMOTEENN
 from imblearn.combine import SMOTETomek
@@ -14,20 +16,16 @@ from imblearn.under_sampling import NeighbourhoodCleaningRule
 from imblearn.under_sampling import OneSidedSelection
 from imblearn.under_sampling import RandomUnderSampler
 from imblearn.under_sampling import TomekLinks
-from multiprocessing import Manager
-
 from joblib import Parallel
 from joblib import delayed
 from sklearn.grid_search import ParameterGrid
 
 import classifier_tester_parameters as ctp
-
 import classifiers as cfr
 import constants as const
 from artificial_neural_network import ArtificialNeuralNetwork
 from classifier_result_recorder import ClassifierResultRecorder
 from data_preprocessing import apply_preprocessing
-from result_recorder import ResultRecorder
 
 
 def main():
@@ -52,11 +50,14 @@ def main():
 
             # Execute enabled classifiers
             parameter_grid = ParameterGrid(ctp.non_generic_classifier_parameter_arr)
-            Parallel(n_jobs=logical_cpu_count)(delayed(run_test)(cfr.non_generic_classifiers[i]['classifier'], input_defaulter_set, result_recorder, parameter_grid[z], z, len(parameter_grid)) for z in range(len(parameter_grid)))
+            Parallel(n_jobs=logical_cpu_count)(
+                delayed(run_test)(cfr.non_generic_classifiers[i]['classifier'], input_defaulter_set, result_recorder, parameter_grid[z], z, len(parameter_grid)) for z in
+                range(len(parameter_grid)))
 
             print(result_recorder.results)
             if const.RECORD_RESULTS is True:
-                result_recorder.save_results_to_file(sorted(parameter_grid[0]) + ["Data balancer"], prepend_name_description=cfr.non_generic_classifiers[i]['classifier'].__class__.__name__)
+                result_recorder.save_results_to_file(sorted(parameter_grid[0]) + ["Data balancer"],
+                                                     prepend_name_description=cfr.non_generic_classifiers[i]['classifier'].__class__.__name__)
 
 
 def run_test(classifier, input_defaulter_set, result_recorder, parameter_dict, z, paramater_grid_len):
@@ -64,12 +65,12 @@ def run_test(classifier, input_defaulter_set, result_recorder, parameter_dict, z
                       OneSidedSelection(), RandomUnderSampler(), TomekLinks(), ADASYN(), RandomOverSampler(), SMOTE(), SMOTEENN(), SMOTETomek()]
 
     if z % 5 == 0:
-        print("==== {0} - {1}% ====".format(classifier.__class__.__name__, format((z/paramater_grid_len) * 100, '.2f')))
+        print("==== {0} - {1}% ====".format(classifier.__class__.__name__, format((z / paramater_grid_len) * 100, '.2f')))
 
     for data_balancer in data_balancers:
         # Execute classifier TEST_REPEAT number of times
         overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
-            false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
+        false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
         for x in range(const.TEST_REPEAT):
             result_dictionary = classifier.train_and_evaluate(input_defaulter_set, number_of_threads=1, state=x, **parameter_dict)
             overall_true_rate += (result_dictionary["avg_true_positive_rate"] + result_dictionary["avg_true_negative_rate"]) / 2.0

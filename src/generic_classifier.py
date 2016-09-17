@@ -1,9 +1,9 @@
-from sklearn.cross_validation import KFold, StratifiedKFold
+from sklearn.cross_validation import StratifiedKFold
 
 import constants as const
 from constants import verbose_print
 from ml_statistics import MLStatistics
-from ml_technique import MLTechnique, train_and_evaluate_fold
+from ml_technique import train_and_evaluate_fold
 
 
 class GenericClassifier():

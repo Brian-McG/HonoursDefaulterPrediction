@@ -1,23 +1,15 @@
 """Contains all classifiers used (except ANNs)"""
 from imblearn.combine import SMOTEENN
-from imblearn.combine import SMOTETomek
-from imblearn.over_sampling import RandomOverSampler
 from imblearn.under_sampling import ClusterCentroids
-from imblearn.under_sampling import CondensedNearestNeighbour
-from imblearn.under_sampling import EditedNearestNeighbours
-from imblearn.under_sampling import InstanceHardnessThreshold
-from imblearn.under_sampling import OneSidedSelection
-from imblearn.under_sampling import RandomUnderSampler
 from sklearn import svm
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import VotingClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import MultinomialNB, BernoulliNB
+from sklearn.naive_bayes import BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 
-# List of classifier information
 from clustering_launched_classification import ClusteringLaunchedClassifier
 
 generic_classifiers = []
@@ -34,6 +26,10 @@ def append_classifier_details(data_balancer, classifier, status, classifier_desc
 # Artificial Neural network - is added in main.py due to use of Processes which requires it be declared in the main method
 ann_enabled = False
 ann_data_balancer = SMOTEENN
+
+# Extreme learning machines
+elm_enabled = True
+elm_data_balancer = SMOTEENN
 
 # Generic Classifiers
 # Support Vector Machines (with RDF kernel)
@@ -112,7 +108,6 @@ append_classifier_details(voting_classifier_data_balancer, voting_classifier, vo
 # Clustering-Launched Classification
 clustering_launched_classifier_data_balancer = ClusterCentroids
 clustering_launched_classifier = ClusteringLaunchedClassifier(d=0.5)
-clustering_launched_classifier_enabled = True
+clustering_launched_classifier_enabled = False
 append_classifier_details(clustering_launched_classifier_data_balancer, clustering_launched_classifier, clustering_launched_classifier_enabled,
                           "Clustering-Launched Classification", generic_classifiers)
-
