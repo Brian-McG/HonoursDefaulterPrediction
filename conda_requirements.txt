@@ -2,4 +2,3 @@ mingw
 libpython
 matplotlib
 pandas
-scikit-learn

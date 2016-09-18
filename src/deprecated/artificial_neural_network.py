@@ -2,6 +2,7 @@ import multiprocessing
 import os
 import random
 import sys
+import warnings
 from multiprocessing import Manager
 from multiprocessing import Process
 from time import sleep
@@ -14,11 +15,11 @@ from constants import verbose_print
 from ml_statistics import MLStatistics
 from ml_technique import MLTechnique, train_and_evaluate_fold
 
-
 class ArtificialNeuralNetwork(MLTechnique):
     """Contains functionality to train and evaluate an artificial neural network (ANN)"""
 
     def __init__(self, data_balancer):
+        warnings.warn("deprecated", DeprecationWarning)
         manager = Manager()
         self.errors = manager.list(range(const.NUMBER_OF_FOLDS))
         for error in self.errors:
@@ -34,13 +35,14 @@ class ArtificialNeuralNetwork(MLTechnique):
     def train_and_evaluate_fold_with_failover(self, defaulter_set, training_indices, testing_indices, classifier, index, data_balancer=None):
         for x in range(const.RETRY_COUNT):
             try:
-                old_stdout = sys.stdout
-                f = open(os.devnull, 'w')
-                sys.stdout = f
+                # old_stdout = sys.stdout
+                # f = open(os.devnull, 'w')
+                # sys.stdout = f
                 train_and_evaluate_fold(self, defaulter_set, training_indices, testing_indices, classifier, index, data_balancer)
-                sys.stdout = old_stdout
+                # sys.stdout = old_stdout
                 return
-            except Exception:
+            except Exception as e:
+                print(e)
                 if x + 1 >= const.RETRY_COUNT:
                     raise
                 sleep_time = random.uniform(1, 3)
@@ -83,6 +85,7 @@ class ArtificialNeuralNetwork(MLTechnique):
                     training_indices, testing_indices = kf[index]
                     p = Process(target=self.train_and_evaluate_fold_with_failover, args=(defaulter_set, training_indices, testing_indices, nn, index, self.data_balancer))
                     p.start()
+                    sleep(5)
                     process_pool.append(p)
 
                 for process in process_pool:

@@ -6,7 +6,9 @@ import constants as const
 
 
 class ClassifierResultRecorder:
-    def __init__(self, result_arr=list()):
+    def __init__(self, result_arr=None):
+        if result_arr is None:
+            result_arr = []
         self.results = result_arr
 
     def record_results(self, result):

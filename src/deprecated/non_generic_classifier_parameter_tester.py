@@ -1,5 +1,6 @@
 """Primary script used to execute the defaulter prediction"""
 import multiprocessing
+import warnings
 from multiprocessing import Manager
 
 import pandas as pd
@@ -29,6 +30,8 @@ from data_preprocessing import apply_preprocessing
 
 
 def main():
+    warnings.warn("deprecated", DeprecationWarning)
+
     # Load in data set
     input_defaulter_set = pd.DataFrame.from_csv("../data/lima_tb/Lima-TB-Treatment-base.csv", index_col=None,
                                                 encoding="UTF-8")
@@ -60,12 +63,12 @@ def main():
                                                      prepend_name_description=cfr.non_generic_classifiers[i]['classifier'].__class__.__name__)
 
 
-def run_test(classifier, input_defaulter_set, result_recorder, parameter_dict, z, paramater_grid_len):
+def run_test(classifier, input_defaulter_set, result_recorder, parameter_dict, z, parameter_grid_len):
     data_balancers = [None, ClusterCentroids(), EditedNearestNeighbours(), InstanceHardnessThreshold(), NearMiss(), NeighbourhoodCleaningRule(),
                       OneSidedSelection(), RandomUnderSampler(), TomekLinks(), ADASYN(), RandomOverSampler(), SMOTE(), SMOTEENN(), SMOTETomek()]
 
     if z % 5 == 0:
-        print("==== {0} - {1}% ====".format(classifier.__class__.__name__, format((z / paramater_grid_len) * 100, '.2f')))
+        print("==== {0} - {1}% ====".format(classifier.__class__.__name__, format((z / parameter_grid_len) * 100, '.2f')))
 
     for data_balancer in data_balancers:
         # Execute classifier TEST_REPEAT number of times
@@ -103,7 +106,7 @@ def run_test(classifier, input_defaulter_set, result_recorder, parameter_dict, z
 if __name__ == "__main__":
     # Add ANN to classifier list - this needs to be here due to the use of Processes in ArtificialNeuralNetwork
     ann = ArtificialNeuralNetwork(cfr.ann_data_balancer)
-    cfr.append_classifier_details(None, ann, cfr.ann_enabled, "Artificial neural network", cfr.non_generic_classifiers)
+    cfr.append_classifier_details(None, ann, None, cfr.ann_enabled, "Artificial neural network", cfr.non_generic_classifiers)
 
     # Run main
     main()

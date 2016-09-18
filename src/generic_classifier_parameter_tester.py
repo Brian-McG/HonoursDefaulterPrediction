@@ -23,26 +23,24 @@ from sklearn.grid_search import ParameterGrid
 import classifier_tester_parameters as ctp
 import classifiers as cfr
 import constants as const
-from artificial_neural_network import ArtificialNeuralNetwork
 from classifier_result_recorder import ClassifierResultRecorder
 from data_preprocessing import apply_preprocessing
 from generic_classifier import GenericClassifier
 
 
-def execute_loop(classifier_dict, parameter_dict, input_defaulter_set, result_recorder, z, paramater_grid_len):
-    data_balancers = [None, ClusterCentroids(), EditedNearestNeighbours(), InstanceHardnessThreshold(), NearMiss(), NeighbourhoodCleaningRule(),
-                      OneSidedSelection(), RandomUnderSampler(), TomekLinks(), ADASYN(), RandomOverSampler(), SMOTE(), SMOTEENN(), SMOTETomek()]
+def execute_loop(classifier_dict, parameter_dict, defaulter_set_arr, results_recorder, z, parameter_grid_len):
+    data_balancers = [None, ClusterCentroids, EditedNearestNeighbours, InstanceHardnessThreshold, NearMiss, NeighbourhoodCleaningRule,
+                      OneSidedSelection, RandomUnderSampler, TomekLinks, ADASYN, RandomOverSampler, SMOTE, SMOTEENN, SMOTETomek]
     if z % 5 == 0:
-        print("==== {0} - {1}% ====".format(classifier_dict['classifier_description'], format((z / paramater_grid_len) * 100, '.2f')))
+        print("==== {0} - {1}% ====".format(classifier_dict['classifier_description'], format((z / parameter_grid_len) * 100, '.2f')))
 
     for data_balancer in data_balancers:
-        classifier = classifier_dict['classifier'].__class__(**parameter_dict)
-        generic_classifier = GenericClassifier(classifier, data_balancer)
+        generic_classifier = GenericClassifier(classifier_dict['classifier'], classifier_dict['classifier_parameters'], data_balancer)
         overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
-        false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
+            false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
         for x in range(const.TEST_REPEAT):
             try:
-                result_dictionary = generic_classifier.train_and_evaluate(input_defaulter_set, state=x)
+                result_dictionary = generic_classifier.train_and_evaluate(defaulter_set_arr, x)
             except Exception as e:
                 const.verbose_print("WARNING: incompatible input parameters - {0}".format(e))
                 return
@@ -70,14 +68,10 @@ def execute_loop(classifier_dict, parameter_dict, input_defaulter_set, result_re
         individual_results[9] = unclassified_cutoff / const.TEST_REPEAT
         sorted_keys = sorted(parameter_dict)
         values = [parameter_dict.get(k) for k in sorted_keys if k in parameter_dict] + [data_balancer.__class__.__name__]
-        result_recorder.record_results(values + individual_results)
+        results_recorder.record_results(values + individual_results)
 
 
 if __name__ == "__main__":
-    # Add ANN to classifier list - this needs to be here due to the use of Processes in ArtificialNeuralNetwork
-    ann = ArtificialNeuralNetwork(cfr.ann_data_balancer)
-    cfr.append_classifier_details(None, ann, cfr.ann_enabled, "Artificial neural network", cfr.non_generic_classifiers)
-
     input_defaulter_set = pd.DataFrame.from_csv("../data/lima_tb/Lima-TB-Treatment-base.csv", index_col=None,
                                                 encoding="UTF-8")
     # input_defaulter_set = pd.DataFrame.from_csv("../data/german_finance/german_dataset_numberised.csv", index_col=None, encoding="UTF-8")

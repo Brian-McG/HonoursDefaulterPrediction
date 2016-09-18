@@ -14,15 +14,12 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.tree import ExtraTreeClassifier
 
 generic_classifier_parameter_arr = []
-non_generic_classifier_parameter_arr = []
-
-# Non generic classifiers
-# Artificial neural network
-ann_parameter_dict = {"hidden_layer": ['Rectifier', 'Sigmoid', 'Tanh', 'ExpLin'], "number_of_hidden_nodes": [1, 2, 3, 4, 5, 8, 10, 15, 20, 25, 50, 75, 100],
-                      "output_layer": ['Softmax']}
-non_generic_classifier_parameter_arr.append(ann_parameter_dict)
 
 # Generic classifiers
+# Artificial neural network
+ann_parameter_dict = {}
+generic_classifier_parameter_arr.append(ann_parameter_dict)
+
 # Support Vector Machines (RBF)
 rbf_svm_parameter_dict = {"cache_size": [2048], "decision_function_shape": ['ovo', "ovr"], "kernel": ["rbf"], "C": np.linspace(0.01, 10, 20).tolist(),
                           "gamma": ["auto"] + np.linspace(0.001, 2, 20).tolist(), 'class_weight': [None, 'balanced']}

@@ -6,7 +6,11 @@ import constants as const
 class MLStatistics:
     """Contains functionality to calculate predictive accuracy rates"""
 
-    def __init__(self, error_list=list(), roc_list=list()):
+    def __init__(self, error_list=None, roc_list=None):
+        if error_list is None:
+            error_list = []
+        if roc_list is None:
+            roc_list = []
         self.errors = error_list
         self.roc_list = roc_list
 

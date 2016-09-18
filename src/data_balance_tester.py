@@ -17,7 +17,6 @@ from imblearn.under_sampling import TomekLinks
 import classifiers as cfr
 import constants as const
 import visualisation as vis
-from artificial_neural_network import ArtificialNeuralNetwork
 from data_balancer_result_recorder import DataBalancerResultRecorder
 from data_preprocessing import apply_preprocessing
 from generic_classifier import GenericClassifier
@@ -34,8 +33,8 @@ def main():
     # Preprocess data set
     input_defaulter_set = apply_preprocessing(input_defaulter_set)
 
-    data_balancers = [None, ClusterCentroids(), EditedNearestNeighbours(), InstanceHardnessThreshold(), NearMiss(), NeighbourhoodCleaningRule(),
-                      OneSidedSelection(), RandomUnderSampler(), TomekLinks(), ADASYN(), RandomOverSampler(), SMOTE(), SMOTEENN(), SMOTETomek()]
+    data_balancers = [None, ClusterCentroids, EditedNearestNeighbours, InstanceHardnessThreshold, NearMiss, NeighbourhoodCleaningRule,
+                      OneSidedSelection, RandomUnderSampler, TomekLinks, ADASYN, RandomOverSampler, SMOTE, SMOTEENN, SMOTETomek]
     result_recorder = DataBalancerResultRecorder()
 
     # Execute enabled classifiers
@@ -54,7 +53,7 @@ def run_test(classifiers, input_defaulter_set, data_balancers, result_recorder, 
             print("== {0} ==".format(classifier_dict['classifier_description']))
             for data_balancer in data_balancers:
                 classifier_roc_results = []
-                print("=== {0} ===".format(data_balancer.__class__.__name__))
+                print("=== {0} ===".format(data_balancer.__name__ if data_balancer is not None else "None"))
                 overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
                     false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
 
@@ -62,10 +61,10 @@ def run_test(classifiers, input_defaulter_set, data_balancers, result_recorder, 
                 for i in range(const.TEST_REPEAT):
                     print("==== Run {0} ====".format(i+1))
                     if is_generic is True:
-                        classifier = GenericClassifier(classifier_dict['classifier'], data_balancer)
+                        classifier = GenericClassifier(classifier_dict['classifier'], classifier_dict['classifier_parameters'], data_balancer)
                     else:
                         classifier = classifier_dict['classifier']
-                    result_dictionary = classifier.train_and_evaluate(input_defaulter_set)
+                    result_dictionary = classifier.train_and_evaluate(input_defaulter_set, i)
 
                     # Add ROC results
                     classifier_roc_results.append(classifier.ml_stats.roc_list)
@@ -81,7 +80,7 @@ def run_test(classifiers, input_defaulter_set, data_balancers, result_recorder, 
                     false_negative_rate_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
                     unclassified_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
 
-                data_balance_roc_results.append((classifier_roc_results, data_balancer.__class__.__name__))
+                data_balance_roc_results.append((classifier_roc_results, data_balancer.__name__ if data_balancer is not None else "None"))
 
                 individual_data_balancer_results = [None, None, None, None, None, None, None, None, None, None]
                 individual_data_balancer_results[0] = ("overall_true_rate", overall_true_rate / const.TEST_REPEAT)
@@ -102,9 +101,6 @@ def run_test(classifiers, input_defaulter_set, data_balancers, result_recorder, 
 
 
 if __name__ == "__main__":
-    # Add ANN to classifier list - this needs to be here due to the use of Processes in ArtificialNeuralNetwork
-    ann = ArtificialNeuralNetwork(cfr.ann_data_balancer)
-    cfr.append_classifier_details(None, ann, cfr.ann_enabled, "Artificial neural network", cfr.non_generic_classifiers)
 
     # Run main
     main()
