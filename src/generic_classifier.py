@@ -18,6 +18,9 @@ class GenericClassifier(MLTechnique):
     def train_and_evaluate(self, defaulter_set, state):
         """Applies k-fold cross validation to train and evaluate a classifier"""
 
+        if "defaulter_set" in self.classifier_parameters and self.classifier_parameters["defaulter_set"] is None:
+            self.classifier_parameters["defaulter_set"] = defaulter_set
+
         classifier = self.classifier_class(**self.classifier_parameters)
 
         self.ml_stats.errors = []
