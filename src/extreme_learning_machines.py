@@ -13,11 +13,11 @@ class ExtremeLearningMachine:
         for layer_tuple in layers:
             self.elm.add_neurons(layer_tuple[0], layer_tuple[1])
 
-    def fit(self, x_train, y_train):
-        y_resampled2 = np.array([0 if item == 1 else 1 for item in y_train])
-        class_arr = [None] * len(y_train)
-        for i in range(len(y_train)):
-            class_arr[i] = [y_resampled2[i], y_train[i]]
+    def fit(self, x_train, class_1):
+        class_0 = np.array([0 if item == 1 else 1 for item in class_1])
+        class_arr = [None] * len(class_1)
+        for i in range(len(class_1)):
+            class_arr[i] = [class_0[i], class_1[i]]
         class_arr = np.array(class_arr)
         return self.elm.train(x_train, class_arr, "CV" "OP", 'c', k=10)
 
