@@ -1,6 +1,7 @@
 """Primary script used to execute the defaulter prediction"""
 import multiprocessing
 import pandas as pd
+import psutil
 from imblearn.combine import SMOTEENN
 from imblearn.combine import SMOTETomek
 from imblearn.over_sampling import ADASYN
@@ -40,27 +41,25 @@ def main():
             data_balancers = [None, ClusterCentroids, EditedNearestNeighbours, InstanceHardnessThreshold, NearMiss, NeighbourhoodCleaningRule,
                               OneSidedSelection, RandomUnderSampler, TomekLinks, ADASYN, RandomOverSampler, SMOTE, SMOTEENN, SMOTETomek]
 
-            logical_cpu_count = multiprocessing.cpu_count()
+            cpu_count = multiprocessing.cpu_count()
             manager = Manager()
             result_recorder = DataBalancerResultRecorder(result_arr=manager.list())
             data_balance_roc_results = manager.list()
 
             # Execute enabled classifiers
-            for classifier_dict in cfr.classifiers:
+            for classifier_description, classifier_dict in cfr.classifiers.iteritems():
                 if classifier_dict["status"]:
-                    print("== {0} ==".format(classifier_dict["classifier_description"]))
-                    Parallel(n_jobs=logical_cpu_count)(
-                        delayed(run_test)(classifier_dict, input_defaulter_set, data_balancers[z], data_balance_roc_results, result_recorder) for z in
-                        range(len(data_balancers)))
+                    print("== {0} ==".format(classifier_description))
+                    Parallel(n_jobs=cpu_count)(delayed(run_test)(classifier_description, classifier_dict, data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], input_defaulter_set, data_balancers[z], data_balance_roc_results, result_recorder) for z in range(len(data_balancers)))
                     # Plot ROC results of each balancer
-                    vis.plot_mean_roc_curve_of_balancers(data_balance_roc_results, data_set["data_set_description"], classifier_dict["classifier_description"])
+                    vis.plot_mean_roc_curve_of_balancers(data_balance_roc_results, data_set["data_set_description"], classifier_description)
 
             print(result_recorder.results)
             if const.RECORD_RESULTS is True:
                 result_recorder.save_results_to_file(data_set["data_set_description"])
 
 
-def run_test(classifier_dict, input_defaulter_set, data_balancer, data_balance_roc_results, result_recorder):
+def run_test(classifier_description, classifier_dict, classifier_parameters, input_defaulter_set, data_balancer, data_balance_roc_results, result_recorder):
     classifier_roc_results = []
     print("=== {0} ===".format(data_balancer.__name__ if data_balancer is not None else "None"))
     overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
@@ -69,7 +68,7 @@ def run_test(classifier_dict, input_defaulter_set, data_balancer, data_balance_r
     # Execute classifier TEST_REPEAT number of times
     for i in range(const.TEST_REPEAT):
         print("==== Run {0} ====".format(i+1))
-        classifier = GenericClassifier(classifier_dict["classifier"], classifier_dict["classifier_parameters"], data_balancer)
+        classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer)
         result_dictionary = classifier.train_and_evaluate(input_defaulter_set, i)
 
         # Add ROC results
@@ -100,7 +99,7 @@ def run_test(classifier_dict, input_defaulter_set, data_balancer, data_balance_r
     individual_data_balancer_results[8] = ("false_negative_rate_cutoff", false_negative_rate_cutoff / const.TEST_REPEAT)
     individual_data_balancer_results[9] = ("unclassified_cutoff", unclassified_cutoff / const.TEST_REPEAT)
     classifier_tuple = (data_balancer.__name__ if data_balancer is not None else "None", individual_data_balancer_results)
-    result_recorder.record_results((classifier_dict["classifier_description"], classifier_tuple))
+    result_recorder.record_results((classifier_description, classifier_tuple))
 
 
 if __name__ == "__main__":

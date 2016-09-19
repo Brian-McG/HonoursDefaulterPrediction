@@ -3,6 +3,8 @@ import multiprocessing
 from multiprocessing import Manager
 
 import pandas as pd
+import psutil
+import time
 from imblearn.combine import SMOTEENN
 from imblearn.combine import SMOTETomek
 from imblearn.over_sampling import ADASYN
@@ -29,14 +31,15 @@ from data_preprocessing import apply_preprocessing
 from generic_classifier import GenericClassifier
 
 
-def execute_loop(classifier_dict, parameter_dict, defaulter_set_arr, results_recorder, z, parameter_grid_len):
+def execute_loop(classifier_description, classifier_dict, parameter_dict, defaulter_set_arr, results_recorder, z, parameter_grid_len):
     data_balancers = [None, ClusterCentroids, EditedNearestNeighbours, InstanceHardnessThreshold, NearMiss, NeighbourhoodCleaningRule,
                       OneSidedSelection, RandomUnderSampler, TomekLinks, ADASYN, RandomOverSampler, SMOTE, SMOTEENN, SMOTETomek]
+
     if z % 5 == 0:
-        print("==== {0} - {1}% ====".format(classifier_dict['classifier_description'], format((z / parameter_grid_len) * 100, '.2f')))
+        print("==== {0} - {1}% ====".format(classifier_description, format((float(z) / parameter_grid_len) * 100, '.2f')))
 
     for data_balancer in data_balancers:
-        generic_classifier = GenericClassifier(classifier_dict['classifier'], classifier_dict['classifier_parameters'], data_balancer)
+        generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer)
         overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
             false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
         for x in range(const.TEST_REPEAT):
@@ -79,19 +82,19 @@ if __name__ == "__main__":
             # Preprocess data set
             input_defaulter_set = apply_preprocessing(input_defaulter_set)
 
-            logical_cpu_count = multiprocessing.cpu_count()
-
-            for i in range(len(ctp.generic_classifier_parameter_arr)):
-                if cfr.classifiers[i]['status'] is True and cfr.classifiers[i] is not None:
+            cpu_count = multiprocessing.cpu_count()
+            for classifier_description, classifier_dict in cfr.classifiers.iteritems():
+                parameter_dict = ctp.generic_classifier_parameter_dict[classifier_description]
+                if classifier_dict['status'] and parameter_dict is not None:
                     manager = Manager()
                     result_recorder = ClassifierResultRecorder(result_arr=manager.list())
 
                     # Execute enabled classifiers
-                    parameter_grid = ParameterGrid(ctp.generic_classifier_parameter_arr[i])
-                    Parallel(n_jobs=logical_cpu_count)(
-                        delayed(execute_loop)(cfr.classifiers[i], parameter_grid[z], input_defaulter_set, result_recorder, z, len(parameter_grid)) for z in
+                    parameter_grid = ParameterGrid(parameter_dict)
+                    Parallel(n_jobs=cpu_count)(
+                        delayed(execute_loop)(classifier_description, classifier_dict, parameter_grid[z], input_defaulter_set, result_recorder, z, len(parameter_grid)) for z in
                         range(len(parameter_grid)))
 
                     print(result_recorder.results)
                     if const.RECORD_RESULTS is True:
-                        result_recorder.save_results_to_file(sorted(parameter_grid[0]) + ["Data balancer"], prepend_name_description=data_set["data_set_description"] + "_" +cfr.classifiers[i]['classifier_description'])
+                        result_recorder.save_results_to_file(sorted(parameter_grid[0]) + ["Data balancer"], prepend_name_description=data_set["data_set_description"] + "_" + classifier_description)

@@ -24,13 +24,14 @@ def main():
             roc_plot = []
 
             # Execute enabled classifiers
-            for classifier_dict in cfr.classifiers:
+            for classifier_description, classifier_dict in cfr.classifiers.iteritems():
                 if classifier_dict["status"]:
-                    generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_dict["classifier_parameters"], classifier_dict["data_balancer"])
+                    classifier_parameters = data_set["data_set_classifier_parameters"]
+                    generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters.classifier_parameters[classifier_description]["classifier_parameters"], classifier_parameters.classifier_parameters[classifier_description]["data_balancer"])
                     result_dictionary = generic_classifier.train_and_evaluate(input_defaulter_set, None)
-                    result_recorder.record_results(result_dictionary, classifier_dict)
-                    vis.plot_roc_curve_of_classifier(generic_classifier.ml_stats.roc_list, data_set["data_set_description"], classifier_dict["classifier_description"])
-                    roc_plot.append((generic_classifier.ml_stats.roc_list, classifier_dict["classifier_description"]))
+                    result_recorder.record_results(result_dictionary, classifier_description)
+                    vis.plot_roc_curve_of_classifier(generic_classifier.ml_stats.roc_list, data_set["data_set_description"], classifier_description)
+                    roc_plot.append((generic_classifier.ml_stats.roc_list, classifier_description))
 
             if const.RECORD_RESULTS:
                 vis.plot_mean_roc_curve_of_classifiers(roc_plot, data_set["data_set_description"])

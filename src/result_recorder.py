@@ -24,6 +24,6 @@ class ResultRecorder:
                          "Average true negative rate", "Average false positive rate", "Average false negative rate"]
             csv_writer.writerow(title_row)
             for result_tuple in self.results:
-                csv_writer.writerow((result_tuple[1]['classifier_description'], result_tuple[0]['avg_true_rate'], result_tuple[0]["avg_true_positive_rate"],
+                csv_writer.writerow((result_tuple[1], result_tuple[0]['avg_true_rate'], result_tuple[0]["avg_true_positive_rate"],
                                      result_tuple[0]["avg_true_negative_rate"], result_tuple[0]["avg_false_positive_rate"], result_tuple[0]["avg_false_negative_rate"]))
             output_file.close()
