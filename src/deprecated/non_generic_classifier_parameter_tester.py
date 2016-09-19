@@ -21,11 +21,11 @@ from joblib import Parallel
 from joblib import delayed
 from sklearn.grid_search import ParameterGrid
 
-import classifier_tester_parameters as ctp
-import classifiers as cfr
-import constants as const
+import config.classifiers as cfr
 from artificial_neural_network import ArtificialNeuralNetwork
-from classifier_result_recorder import ClassifierResultRecorder
+from classifier_parameter_testing import classifier_tester_parameters as ctp
+from classifier_parameter_testing.classifier_result_recorder import ClassifierResultRecorder
+from config import constants as const
 from data_preprocessing import apply_preprocessing
 
 

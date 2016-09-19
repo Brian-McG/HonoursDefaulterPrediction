@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 import numpy as np
 from sklearn.metrics import roc_curve
 
-from constants import verbose_print
+from util import verbose_print
 
 
 def train_and_evaluate_fold(self, defaulter_set, training_set_indices, testing_set_indices, classifier, index, data_balancer=None):
@@ -57,7 +57,6 @@ def train_and_evaluate_fold(self, defaulter_set, training_set_indices, testing_s
         try:
             predictions = classifier.predict_proba(x_testing)
             outcome_decision_values = predictions[:, 1]
-            print(np.array([[predictions[i][0], predictions[i][1], y_testing[i], test_classification[i]] for i in range(len(predictions))]))
         except AttributeError:
             outcome_decision_values = None
             verbose_print("WARNING: unable to calculate classification accuracy")

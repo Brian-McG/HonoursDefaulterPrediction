@@ -10,8 +10,9 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy import interp
 from sklearn.decomposition import PCA
 from sklearn.metrics import auc
+import os
 
-import constants as const
+from config import constants as const
 
 almost_black = "#262626"
 palette = sns.color_palette()
@@ -74,7 +75,7 @@ def visualise_two_data_sets(x_arr, y_arr, x_arr_two, y_arr_two):
     plt.show()
 
 
-def plot_roc_curve_of_classifier(roc_list, description="classifier"):
+def plot_roc_curve_of_classifier(roc_list, data_set_description, classifier_description="classifier"):
     if const.RECORD_RESULTS is True and not (None, None) in roc_list:
         mean_tpr = 0.0
         mean_fpr = np.linspace(0, 1, 100)
@@ -96,13 +97,13 @@ def plot_roc_curve_of_classifier(roc_list, description="classifier"):
         plt.ylim([0.0, 1.05])
         plt.xlabel("False Positive Rate")
         plt.ylabel("True Positive Rate")
-        plt.title("{0} ROC curve".format(description))
+        plt.title("{0} ROC curve".format(classifier_description))
         plt.legend(loc="lower right")
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        plt.savefig(sys.path[0] + "/../results/{0}_roc_plot_{1}.png".format(description, current_time), bbox_inches="tight")
+        plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/{0}_{1}_roc_plot_{2}.png".format(data_set_description, classifier_description, current_time), bbox_inches="tight")
 
 
-def plot_mean_roc_curve_of_balancers(balancer_roc_list, description):
+def plot_mean_roc_curve_of_balancers(balancer_roc_list, data_set_description, classifier_description):
     if const.RECORD_RESULTS is True and not (None, None) in balancer_roc_list[0][0]:
         plt.figure(figsize=(12, 10))
         monochrome = (cycler('color', ['k']) * cycler('marker', ['']) *
@@ -129,13 +130,13 @@ def plot_mean_roc_curve_of_balancers(balancer_roc_list, description):
         plt.ylim([0.0, 1.05])
         plt.xlabel("False Positive Rate")
         plt.ylabel("True Positive Rate")
-        plt.title("{0} ROC curve for each balancer".format(description))
+        plt.title("{0} ROC curve for each balancer".format(classifier_description))
         plt.legend(loc="lower right")
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        plt.savefig(sys.path[0] + "/../results/{0}_roc_balancer_plot_{1}.png".format(description, current_time), bbox_inches="tight")
+        plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/{0}_{1}_roc_balancer_plot_{2}.png".format(data_set_description, classifier_description, current_time), bbox_inches="tight")
 
 
-def plot_mean_roc_curve_of_classifiers(classifier_roc_list):
+def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description):
     if const.RECORD_RESULTS is True:
         plt.figure(figsize=(12, 10))
         monochrome = (cycler('color', ['k']) * cycler('marker', ['']) *
@@ -165,4 +166,4 @@ def plot_mean_roc_curve_of_classifiers(classifier_roc_list):
         plt.title("ROC curve for each classifier")
         plt.legend(loc="lower right")
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        plt.savefig(sys.path[0] + "/../results/roc_classifier_plot_{0}.png".format(current_time), bbox_inches="tight")
+        plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/{0}_roc_classifier_plot_{1}.png".format(data_set_description, current_time), bbox_inches="tight")

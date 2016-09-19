@@ -1,8 +1,9 @@
 import csv
+import os
 import sys
 from datetime import datetime
 
-import constants as const
+from config import constants as const
 
 
 class ResultRecorder:
@@ -12,13 +13,12 @@ class ResultRecorder:
     def record_results(self, result_dict, classifier_dict):
         self.results.append((result_dict, classifier_dict))
 
-    def save_results_to_file(self, file_name=None):
+    def save_results_to_file(self, data_set_description):
         """Records results to file. If file_name is None, then a default filename of data_<number of folds>_<timestamp>.csv"""
         if len(self.results) > 0:
-            if file_name is None:
-                current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-                file_name = "data_{0}-folds_{1}.csv".format(const.NUMBER_OF_FOLDS, current_time)
-            output_file = open(sys.path[0] + "/../results/" + file_name, "wb")
+            current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+            file_name = "{0}_data_{1}-folds_{2}.csv".format(data_set_description, const.NUMBER_OF_FOLDS, current_time)
+            output_file = open(os.path.dirname(os.path.realpath(__file__)) + "/../results/" + file_name, "wb")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
             title_row = ["Classifier description", "Average true rate", "Average true positive rate",
                          "Average true negative rate", "Average false positive rate", "Average false negative rate"]

@@ -1,8 +1,9 @@
 import subprocess
+
 from sklearn.model_selection import StratifiedKFold
 
-import constants as const
-from constants import verbose_print
+from config import constants as const
+from util import verbose_print
 from ml_statistics import MLStatistics
 from ml_technique import train_and_evaluate_fold, MLTechnique
 
@@ -10,11 +11,12 @@ from ml_technique import train_and_evaluate_fold, MLTechnique
 class GenericClassifier(MLTechnique):
     """Contains functionality to train and evaluate a classifier."""
 
-    def __init__(self, classifier_class, classifier_parameters, data_balancer):
+    def __init__(self, classifier_class, classifier_parameters, data_balancer_class):
         self.ml_stats = MLStatistics()
         self.classifier_class = classifier_class
         self.classifier_parameters = classifier_parameters
-        self.data_balancer = data_balancer
+        self.data_balancer_class = data_balancer_class
+        self.data_balancer = None
 
     def train_and_evaluate(self, defaulter_set, state):
         """Applies k-fold cross validation to train and evaluate a classifier"""
@@ -23,8 +25,8 @@ class GenericClassifier(MLTechnique):
             self.classifier_parameters["defaulter_set"] = defaulter_set
 
         classifier = self.classifier_class(**self.classifier_parameters)
-        if self.data_balancer is not None:
-            self.data_balancer = self.data_balancer(random_state=state)
+        if self.data_balancer_class is not None:
+            self.data_balancer = self.data_balancer_class(random_state=state)
 
         for i in range(const.RETRY_COUNT + 1):
             try:

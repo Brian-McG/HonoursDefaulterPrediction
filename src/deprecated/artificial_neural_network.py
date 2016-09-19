@@ -1,7 +1,5 @@
 import multiprocessing
-import os
 import random
-import sys
 import warnings
 from multiprocessing import Manager
 from multiprocessing import Process
@@ -10,10 +8,11 @@ from time import sleep
 from sklearn.cross_validation import StratifiedKFold
 from sknn.mlp import Classifier, Layer
 
-import constants as const
-from constants import verbose_print
+from config import constants as const
+from util import verbose_print
 from ml_statistics import MLStatistics
 from ml_technique import MLTechnique, train_and_evaluate_fold
+
 
 class ArtificialNeuralNetwork(MLTechnique):
     """Contains functionality to train and evaluate an artificial neural network (ANN)"""

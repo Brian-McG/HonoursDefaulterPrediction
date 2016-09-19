@@ -1,6 +1,6 @@
 import numpy as np
 
-import constants as const
+from config import constants as const
 
 
 class MLStatistics:

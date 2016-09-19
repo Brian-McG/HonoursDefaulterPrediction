@@ -16,6 +16,14 @@ from sklearn.tree import ExtraTreeClassifier
 generic_classifier_parameter_arr = []
 
 # Generic classifiers
+# Clustering-launched classification
+clc_parameter_dict = {}
+generic_classifier_parameter_arr.append(clc_parameter_dict)
+
+# Extreme learning machine
+elm_parameter_dict = {}
+generic_classifier_parameter_arr.append(elm_parameter_dict)
+
 # Artificial neural network
 ann_parameter_dict = {}
 generic_classifier_parameter_arr.append(ann_parameter_dict)
