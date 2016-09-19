@@ -2,18 +2,11 @@
 from imblearn.combine import SMOTEENN
 from imblearn.over_sampling import ADASYN
 from imblearn.under_sampling import ClusterCentroids
-from sklearn import svm
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import VotingClassifier
-from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neural_network import MLPClassifier
-from sklearn.tree import DecisionTreeClassifier
 
-from classifier_wrappers.clustering_launched_classification import ClusteringLaunchedClassifier
-from classifier_wrappers.extreme_learning_machines import ExtremeLearningMachine
 import config.classifiers as clfrs
 
 classifier_parameters = {}
@@ -21,15 +14,15 @@ classifier_parameters = {}
 
 def append_classifier_details(classifier_data_balancer, classifier_parameters_dict, classifier_description, classifier_dict):
     """Adds classifier, data_balancer, status and classifier_description to classifier_arr as a dictionary"""
-    classifier_dict[classifier_description] = {"data_balancer": classifier_data_balancer,  "classifier_parameters": classifier_parameters_dict}
+    classifier_dict[classifier_description] = {"data_balancer": classifier_data_balancer, "classifier_parameters": classifier_parameters_dict}
 
 
 # Generic classifier_parameters
 # Clustering-Launched Classification
 clustering_launched_classifier_data_balancer = ClusterCentroids
 clustering_launched_classifier_parameters = {"d": 0.5}
-append_classifier_details(clustering_launched_classifier_data_balancer, clustering_launched_classifier_parameters, clfrs.clustering_launched_classifier_description, classifier_parameters)
-
+append_classifier_details(clustering_launched_classifier_data_balancer, clustering_launched_classifier_parameters, clfrs.clustering_launched_classifier_description,
+                          classifier_parameters)
 
 # Extreme learning machines
 elm_data_balancer = SMOTEENN

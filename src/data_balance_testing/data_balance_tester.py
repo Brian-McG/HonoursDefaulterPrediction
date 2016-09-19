@@ -1,7 +1,8 @@
 """Primary script used to execute the defaulter prediction"""
 import multiprocessing
+from multiprocessing import Manager
+
 import pandas as pd
-import psutil
 from imblearn.combine import SMOTEENN
 from imblearn.combine import SMOTETomek
 from imblearn.over_sampling import ADASYN
@@ -15,8 +16,6 @@ from imblearn.under_sampling import NeighbourhoodCleaningRule
 from imblearn.under_sampling import OneSidedSelection
 from imblearn.under_sampling import RandomUnderSampler
 from imblearn.under_sampling import TomekLinks
-from multiprocessing import Manager
-
 from joblib import Parallel
 from joblib import delayed
 
@@ -50,7 +49,10 @@ def main():
             for classifier_description, classifier_dict in cfr.classifiers.iteritems():
                 if classifier_dict["status"]:
                     print("== {0} ==".format(classifier_description))
-                    Parallel(n_jobs=cpu_count)(delayed(run_test)(classifier_description, classifier_dict, data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], input_defaulter_set, data_balancers[z], data_balance_roc_results, result_recorder) for z in range(len(data_balancers)))
+                    Parallel(n_jobs=cpu_count)(delayed(run_test)(classifier_description, classifier_dict,
+                                                                 data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"],
+                                                                 input_defaulter_set, data_balancers[z], data_balance_roc_results, result_recorder) for z in
+                                               range(len(data_balancers)))
                     # Plot ROC results of each balancer
                     vis.plot_mean_roc_curve_of_balancers(data_balance_roc_results, data_set["data_set_description"], classifier_description)
 
@@ -63,11 +65,11 @@ def run_test(classifier_description, classifier_dict, classifier_parameters, inp
     classifier_roc_results = []
     print("=== {0} ===".format(data_balancer.__name__ if data_balancer is not None else "None"))
     overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
-        false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
+    false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
 
     # Execute classifier TEST_REPEAT number of times
     for i in range(const.TEST_REPEAT):
-        print("==== Run {0} ====".format(i+1))
+        print("==== Run {0} ====".format(i + 1))
         classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer)
         result_dictionary = classifier.train_and_evaluate(input_defaulter_set, i)
 
@@ -103,6 +105,5 @@ def run_test(classifier_description, classifier_dict, classifier_parameters, inp
 
 
 if __name__ == "__main__":
-
     # Run main
     main()

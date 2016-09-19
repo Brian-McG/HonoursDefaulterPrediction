@@ -3,9 +3,9 @@ import subprocess
 from sklearn.model_selection import StratifiedKFold
 
 from config import constants as const
-from util import verbose_print
 from ml_statistics import MLStatistics
 from ml_technique import train_and_evaluate_fold, MLTechnique
+from util import verbose_print
 
 
 class GenericClassifier(MLTechnique):
@@ -45,8 +45,7 @@ class GenericClassifier(MLTechnique):
                 if i + 1 > const.RETRY_COUNT:
                     raise e
                 else:
-                    print("INFO: Repeating classification step - attempt {0} or {1}".format(i+1, const.RETRY_COUNT))
-
+                    print("INFO: Repeating classification step - attempt {0} or {1}".format(i + 1, const.RETRY_COUNT))
 
         # Error rates
         avg_accuracy_dict = self.ml_stats.calculate_average_predictive_accuracy()

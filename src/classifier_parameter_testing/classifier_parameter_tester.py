@@ -3,8 +3,6 @@ import multiprocessing
 from multiprocessing import Manager
 
 import pandas as pd
-import psutil
-import time
 from imblearn.combine import SMOTEENN
 from imblearn.combine import SMOTETomek
 from imblearn.over_sampling import ADASYN

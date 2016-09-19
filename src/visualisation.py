@@ -1,4 +1,4 @@
-import sys
+import os
 from datetime import datetime
 
 import matplotlib.pyplot as plt
@@ -10,7 +10,6 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy import interp
 from sklearn.decomposition import PCA
 from sklearn.metrics import auc
-import os
 
 from config import constants as const
 
@@ -100,7 +99,8 @@ def plot_roc_curve_of_classifier(roc_list, data_set_description, classifier_desc
         plt.title("{0} ROC curve".format(classifier_description))
         plt.legend(loc="lower right")
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/{0}_{1}_roc_plot_{2}.png".format(data_set_description, classifier_description, current_time), bbox_inches="tight")
+        plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/{0}_{1}_roc_plot_{2}.png".format(data_set_description, classifier_description, current_time),
+                    bbox_inches="tight")
 
 
 def plot_mean_roc_curve_of_balancers(balancer_roc_list, data_set_description, classifier_description):
@@ -133,7 +133,9 @@ def plot_mean_roc_curve_of_balancers(balancer_roc_list, data_set_description, cl
         plt.title("{0} ROC curve for each balancer".format(classifier_description))
         plt.legend(loc="lower right")
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/{0}_{1}_roc_balancer_plot_{2}.png".format(data_set_description, classifier_description, current_time), bbox_inches="tight")
+        plt.savefig(
+            os.path.dirname(os.path.realpath(__file__)) + "/../results/{0}_{1}_roc_balancer_plot_{2}.png".format(data_set_description, classifier_description, current_time),
+            bbox_inches="tight")
 
 
 def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description):

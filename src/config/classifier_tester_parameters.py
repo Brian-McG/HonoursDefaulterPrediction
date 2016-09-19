@@ -1,6 +1,4 @@
 import numpy as np
-
-# List of classifier information
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -12,6 +10,7 @@ from sklearn.svm import NuSVC
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.tree import ExtraTreeClassifier
+
 import classifiers as clf
 
 generic_classifier_parameter_dict = {}

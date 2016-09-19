@@ -1,7 +1,4 @@
 """Contains all classifiers used (except ANNs)"""
-from imblearn.combine import SMOTEENN
-from imblearn.over_sampling import ADASYN
-from imblearn.under_sampling import ClusterCentroids
 from sklearn import svm
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -20,7 +17,7 @@ classifiers = {}
 
 def append_classifier_details(classifier_class, status, classifier_description, classifier_dict):
     """Adds classifier, data_balancer, status and classifier_description to classifier_arr as a dictionary"""
-    classifier_dict[classifier_description] = {"classifier": classifier_class,  "status": status}
+    classifier_dict[classifier_description] = {"classifier": classifier_class, "status": status}
 
 
 # Generic Classifiers
