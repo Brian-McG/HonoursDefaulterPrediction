@@ -75,7 +75,7 @@ def visualise_two_data_sets(x_arr, y_arr, x_arr_two, y_arr_two):
 
 
 def plot_roc_curve_of_classifier(roc_list, description="classifier"):
-    if const.RECORD_RESULTS is True:
+    if const.RECORD_RESULTS is True and not (None, None) in roc_list:
         mean_tpr = 0.0
         mean_fpr = np.linspace(0, 1, 100)
         plt.figure(figsize=(12, 10))
@@ -103,7 +103,7 @@ def plot_roc_curve_of_classifier(roc_list, description="classifier"):
 
 
 def plot_mean_roc_curve_of_balancers(balancer_roc_list, description):
-    if const.RECORD_RESULTS is True:
+    if const.RECORD_RESULTS is True and not (None, None) in balancer_roc_list[0][0]:
         plt.figure(figsize=(12, 10))
         monochrome = (cycler('color', ['k']) * cycler('marker', ['']) *
                       cycler('linestyle', ['-', '--', '-.']))
@@ -144,17 +144,18 @@ def plot_mean_roc_curve_of_classifiers(classifier_roc_list):
         plt.rc('axes', prop_cycle=monochrome)
 
         for (test_run_roc_list, classifier_description) in classifier_roc_list:
-            mean_tpr = 0.0
-            mean_fpr = np.linspace(0, 1, 100)
-            for (tpr, fpr) in test_run_roc_list:
-                mean_tpr += interp(mean_fpr, fpr, tpr)
-                mean_tpr[0] = 0.0
+            if not (None, None) in test_run_roc_list:
+                mean_tpr = 0.0
+                mean_fpr = np.linspace(0, 1, 100)
+                for (tpr, fpr) in test_run_roc_list:
+                    mean_tpr += interp(mean_fpr, fpr, tpr)
+                    mean_tpr[0] = 0.0
 
-            mean_tpr /= const.NUMBER_OF_FOLDS
-            mean_tpr[-1] = 1.0
-            mean_auc = auc(mean_fpr, mean_tpr)
-            c = next(color)
-            plt.plot(mean_fpr, mean_tpr, c=c, lw=1, alpha=0.7, label="{0} (area = {1:.4f})".format(classifier_description, mean_auc))
+                mean_tpr /= const.NUMBER_OF_FOLDS
+                mean_tpr[-1] = 1.0
+                mean_auc = auc(mean_fpr, mean_tpr)
+                c = next(color)
+                plt.plot(mean_fpr, mean_tpr, c=c, lw=1, alpha=0.7, label="{0} (area = {1:.4f})".format(classifier_description, mean_auc))
 
         plt.plot([0, 1], [0, 1], "k--", label="Random classification")
         plt.xlim([0.0, 1.0])

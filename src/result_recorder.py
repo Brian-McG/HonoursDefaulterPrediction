@@ -20,12 +20,10 @@ class ResultRecorder:
                 file_name = "data_{0}-folds_{1}.csv".format(const.NUMBER_OF_FOLDS, current_time)
             output_file = open(sys.path[0] + "/../results/" + file_name, "wb")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
-            title_row = ["Classifier description", "Average true positive rate",
+            title_row = ["Classifier description", "Average true rate", "Average true positive rate",
                          "Average true negative rate", "Average false positive rate", "Average false negative rate"]
             csv_writer.writerow(title_row)
             for result_tuple in self.results:
-                csv_writer.writerow((result_tuple[1]['classifier_description'], result_tuple[0]["avg_true_positive_rate"],
-                                     result_tuple[0]["avg_true_negative_rate"],
-                                     result_tuple[0]["avg_false_positive_rate"],
-                                     result_tuple[0]["avg_false_negative_rate"]))
+                csv_writer.writerow((result_tuple[1]['classifier_description'], result_tuple[0]['avg_true_rate'], result_tuple[0]["avg_true_positive_rate"],
+                                     result_tuple[0]["avg_true_negative_rate"], result_tuple[0]["avg_false_positive_rate"], result_tuple[0]["avg_false_negative_rate"]))
             output_file.close()

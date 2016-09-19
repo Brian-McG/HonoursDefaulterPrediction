@@ -48,9 +48,9 @@ def main():
 
 def run_test(classifiers, input_defaulter_set, data_balancers, result_recorder, is_generic=True):
     for classifier_dict in classifiers:
-        if classifier_dict['status'] is True:
+        if classifier_dict["status"] is True:
             data_balance_roc_results = []
-            print("== {0} ==".format(classifier_dict['classifier_description']))
+            print("== {0} ==".format(classifier_dict["classifier_description"]))
             for data_balancer in data_balancers:
                 classifier_roc_results = []
                 print("=== {0} ===".format(data_balancer.__name__ if data_balancer is not None else "None"))
@@ -61,15 +61,15 @@ def run_test(classifiers, input_defaulter_set, data_balancers, result_recorder, 
                 for i in range(const.TEST_REPEAT):
                     print("==== Run {0} ====".format(i+1))
                     if is_generic is True:
-                        classifier = GenericClassifier(classifier_dict['classifier'], classifier_dict['classifier_parameters'], data_balancer)
+                        classifier = GenericClassifier(classifier_dict["classifier"], classifier_dict["classifier_parameters"], data_balancer)
                     else:
-                        classifier = classifier_dict['classifier']
+                        classifier = classifier_dict["classifier"]
                     result_dictionary = classifier.train_and_evaluate(input_defaulter_set, i)
 
                     # Add ROC results
                     classifier_roc_results.append(classifier.ml_stats.roc_list)
 
-                    overall_true_rate += (result_dictionary["avg_true_positive_rate"] + result_dictionary["avg_true_negative_rate"]) / 2.0
+                    overall_true_rate += result_dictionary["avg_true_rate"]
                     true_positive_rate += result_dictionary["avg_true_positive_rate"]
                     true_negative_rate += result_dictionary["avg_true_negative_rate"]
                     false_positive_rate += result_dictionary["avg_false_positive_rate"]
@@ -94,10 +94,10 @@ def run_test(classifiers, input_defaulter_set, data_balancers, result_recorder, 
                 individual_data_balancer_results[8] = ("false_negative_rate_cutoff", false_negative_rate_cutoff / const.TEST_REPEAT)
                 individual_data_balancer_results[9] = ("unclassified_cutoff", unclassified_cutoff / const.TEST_REPEAT)
                 classifier_tuple = (data_balancer.__class__.__name__, individual_data_balancer_results)
-                result_recorder.record_results((classifier_dict['classifier_description'], classifier_tuple))
+                result_recorder.record_results((classifier_dict["classifier_description"], classifier_tuple))
 
             # Plot ROC results of each balancer
-            vis.plot_mean_roc_curve_of_balancers(data_balance_roc_results, classifier_dict['classifier_description'])
+            vis.plot_mean_roc_curve_of_balancers(data_balance_roc_results, classifier_dict["classifier_description"])
 
 
 if __name__ == "__main__":

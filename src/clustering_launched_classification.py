@@ -5,7 +5,7 @@ import sys
 from datetime import datetime
 
 import pandas as pd
-from time import sleep
+import numpy as np
 
 import constants as const
 
@@ -24,27 +24,19 @@ class ClusteringLaunchedClassifier:
         data = pd.DataFrame(data=x_resampled)
         data.insert(0, 'classification', y_resampled)
 
-        for i in range(const.RETRY_COUNT + 1):
-            self.current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
-            training_data = os.path.abspath(sys.path[0] + "/../dependencies/tmp/training_fold_{0}".format(self.current_time))
-            self.model = os.path.abspath(sys.path[0] + "/../dependencies/tmp/model_{0}".format(self.current_time))
-            data.to_csv(path_or_buf=training_data, index=False, header=False, sep='\t')
+        self.current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
+        training_data = os.path.abspath(sys.path[0] + "/../dependencies/tmp/training_fold_{0}".format(self.current_time))
+        self.model = os.path.abspath(sys.path[0] + "/../dependencies/tmp/model_{0}".format(self.current_time))
+        data.to_csv(path_or_buf=training_data, index=False, header=False, sep='\t')
 
-            clc_arr = [self.clc_path, 'TRAIN', training_data, str(self.d), self.model]
-            try:
-                subprocess.check_output(clc_arr)
-                os.remove(training_data)
-                break
-            except subprocess.CalledProcessError as e:
-                if i + 1 > const.RETRY_COUNT:
-                    os.remove(training_data)
-                    raise e
-                else:
-                    print("INFO: Repeating CLC execution")
-                    sleep(2)
-                    os.remove(training_data)
-                    continue
+        clc_arr = [self.clc_path, 'TRAIN', training_data, str(self.d), self.model]
+        try:
+            subprocess.check_output(clc_arr)
+        except subprocess.CalledProcessError as e:
+            os.remove(training_data)
+            raise e
 
+        os.remove(training_data)
 
     def predict(self, x_testing):
         test_data = pd.DataFrame(data=x_testing)

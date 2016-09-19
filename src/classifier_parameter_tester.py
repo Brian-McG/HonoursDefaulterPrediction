@@ -44,7 +44,7 @@ def execute_loop(classifier_dict, parameter_dict, defaulter_set_arr, results_rec
             except Exception as e:
                 const.verbose_print("WARNING: incompatible input parameters - {0}".format(e))
                 return
-            overall_true_rate += (result_dictionary["avg_true_positive_rate"] + result_dictionary["avg_true_negative_rate"]) / 2.0
+            overall_true_rate += result_dictionary["avg_true_rate"]
             true_positive_rate += result_dictionary["avg_true_positive_rate"]
             true_negative_rate += result_dictionary["avg_true_negative_rate"]
             false_positive_rate += result_dictionary["avg_false_positive_rate"]

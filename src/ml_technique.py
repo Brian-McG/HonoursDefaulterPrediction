@@ -55,14 +55,20 @@ def train_and_evaluate_fold(self, defaulter_set, training_set_indices, testing_s
 
     if outcome_decision_values is None:
         try:
-            outcome_decision_values = classifier.predict_proba(x_testing)[:, 1]
+            predictions = classifier.predict_proba(x_testing)
+            outcome_decision_values = predictions[:, 1]
+            print(np.array([[predictions[i][0], predictions[i][1], y_testing[i], test_classification[i]] for i in range(len(predictions))]))
         except AttributeError:
-            outcome_decision_values = [-1] * len(test_classification)
+            outcome_decision_values = None
             verbose_print("WARNING: unable to calculate classification accuracy")
 
-    fpr, tpr, _ = roc_curve(y_testing, outcome_decision_values)
+    fpr, tpr = None, None
+    if outcome_decision_values is not None:
+        fpr, tpr, _ = roc_curve(y_testing, outcome_decision_values)
+        fpr = fpr.tolist()
+        tpr = tpr.tolist()
 
-    self.ml_stats.calculate_and_append_fold_accuracy(test_classification, y_testing, tpr.tolist(), fpr.tolist(), test_probabilities=test_probabilities)
+    self.ml_stats.calculate_and_append_fold_accuracy(test_classification, y_testing, tpr, fpr, test_probabilities=test_probabilities)
 
 
 class MLTechnique:
