@@ -27,7 +27,7 @@ class DataBalancerResultRecorder:
                          "Average unclassified from cutoff"]
             csv_writer.writerow(title_row)
             for result_tuple in self.results:
-                csv_writer.writerow((result_tuple[0], result_tuple[1][0], result_tuple[1][1][0][1], result_tuple[1][1][1][1], result_tuple[1][1][2][1], result_tuple[1][1][3][1],
-                                     result_tuple[1][1][4][1], result_tuple[1][1][5][1], result_tuple[1][1][6][1], result_tuple[1][1][7][1], result_tuple[1][1][8][1],
-                                     result_tuple[1][1][9][1]))
+                csv_writer.writerow((result_tuple[0], result_tuple[1][0], result_tuple[1][1][0], result_tuple[1][1][1], result_tuple[1][1][2], result_tuple[1][1][3],
+                                     result_tuple[1][1][4], result_tuple[1][1][5], result_tuple[1][1][6], result_tuple[1][1][7], result_tuple[1][1][8],
+                                     result_tuple[1][1][9]))
             output_file.close()

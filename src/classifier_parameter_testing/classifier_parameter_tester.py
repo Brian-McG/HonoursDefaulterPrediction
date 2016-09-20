@@ -1,4 +1,7 @@
 """Primary script used to execute the defaulter prediction"""
+import warnings
+warnings.filterwarnings("ignore")
+warnings.simplefilter('ignore')
 import multiprocessing
 from multiprocessing import Manager
 
@@ -27,6 +30,7 @@ from config import constants as const
 from config import data_sets
 from data_preprocessing import apply_preprocessing
 from generic_classifier import GenericClassifier
+from run_statistics import RunStatistics
 
 
 def execute_loop(classifier_description, classifier_dict, parameter_dict, defaulter_set_arr, results_recorder, z, parameter_grid_len):
@@ -37,38 +41,16 @@ def execute_loop(classifier_description, classifier_dict, parameter_dict, defaul
         print("==== {0} - {1}% ====".format(classifier_description, format((float(z) / parameter_grid_len) * 100, '.2f')))
 
     for data_balancer in data_balancers:
-        generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer)
-        overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
-            false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
+        test_stats = RunStatistics()
         for x in range(const.TEST_REPEAT):
-
+            generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer)
             result_dictionary = generic_classifier.train_and_evaluate(defaulter_set_arr, x)
+            test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
 
-            overall_true_rate += result_dictionary["avg_true_rate"]
-            true_positive_rate += result_dictionary["avg_true_positive_rate"]
-            true_negative_rate += result_dictionary["avg_true_negative_rate"]
-            false_positive_rate += result_dictionary["avg_false_positive_rate"]
-            false_negative_rate += result_dictionary["avg_false_negative_rate"]
-            true_positive_rate_cutoff += result_dictionary["avg_true_positive_rate_with_prob_cutoff"]
-            true_negative_rate_cutoff += result_dictionary["avg_true_negative_rate_with_prob_cutoff"]
-            false_positive_rate_cutoff += result_dictionary["avg_false_positive_rate_with_prob_cutoff"]
-            false_negative_rate_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
-            unclassified_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
-
-        individual_results = [None, None, None, None, None, None, None, None, None, None]
-        individual_results[0] = overall_true_rate / const.TEST_REPEAT
-        individual_results[1] = true_positive_rate / const.TEST_REPEAT
-        individual_results[2] = true_negative_rate / const.TEST_REPEAT
-        individual_results[3] = false_positive_rate / const.TEST_REPEAT
-        individual_results[4] = false_negative_rate / const.TEST_REPEAT
-        individual_results[5] = true_positive_rate_cutoff / const.TEST_REPEAT
-        individual_results[6] = true_negative_rate_cutoff / const.TEST_REPEAT
-        individual_results[7] = false_positive_rate_cutoff / const.TEST_REPEAT
-        individual_results[8] = false_negative_rate_cutoff / const.TEST_REPEAT
-        individual_results[9] = unclassified_cutoff / const.TEST_REPEAT
+        avg_results = test_stats.calculate_average_run_accuracy()
         sorted_keys = sorted(parameter_dict)
         values = [parameter_dict.get(k) for k in sorted_keys if k in parameter_dict] + [data_balancer.__name__ if data_balancer is not None else "None"]
-        results_recorder.record_results(values + individual_results)
+        results_recorder.record_results(values + avg_results)
 
 
 if __name__ == "__main__":

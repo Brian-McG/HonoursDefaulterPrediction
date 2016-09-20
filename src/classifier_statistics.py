@@ -3,7 +3,7 @@ import numpy as np
 from config import constants as const
 
 
-class MLStatistics:
+class ClassifierStatistics:
     """Contains functionality to calculate predictive accuracy rates"""
 
     def __init__(self, error_list=None, roc_list=None):
@@ -84,6 +84,9 @@ class MLStatistics:
 
     def calculate_average_predictive_accuracy(self):
         """Averages true positive, true negative, false positive and false negative rate contained in errors"""
+
+        assert len(self.errors) == const.NUMBER_OF_FOLDS
+
         avg_accuracy_dict = {}
         avg_true_rate = 0
         avg_true_positive_rate = 0
@@ -107,15 +110,15 @@ class MLStatistics:
             avg_false_negative_rate_probability_cutoff += error_dict["false negative rate with probability cutoff"]
             unclassified += error_dict["unclassified with probability cutoff"]
 
-        avg_accuracy_dict["avg_true_rate"] = avg_true_rate / float(const.NUMBER_OF_FOLDS)
-        avg_accuracy_dict["avg_true_positive_rate"] = avg_true_positive_rate / float(const.NUMBER_OF_FOLDS)
-        avg_accuracy_dict["avg_true_negative_rate"] = avg_true_negative_rate / float(const.NUMBER_OF_FOLDS)
-        avg_accuracy_dict["avg_false_positive_rate"] = avg_false_positive_rate / float(const.NUMBER_OF_FOLDS)
-        avg_accuracy_dict["avg_false_negative_rate"] = avg_false_negative_rate / float(const.NUMBER_OF_FOLDS)
-        avg_accuracy_dict["avg_true_positive_rate_with_prob_cutoff"] = avg_true_positive_rate_probability_cutoff / float(const.NUMBER_OF_FOLDS)
-        avg_accuracy_dict["avg_true_negative_rate_with_prob_cutoff"] = avg_true_negative_rate_probability_cutoff / float(const.NUMBER_OF_FOLDS)
-        avg_accuracy_dict["avg_false_positive_rate_with_prob_cutoff"] = avg_false_positive_rate_probability_cutoff / float(const.NUMBER_OF_FOLDS)
-        avg_accuracy_dict["avg_false_negative_rate_with_prob_cutoff"] = avg_false_negative_rate_probability_cutoff / float(const.NUMBER_OF_FOLDS)
-        avg_accuracy_dict["avg_unclassified_with_prob_cutoff"] = unclassified / float(const.NUMBER_OF_FOLDS)
+        avg_accuracy_dict["avg_true_rate"] = avg_true_rate / float(len(self.errors))
+        avg_accuracy_dict["avg_true_positive_rate"] = avg_true_positive_rate / float(len(self.errors))
+        avg_accuracy_dict["avg_true_negative_rate"] = avg_true_negative_rate / float(len(self.errors))
+        avg_accuracy_dict["avg_false_positive_rate"] = avg_false_positive_rate / float(len(self.errors))
+        avg_accuracy_dict["avg_false_negative_rate"] = avg_false_negative_rate / float(len(self.errors))
+        avg_accuracy_dict["avg_true_positive_rate_with_prob_cutoff"] = avg_true_positive_rate_probability_cutoff / float(len(self.errors))
+        avg_accuracy_dict["avg_true_negative_rate_with_prob_cutoff"] = avg_true_negative_rate_probability_cutoff / float(len(self.errors))
+        avg_accuracy_dict["avg_false_positive_rate_with_prob_cutoff"] = avg_false_positive_rate_probability_cutoff / float(len(self.errors))
+        avg_accuracy_dict["avg_false_negative_rate_with_prob_cutoff"] = avg_false_negative_rate_probability_cutoff / float(len(self.errors))
+        avg_accuracy_dict["avg_unclassified_with_prob_cutoff"] = unclassified / float(len(self.errors))
 
         return avg_accuracy_dict

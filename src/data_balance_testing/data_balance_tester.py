@@ -26,6 +26,7 @@ from config import data_sets
 from data_balancer_result_recorder import DataBalancerResultRecorder
 from data_preprocessing import apply_preprocessing
 from generic_classifier import GenericClassifier
+from run_statistics import RunStatistics
 
 
 def main():
@@ -63,43 +64,21 @@ def main():
 
 def run_test(classifier_description, classifier_dict, classifier_parameters, input_defaulter_set, data_balancer, data_balance_roc_results, result_recorder):
     classifier_roc_results = []
-    print("=== {0} ===".format(data_balancer.__name__ if data_balancer is not None else "None"))
-    overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
-    false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff = [0] * 10
+    test_stats = RunStatistics()
 
     # Execute classifier TEST_REPEAT number of times
     for i in range(const.TEST_REPEAT):
-        print("==== Run {0} ====".format(i + 1))
+        print("==== {0} - Run {1} ====".format(data_balancer.__name__ if data_balancer is not None else "None", i + 1))
         classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer)
         result_dictionary = classifier.train_and_evaluate(input_defaulter_set, i)
 
         # Add ROC results
         classifier_roc_results.append(classifier.ml_stats.roc_list)
-
-        overall_true_rate += result_dictionary["avg_true_rate"]
-        true_positive_rate += result_dictionary["avg_true_positive_rate"]
-        true_negative_rate += result_dictionary["avg_true_negative_rate"]
-        false_positive_rate += result_dictionary["avg_false_positive_rate"]
-        false_negative_rate += result_dictionary["avg_false_negative_rate"]
-        true_positive_rate_cutoff += result_dictionary["avg_true_positive_rate_with_prob_cutoff"]
-        true_negative_rate_cutoff += result_dictionary["avg_true_negative_rate_with_prob_cutoff"]
-        false_positive_rate_cutoff += result_dictionary["avg_false_positive_rate_with_prob_cutoff"]
-        false_negative_rate_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
-        unclassified_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
+        test_stats.append_run_result(result_dictionary, classifier.ml_stats.roc_list)
 
     data_balance_roc_results.append((classifier_roc_results, data_balancer.__name__ if data_balancer is not None else "None"))
 
-    individual_data_balancer_results = [None, None, None, None, None, None, None, None, None, None]
-    individual_data_balancer_results[0] = ("overall_true_rate", overall_true_rate / const.TEST_REPEAT)
-    individual_data_balancer_results[1] = ("true_positive_rate", true_positive_rate / const.TEST_REPEAT)
-    individual_data_balancer_results[2] = ("true_negative_rate", true_negative_rate / const.TEST_REPEAT)
-    individual_data_balancer_results[3] = ("false_positive_rate", false_positive_rate / const.TEST_REPEAT)
-    individual_data_balancer_results[4] = ("false_negative_rate", false_negative_rate / const.TEST_REPEAT)
-    individual_data_balancer_results[5] = ("true_positive_rate_cutoff", true_positive_rate_cutoff / const.TEST_REPEAT)
-    individual_data_balancer_results[6] = ("true_negative_rate_cutoff", true_negative_rate_cutoff / const.TEST_REPEAT)
-    individual_data_balancer_results[7] = ("false_positive_rate_cutoff", false_positive_rate_cutoff / const.TEST_REPEAT)
-    individual_data_balancer_results[8] = ("false_negative_rate_cutoff", false_negative_rate_cutoff / const.TEST_REPEAT)
-    individual_data_balancer_results[9] = ("unclassified_cutoff", unclassified_cutoff / const.TEST_REPEAT)
+    individual_data_balancer_results = test_stats.calculate_average_run_accuracy()
     classifier_tuple = (data_balancer.__name__ if data_balancer is not None else "None", individual_data_balancer_results)
     result_recorder.record_results((classifier_description, classifier_tuple))
 

@@ -9,6 +9,7 @@ from config import data_sets
 from data_preprocessing import apply_preprocessing
 from generic_classifier import GenericClassifier
 from result_recorder import ResultRecorder
+from run_statistics import RunStatistics
 
 
 def main():
@@ -25,14 +26,25 @@ def main():
             # Execute enabled classifiers
             for classifier_description, classifier_dict in cfr.classifiers.iteritems():
                 if classifier_dict["status"]:
-                    classifier_parameters = data_set["data_set_classifier_parameters"]
-                    generic_classifier = GenericClassifier(classifier_dict["classifier"],
-                                                           classifier_parameters.classifier_parameters[classifier_description]["classifier_parameters"],
-                                                           classifier_parameters.classifier_parameters[classifier_description]["data_balancer"])
-                    result_dictionary = generic_classifier.train_and_evaluate(input_defaulter_set, None)
-                    result_recorder.record_results(result_dictionary, classifier_description)
-                    vis.plot_roc_curve_of_classifier(generic_classifier.ml_stats.roc_list, data_set["data_set_description"], classifier_description)
-                    roc_plot.append((generic_classifier.ml_stats.roc_list, classifier_description))
+                    print("\n=== {0} ===".format(classifier_description))
+                    test_stats = RunStatistics()
+                    for i in range(const.TEST_REPEAT):
+                        classifier_parameters = data_set["data_set_classifier_parameters"]
+                        generic_classifier = GenericClassifier(classifier_dict["classifier"],
+                                                               classifier_parameters.classifier_parameters[classifier_description]["classifier_parameters"],
+                                                               classifier_parameters.classifier_parameters[classifier_description]["data_balancer"])
+                        result_dictionary = generic_classifier.train_and_evaluate(input_defaulter_set, None)
+                        vis.plot_roc_curve_of_classifier(generic_classifier.ml_stats.roc_list, data_set["data_set_description"] + "_run{0}_".format(i + 1), classifier_description)
+                        test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
+
+                    avg_results = test_stats.calculate_average_run_accuracy()
+                    roc_plot.append((test_stats.roc_list, classifier_description))
+                    result_recorder.record_results(avg_results, classifier_description)
+                    print("Average true rate: {0}".format(avg_results[0]))
+                    print("Average true positive rate: {0}".format(avg_results[1]))
+                    print("Average true negative rate: {0}".format(avg_results[2]))
+                    print("Average false positive rate: {0}".format(avg_results[3]))
+                    print("Average false negative rate: {0}".format(avg_results[4]))
 
             if const.RECORD_RESULTS:
                 vis.plot_mean_roc_curve_of_classifiers(roc_plot, data_set["data_set_description"])

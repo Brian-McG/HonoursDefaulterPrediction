@@ -1,4 +1,5 @@
 """Contains all classifiers used (except ANNs)"""
+from collections import OrderedDict
 from sklearn import svm
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -12,7 +13,7 @@ from sklearn.tree import DecisionTreeClassifier
 from classifier_wrappers.clustering_launched_classification import ClusteringLaunchedClassifier
 from classifier_wrappers.extreme_learning_machines import ExtremeLearningMachine
 
-classifiers = {}
+classifiers = OrderedDict()
 
 
 def append_classifier_details(classifier_class, status, classifier_description, classifier_dict):

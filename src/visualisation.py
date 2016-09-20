@@ -78,7 +78,7 @@ def plot_roc_curve_of_classifier(roc_list, data_set_description, classifier_desc
     if const.RECORD_RESULTS is True and not (None, None) in roc_list:
         mean_tpr = 0.0
         mean_fpr = np.linspace(0, 1, 100)
-        plt.figure(figsize=(12, 10))
+        fig = plt.figure(figsize=(12, 10))
         i = 1
         for (tpr, fpr) in roc_list:
             mean_tpr += interp(mean_fpr, fpr, tpr)
@@ -101,11 +101,11 @@ def plot_roc_curve_of_classifier(roc_list, data_set_description, classifier_desc
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/{0}_{1}_roc_plot_{2}.png".format(data_set_description, classifier_description, current_time),
                     bbox_inches="tight")
-
+        plt.close(fig)
 
 def plot_mean_roc_curve_of_balancers(balancer_roc_list, data_set_description, classifier_description):
     if const.RECORD_RESULTS is True and not (None, None) in balancer_roc_list[0][0]:
-        plt.figure(figsize=(12, 10))
+        fig = plt.figure(figsize=(12, 10))
         monochrome = (cycler('color', ['k']) * cycler('marker', ['']) *
                       cycler('linestyle', ['-', '--', '-.']))
         color = iter(cm.brg(np.linspace(0, 1, len(balancer_roc_list))))
@@ -119,7 +119,7 @@ def plot_mean_roc_curve_of_balancers(balancer_roc_list, data_set_description, cl
                     mean_tpr += interp(mean_fpr, fpr, tpr)
                     mean_tpr[0] = 0.0
 
-            mean_tpr /= (const.NUMBER_OF_FOLDS * const.TEST_REPEAT)
+            mean_tpr /= (len(test_result) * len(test_run_roc_list))
             mean_tpr[-1] = 1.0
             mean_auc = auc(mean_fpr, mean_tpr)
             c = next(color)
@@ -136,25 +136,29 @@ def plot_mean_roc_curve_of_balancers(balancer_roc_list, data_set_description, cl
         plt.savefig(
             os.path.dirname(os.path.realpath(__file__)) + "/../results/{0}_{1}_roc_balancer_plot_{2}.png".format(data_set_description, classifier_description, current_time),
             bbox_inches="tight")
+        plt.close(fig)
 
 
 def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description):
     if const.RECORD_RESULTS is True:
-        plt.figure(figsize=(12, 10))
+        fig = plt.figure(figsize=(12, 10))
         monochrome = (cycler('color', ['k']) * cycler('marker', ['']) *
                       cycler('linestyle', ['-', '--', '-.']))
         color = iter(cm.brg(np.linspace(0, 1, len(classifier_roc_list))))
         plt.rc('axes', prop_cycle=monochrome)
 
         for (test_run_roc_list, classifier_description) in classifier_roc_list:
-            if not (None, None) in test_run_roc_list:
+            if not (None, None) in test_run_roc_list[0]:
                 mean_tpr = 0.0
                 mean_fpr = np.linspace(0, 1, 100)
-                for (tpr, fpr) in test_run_roc_list:
-                    mean_tpr += interp(mean_fpr, fpr, tpr)
-                    mean_tpr[0] = 0.0
+                count = 0
+                for roc_list in test_run_roc_list:
+                    for (tpr, fpr) in roc_list:
+                        mean_tpr += interp(mean_fpr, fpr, tpr)
+                        mean_tpr[0] = 0.0
+                        count += 1
 
-                mean_tpr /= const.NUMBER_OF_FOLDS
+                mean_tpr /= float(count)
                 mean_tpr[-1] = 1.0
                 mean_auc = auc(mean_fpr, mean_tpr)
                 c = next(color)
@@ -169,3 +173,4 @@ def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description
         plt.legend(loc="lower right")
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/{0}_roc_classifier_plot_{1}.png".format(data_set_description, current_time), bbox_inches="tight")
+        plt.close(fig)
