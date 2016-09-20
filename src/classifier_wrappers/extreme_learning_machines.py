@@ -14,6 +14,7 @@ class ExtremeLearningMachine:
             self.elm.add_neurons(layer_tuple[0], layer_tuple[1])
 
     def fit(self, x_train, class_1):
+        # TODO generalise this to multiple classes
         class_0 = np.array([0 if item == 1 else 1 for item in class_1])
         class_arr = [None] * len(class_1)
         for i in range(len(class_1)):

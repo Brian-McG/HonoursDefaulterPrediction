@@ -37,7 +37,7 @@ append_classifier_details(elm, elm_enabled, elm_description, classifiers)
 # Artificial Neural network
 ann = MLPClassifier
 ann_description = "Artificial neural network"
-ann_enabled = False
+ann_enabled = True
 append_classifier_details(ann, ann_enabled, ann_description, classifiers)
 
 # Support Vector Machines (with RDF kernel)

@@ -29,8 +29,8 @@ ann_parameter_dict = None
 generic_classifier_parameter_dict[clf.ann_description] = ann_parameter_dict
 
 # Support Vector Machines (RBF)
-rbf_svm_parameter_dict = {"cache_size": [2048], "decision_function_shape": ['ovo', "ovr"], "kernel": ["rbf"], "C": np.linspace(0.01, 10, 1).tolist(),
-                          "gamma": ["auto"] + np.linspace(0.001, 2, 1).tolist(), 'class_weight': [None, 'balanced']}
+rbf_svm_parameter_dict = {"cache_size": [2048], "decision_function_shape": ['ovo', "ovr"], "kernel": ["rbf"], "C": np.linspace(0.01, 10, 20).tolist(),
+                          "gamma": ["auto"] + np.linspace(0.001, 2, 20).tolist(), 'class_weight': [None, 'balanced']}
 generic_classifier_parameter_dict[clf.svm_rdf_description] = rbf_svm_parameter_dict
 
 # Support Vector Machines (linear)

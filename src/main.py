@@ -19,7 +19,7 @@ def main():
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
 
             # Preprocess data set
-            input_defaulter_set = apply_preprocessing(input_defaulter_set)
+            input_defaulter_set = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["missing_values_strategy"])
             result_recorder = ResultRecorder()
             roc_plot = []
 
