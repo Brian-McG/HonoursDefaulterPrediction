@@ -28,7 +28,7 @@ class GenericClassifier(MLTechnique):
         if self.data_balancer_class is not None:
             self.data_balancer = self.data_balancer_class(random_state=state)
 
-        for i in range(const.RETRY_COUNT + 1):
+        for i in range(5 + 1):
             try:
                 self.ml_stats.errors = []
                 self.ml_stats.roc_list = []
@@ -42,10 +42,10 @@ class GenericClassifier(MLTechnique):
 
                 break
             except subprocess.CalledProcessError as e:
-                if i + 1 > const.RETRY_COUNT:
+                if i + 1 > 5:
                     raise e
                 else:
-                    print("INFO: Repeating classification step - attempt {0} of {1}".format(i + 1, const.RETRY_COUNT))
+                    print("INFO: Repeating classification step - attempt {0} of {1}".format(i + 1, 5))
 
         # Error rates
         avg_accuracy_dict = self.ml_stats.calculate_average_predictive_accuracy()

@@ -37,13 +37,13 @@ append_classifier_details(elm, elm_enabled, elm_description, classifiers)
 # Artificial Neural network
 ann = MLPClassifier
 ann_description = "Artificial neural network"
-ann_enabled = True
+ann_enabled = False
 append_classifier_details(ann, ann_enabled, ann_description, classifiers)
 
 # Support Vector Machines (with RDF kernel)
 svm_rdf = svm.SVC
 svm_rdf_description = "SVM (RDF)"
-svm_rdf_enabled = True
+svm_rdf_enabled = False
 append_classifier_details(svm_rdf, svm_rdf_enabled, svm_rdf_description, classifiers)
 
 # Support Vector Machines (with linear kernel)
@@ -79,7 +79,7 @@ append_classifier_details(adaboost, adaboost_enabled, adaboost_description, clas
 # Random forest
 random_forest = RandomForestClassifier
 random_forest_description = "Random forest"
-random_forest_enabled = False
+random_forest_enabled = True
 append_classifier_details(random_forest, random_forest_enabled, random_forest_description, classifiers)
 
 # K-nearest neighbours

@@ -21,7 +21,7 @@ lima_tb_categorical_columns = ["Age", "Sex", "Marital Status", "Prison Hx", "Com
                                "History of Drug Use", "Hx of Rehab", "MDR-TB", "Body Mass Index", "Hx Chronic Disease", "HIV Status", "Hx Diabetes Melitus"]
 lima_tb_classification_label = ["Treatment Outcome"]
 lima_tb_missing_values_strategy = "remove"
-lima_tb_enabled = False
+lima_tb_enabled = True
 lima_tb_classifier_parameters = default_classifier_parameters
 append_data_set_details(lima_tb_path, lima_tb_numeric_columns, lima_tb_categorical_columns, lima_tb_classification_label, lima_tb_missing_values_strategy, lima_tb_enabled,
                         lima_tb_classifier_parameters, "Lima_TB", data_set_arr)
@@ -39,7 +39,7 @@ german_credit_categorical_columns = ["Attribute 1", "Attribute 3", "Attribute 4"
                                      "Attribute 15", "Attribute 17", "Attribute 19", "Attribute 20"]
 german_credit_classification_label = ["Classification Label"]
 german_credit_missing_values_strategy = "remove"
-german_credit_enabled = True
+german_credit_enabled = False
 german_credit_parameters = default_classifier_parameters
 append_data_set_details(german_credit_path, german_credit_numeric_columns, german_credit_categorical_columns, german_credit_classification_label,
                         german_credit_missing_values_strategy, german_credit_enabled, german_credit_parameters, "German_credit", data_set_arr)

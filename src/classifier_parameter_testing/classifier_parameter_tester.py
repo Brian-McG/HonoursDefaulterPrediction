@@ -1,5 +1,8 @@
 """Primary script used to execute the defaulter prediction"""
 import warnings
+
+import subprocess
+
 warnings.filterwarnings("ignore")
 warnings.simplefilter('ignore')
 import multiprocessing
@@ -33,7 +36,7 @@ from generic_classifier import GenericClassifier
 from run_statistics import RunStatistics
 
 
-def execute_loop(classifier_description, classifier_dict, parameter_dict, defaulter_set_arr, results_recorder, z, parameter_grid_len):
+def execute_loop(classifier_description, classifier_dict, parameter_dict, defaulter_set_arr, results_recorder, z, parameter_grid_len, requires_random_state):
     data_balancers = [None, ClusterCentroids, EditedNearestNeighbours, InstanceHardnessThreshold, NearMiss, NeighbourhoodCleaningRule,
                       OneSidedSelection, RandomUnderSampler, TomekLinks, ADASYN, RandomOverSampler, SMOTE, SMOTEENN, SMOTETomek]
 
@@ -42,15 +45,24 @@ def execute_loop(classifier_description, classifier_dict, parameter_dict, defaul
 
     for data_balancer in data_balancers:
         test_stats = RunStatistics()
+        success = True
         for x in range(const.TEST_REPEAT):
-            generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer)
-            result_dictionary = generic_classifier.train_and_evaluate(defaulter_set_arr, x)
-            test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
+            try:
+                generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer)
+                if requires_random_state:
+                    result_dictionary = generic_classifier.train_and_evaluate(defaulter_set_arr, None)
+                else:
+                    result_dictionary = generic_classifier.train_and_evaluate(defaulter_set_arr, x)
+                test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
+            except subprocess.CalledProcessError:
+                success = False
+                print("INFO: parameter caused classifier to raise exception")
 
-        avg_results = test_stats.calculate_average_run_accuracy()
-        sorted_keys = sorted(parameter_dict)
-        values = [parameter_dict.get(k) for k in sorted_keys if k in parameter_dict] + [data_balancer.__name__ if data_balancer is not None else "None"]
-        results_recorder.record_results(values + avg_results)
+        if success:
+            avg_results = test_stats.calculate_average_run_accuracy()
+            sorted_keys = sorted(parameter_dict)
+            values = [parameter_dict.get(k) for k in sorted_keys if k in parameter_dict] + [data_balancer.__name__ if data_balancer is not None else "None"]
+            results_recorder.record_results(values + avg_results)
 
 
 if __name__ == "__main__":
@@ -60,7 +72,7 @@ if __name__ == "__main__":
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
 
             # Preprocess data set
-            input_defaulter_set = apply_preprocessing(input_defaulter_set)
+            input_defaulter_set = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["missing_values_strategy"])
 
             cpu_count = multiprocessing.cpu_count()
             for classifier_description, classifier_dict in cfr.classifiers.iteritems():
@@ -70,9 +82,9 @@ if __name__ == "__main__":
                     result_recorder = ClassifierResultRecorder(result_arr=manager.list())
 
                     # Execute enabled classifiers
-                    parameter_grid = ParameterGrid(parameter_dict)
+                    parameter_grid = ParameterGrid(parameter_dict["parameters"])
                     Parallel(n_jobs=cpu_count)(
-                        delayed(execute_loop)(classifier_description, classifier_dict, parameter_grid[z], input_defaulter_set, result_recorder, z, len(parameter_grid)) for z in
+                        delayed(execute_loop)(classifier_description, classifier_dict, parameter_grid[z], input_defaulter_set, result_recorder, z, len(parameter_grid), parameter_dict["requires_random_state"]) for z in
                         range(len(parameter_grid)))
 
                     print(result_recorder.results)
