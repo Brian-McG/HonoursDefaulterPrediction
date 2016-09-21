@@ -1,7 +1,10 @@
 """Primary script used to execute the defaulter prediction"""
+import os
 import warnings
 
 import subprocess
+
+import sys
 
 warnings.filterwarnings("ignore")
 warnings.simplefilter('ignore')
@@ -26,6 +29,7 @@ from joblib import Parallel
 from joblib import delayed
 from sklearn.model_selection import ParameterGrid
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import config.classifier_tester_parameters as ctp
 import config.classifiers as cfr
 from classifier_result_recorder import ClassifierResultRecorder

@@ -154,7 +154,83 @@ The field of credit scoring in the financial space aims to determine if a financ
 	\item Summarise overall paper
 \end{enumerate}
 
-\section{Related work}
+\section{Background}
+\subsection{Definition of a defaulter}
+The definition of a defaulter depends on its context. TB literature typically uses the World Health Organisation (WHO) definition that a defaulter is a person whose treatment has been disrupted for two or more consecutive months \cite{chan:2003prevalence, cherkaoui:19326203, Jha:10.1371/journal.pone.0008873,jittimanee:10.1111/j.1440-172X.2007.00650.x,muture:6660173120110101, world2015TB}.
+
+\subsection{Determining predictors of TB default}
+There have been many studies which focus on determining the factors associated with TB default but few have used machine learning techniques to predict treatment defaulters. Table \ref{table:predictors_of_tb_default} contains an overview of a selection of publications on determining the factors associated with TB default. The majority of techniques use a form of logistic regression ti determine the association. 
+
+The datasets used by the publications contain different features. Age and gender are common throughout the datasets. History of past default is available for all datasets except for Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037}. Lackey \textit{et al.} \cite{Lackey:10356751520150601} only picked individuals who did not have a history of past default. Jittimanee \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} [28] was the only publication with the feature that did not find it to be significant to the 95\% confidence level. However, it did have an odds ratio of 2.19 and a p-value of 0.12. It can therefore be deduced that a history of past default has a strong correlation to default. Two out of three publications with the alcohol abuse feature available, found it to be significant. Three of the four publications with side effects, as a feature found it was significant. Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037} and Jittimanee \textit{et al.} \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} measured distance and time to treatment site respectively. It can be reasoned that the aforementioned feature's significance will generalise to other datasets since they were found to be significant in the majority of the publications. Other significant features such as illegal drug use, use of herbal medication, daily jobs, history of lung cancer and history of liver disease only appeared once in the datasets. It cannot be discerned if the significance is generalisable or specific to the dataset. The identification of the same features as significant is fairly consistent for the publications that have those features in their dataset. 
+
+\begin{table*}
+	\small
+	\centering
+	\caption{Overview of publications on predictors of TB treatment defaulters}
+	\label{table:predictors_of_tb_default}
+	\makebox[\linewidth]{
+		\begin{tabular}{l|c|c|c} \hline
+			Publication&Sample Size&Key factors identified\textsuperscript{*}&Evaluation\rule{0pt}{3.5mm}\rule[-1mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{1.5cm}{Chan-Yeung \textit{et al.} \cite{chan:2003prevalence}}
+			&\parbox[t]{2.6cm}{1768 non-defaulters\\442 defaulters.}
+			&\parbox[t]{7cm}{History of default, history of lung cancer, liver disease and male patients}
+			&\parbox[t]{8cm}{Multiple logistic regression is used to determine what factors are associated with default.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{1.5cm}{Jha \textit{et al.} \cite{Jha:10.1371/journal.pone.0008873}}
+			&\parbox[t]{2.6cm}{1189 non-defaulters\\1141 defaulters.}
+			&\parbox[t]{7cm}{Male patients, patients directly-observed treatment at public facilities, previous treatment outside India's Revised National Tuberculosis Control Programme and history of previous default\vspace{1mm}}
+			&\parbox[t]{8cm}{The chi-square test or Fisher's exact test (if there were less than 10 observations) was used to test the differences between defaulters and non-defaulters. Bivariate analysis was calculated on the features. Multivariate logistic regression using pre-selected features based on previous studies.}\rule{0pt}{3.5mm}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{1.5cm}{Jittimanee \textit{et al.} \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x}}
+			&\parbox[t]{2.6cm}{106 non-defaulters\\54 defaulters.}
+			&\parbox[t]{7cm}{Jobs where one is only paid if one is at work that day, severe medication side-effects and time to travel to clinic.}
+			&\parbox[t]{8cm}{Patients were interviewed and completed a questionnaire to obtain the information. Hierarchical logistic regression  was carried out to assess the variable's relation to default.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{1.5cm}{Lackey \textit{et al.} \cite{Lackey:10356751520150601}}
+			&\parbox[t]{2.6cm}{1106 non-defaulters\\127 defaulters.}
+			&\parbox[t]{7cm}{Has used illegal drugs, has multidrug-resistant TB, has not been tested for HIV, drinks alcohol at least once a week, underweight or has not completed secondary education.}
+			&\parbox[t]{8cm}{{Patients were interviewed to obtain the information. Bivariate analysis using Chi-square tests and odds ratios with 95\% confidence intervals. Multivariate logistic regression is used with a backward fitting algorithm to determine if a variable is associated with default.}}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline		
+			\parbox[t]{1.5cm}{Muture \textit{et al.} \cite{muture:6660173120110101}}
+			&\parbox[t]{2.6cm}{5659 non-defaulters\\945 defaulters.}
+			&\parbox[t]{7cm}{Inadequate knowledge on TB, herbal medication use, low income, alcohol abuse, previous default, suffering from HIV and male patients were determined through analysis to be associated with default.}
+			&\parbox[t]{8cm}{Two-tailed $\chi^2$ tests and Fisher exact tests (if a cell has less than 5 values) to assess categorical information. Odds ratio tests were used to measure association between features with a 95\% confidence interval.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{1.5cm}{Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037}}
+			&\parbox[t]{2.6cm}{310 non-defaulters\\81 defaulters.}
+			&\parbox[t]{7cm}{Distance from home to treatment site, age greater than 25 and the need to use public transport to get to treatment site.}
+			&\parbox[t]{8cm}{Continuous features were analysed using sample t-test $\chi^2$ tests and hazard ratios with 95\% confidence intervals. The effect of each factor was assessed using Cox regression model with a backwards fitting algorithm.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\noalign{\vskip 4pt}                     
+			\multicolumn{4}{l}{\textsuperscript{*}\footnotesize{\parbox[t]{\linewidth}{Ordered in descending order of significance  based on odds ratio and hazard ratio at a confidence interval of at least 95\%. }}}\\
+		\end{tabular}
+	}
+\end{table*} 
+
+\subsection{Predicting defaulters in financial institutions}
+\begin{table}
+	\small
+	\caption{Predicting financial defaulters using SVM\textsuperscript{\textparagraph}}
+	\label{table:SVM}	
+	\begin{tabular}{c|c|c|c} \hline		
+		Publication&Accuracy&\parbox[t]{1.2cm}{\centering Type I\\Error}&\parbox[t]{1.2cm}{\centering Type II\\Error}\rule{0pt}{3mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+		\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2004543}}
+		&\parbox[t]{2.3cm}{\centering \textbf{79.87\%}\textsuperscript{\textdagger}}
+		&\parbox[t]{1.1cm}{\centering n/a}
+		&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+		\parbox[t]{2.3cm}{Li \textit{et al.} \cite{Li2006772}}
+		&\parbox[t]{2.3cm}{\centering \textbf{84.83\%}}
+		&\parbox[t]{1.1cm}{\centering 10-20\%\textsuperscript{*}}
+		&\parbox[t]{1.2cm}{\centering 10-20\%\textsuperscript{*}}\\ \hline
+		\parbox[t]{2.3cm}{Luo \textit{et al.} \cite{Luo20097562}}
+		&\parbox[t]{2.3cm}{\centering 77.06\% (MySVM), 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
+		&\parbox[t]{1.1cm}{\centering n/a}
+		&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+		\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2007847}}
+		&\parbox[t]{2.3cm}{\centering 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
+		&\parbox[t]{1.1cm}{\centering n/a}
+		&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+		\parbox[t]{2.3cm}{Danenas \textit{et al.} \cite{Danenas20153194}}
+		&\parbox[t]{2.3cm}{\centering \textbf{94.41\%} (Linear SVM), \textbf{92.37\%} (PSO-LinSVM)\textsuperscript{\textdagger}}
+		&\parbox[t]{1.1cm}{\centering n/a\textsuperscript{\textdaggerdbl}}
+		&\parbox[t]{1.2cm}{\centering n/a\textsuperscript{\textdaggerdbl}}\rule{0pt}{3.5mm}\rule[-8mm]{0pt}{0pt}		
+	\end{tabular}		
+\end{table}
+
 \begin{enumerate}
 	\item Summarised version of original literature review except the parts using temporal aspects
 	\item Summarise what has been done determining TB predictors (which is a different aim)

@@ -1,8 +1,10 @@
 """Primary script used to execute the defaulter prediction"""
 import multiprocessing
+import os
 from multiprocessing import Manager
 
 import pandas as pd
+import sys
 from imblearn.combine import SMOTEENN
 from imblearn.combine import SMOTETomek
 from imblearn.over_sampling import ADASYN
@@ -19,6 +21,7 @@ from imblearn.under_sampling import TomekLinks
 from joblib import Parallel
 from joblib import delayed
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import config.classifiers as cfr
 import visualisation as vis
 from config import constants as const
