@@ -79,7 +79,7 @@ append_classifier_details(adaboost, adaboost_enabled, adaboost_description, clas
 # Random forest
 random_forest = RandomForestClassifier
 random_forest_description = "Random forest"
-random_forest_enabled = True
+random_forest_enabled = False
 append_classifier_details(random_forest, random_forest_enabled, random_forest_description, classifiers)
 
 # K-nearest neighbours

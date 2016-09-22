@@ -61,7 +61,7 @@ append_classifier_details(decision_tree_data_balancer, decision_tree_parameters,
 
 # AdaBoost
 adaboost_data_balancer = SMOTEENN
-adaboost_parameters = {"n_estimators": 3000, "learning_rate": 0.01}
+adaboost_parameters = {"n_estimators": 100, "learning_rate": 0.01}
 append_classifier_details(adaboost_data_balancer, adaboost_parameters, clfrs.adaboost_description, classifier_parameters)
 
 # Random forest

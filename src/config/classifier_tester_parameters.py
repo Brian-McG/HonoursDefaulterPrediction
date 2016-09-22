@@ -30,19 +30,19 @@ ann_parameter_dict = None
 generic_classifier_parameter_dict[clf.ann_description] = ann_parameter_dict
 
 # Support Vector Machines (RBF)
-rbf_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_function_shape": ['ovo', "ovr"], "kernel": ["rbf"], "C": np.linspace(0.01, 10, 20).tolist(),
-                          "gamma": ["auto"] + np.linspace(0.001, 2, 20).tolist(), 'class_weight': [None, 'balanced']}, "requires_random_state": False}
+rbf_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_function_shape": ["ovr"], "kernel": ["rbf"], "C": np.linspace(0.01, 10, 20).tolist() + [1],
+                          "gamma": ["auto"] + np.linspace(0.0001, 1, 20).tolist(), 'class_weight': [None, 'balanced']}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.svm_rdf_description] = rbf_svm_parameter_dict
 
 # Support Vector Machines (linear)
-linear_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_function_shape": ['ovo', "ovr"], "kernel": ["linear"], "C": np.linspace(0.01, 10, 20).tolist(),
-                             "gamma": ["auto"] + np.linspace(0.001, 2, 20).tolist(), 'class_weight': [None, 'balanced']}, "requires_random_state": False}
+linear_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_function_shape": ["ovr"], "kernel": ["linear"], "C": np.linspace(0.01, 10, 20).tolist() + [1],
+                             'class_weight': [None, 'balanced']}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.svm_linear_description] = linear_svm_parameter_dict
 
 # Support Vector Machines (poly)
-poly_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_function_shape": ['ovo', "ovr"], "kernel": ["poly"], "C": np.linspace(0.01, 10, 20).tolist(),
-                           "gamma": ["auto"] + np.linspace(0.001, 2, 10).tolist(), 'class_weight': [None, 'balanced'], 'degree': [1, 2, 3, 4, 5],
-                           'coef0': np.linspace(0, 5, 5).tolist()}, "requires_random_state": False}
+poly_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_function_shape": ["ovr"], "kernel": ["poly"], "C": np.linspace(0.01, 5, 10).tolist() + [1],
+                           "gamma": ["auto"] + np.linspace(0.0001, 1, 10).tolist(), 'class_weight': [None, 'balanced'], 'degree': [2, 3, 4, 5],
+                           'coef0': [0, 5, 10]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.svm_poly_description] = poly_svm_parameter_dict
 
 # Logistic regression
@@ -58,9 +58,8 @@ generic_classifier_parameter_dict[clf.decision_tree_description] = decision_tree
 
 # AdaBoost
 adaboost_dict = {"parameters": {
-    "base_estimator": [AdaBoostClassifier(), BernoulliNB(), DecisionTreeClassifier(), ExtraTreeClassifier(), ExtraTreesClassifier(), MultinomialNB(), NuSVC(), Perceptron(),
-                       RandomForestClassifier(), RidgeClassifierCV(), SGDClassifier(), SVC()], "n_estimators": list(range(10, 3000, 200)),
-    "learning_rate": np.linspace(0.01, 1, 10).tolist(), "algorithm": ["SAMME", "SAMME.R"]}, "requires_random_state": False}
+    "base_estimator": [BernoulliNB(), DecisionTreeClassifier(), ExtraTreeClassifier(), Perceptron(), SGDClassifier()], "n_estimators": [5, 20, 50, 75, 100],
+    "learning_rate": np.linspace(0.01, 1, 3).tolist(), "algorithm": ["SAMME", "SAMME.R"]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.adaboost_description] = adaboost_dict
 
 # Random forest
