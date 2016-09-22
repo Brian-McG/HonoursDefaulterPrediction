@@ -31,7 +31,7 @@ append_classifier_details(clustering_launched_classifier, clustering_launched_cl
 # Extreme learning machines
 elm = ExtremeLearningMachine
 elm_description = "Extreme Learning Machine"
-elm_enabled = False
+elm_enabled = True
 append_classifier_details(elm, elm_enabled, elm_description, classifiers)
 
 # Artificial Neural network

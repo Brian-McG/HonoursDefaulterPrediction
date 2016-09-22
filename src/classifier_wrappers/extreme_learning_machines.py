@@ -5,11 +5,11 @@ from hpelm import ELM
 class ExtremeLearningMachine:
     """Wraps the hpelm ELM class to have the same interface as sci-kit learn"""
 
-    def __init__(self, defaulter_set, layers=None):
+    def __init__(self, number_of_features, layers=None):
         if layers is None:
             layers = [(20, "sigm"), (3, "rbf_l2")]
 
-        self.elm = ELM(defaulter_set.shape[1] - 1, 2, "c")
+        self.elm = ELM(number_of_features, 2, "c")
         for layer_tuple in layers:
             self.elm.add_neurons(layer_tuple[0], layer_tuple[1])
 

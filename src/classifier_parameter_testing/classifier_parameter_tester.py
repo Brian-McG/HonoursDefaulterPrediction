@@ -58,7 +58,7 @@ def execute_loop(classifier_description, classifier_dict, parameter_dict, defaul
                 else:
                     result_dictionary = generic_classifier.train_and_evaluate(defaulter_set_arr, x)
                 test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
-            except subprocess.CalledProcessError:
+            except Exception:
                 success = False
                 print("INFO: parameter caused classifier to raise exception")
 
