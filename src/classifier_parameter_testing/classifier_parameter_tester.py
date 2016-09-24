@@ -6,8 +6,6 @@ import subprocess
 
 import sys
 
-from config.constants import DATA_BALANCER_STR
-
 warnings.filterwarnings("ignore")
 warnings.simplefilter('ignore')
 import multiprocessing
@@ -32,6 +30,7 @@ from joblib import delayed
 from sklearn.model_selection import ParameterGrid
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from config.constants import DATA_BALANCER_STR
 import config.classifier_tester_parameters as ctp
 import config.classifiers as cfr
 from classifier_result_recorder import ClassifierResultRecorder
