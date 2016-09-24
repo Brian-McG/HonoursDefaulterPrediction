@@ -26,7 +26,7 @@ append_classifier_details(clustering_launched_classifier_data_balancer, clusteri
 
 # Extreme learning machines
 elm_data_balancer = SMOTEENN
-elm_parameters = {"defaulter_set": None, "layers": [(20, "sigm"), (2, "rbf_l2")]}
+elm_parameters = {"layers": [(20, "sigm"), (2, "rbf_l2")]}
 append_classifier_details(elm_data_balancer, elm_parameters, clfrs.elm_description, classifier_parameters)
 
 # Artificial Neural network

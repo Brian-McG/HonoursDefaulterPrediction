@@ -38,7 +38,7 @@ elm_parameter_dict = {"parameters": {
                [(50, "rbf_l1"), (5, "rbf_l1")], [(50, "rbf_l2"), (5, "rbf_l2")], [(50, "rbf_linf"), (5, "rbf_linf")], [(50, "sigm"), (100, "sigm")], [(50, "lin"), (100, "lin")],
                [(50, "tanh"), (100, "tanh")], [(50, "rbf_l1"), (100, "rbf_l1")], [(50, "rbf_l2"), (100, "rbf_l2")], [(50, "rbf_linf"), (100, "rbf_linf")],
                [(100, "sigm"), (5, "sigm")], [(100, "lin"), (5, "lin")], [(100, "tanh"), (5, "tanh")], [(100, "rbf_l1"), (5, "rbf_l1")], [(100, "rbf_l2"), (5, "rbf_l2")],
-               [(100, "rbf_linf"), (5, "rbf_linf")]], "number_of_features": [None]}, "requires_random_state": False}
+               [(100, "rbf_linf"), (5, "rbf_linf")]]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.elm_description] = elm_parameter_dict
 
 # Artificial neural network

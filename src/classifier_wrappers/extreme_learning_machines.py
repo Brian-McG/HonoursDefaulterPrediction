@@ -5,15 +5,19 @@ from hpelm import ELM
 class ExtremeLearningMachine:
     """Wraps the hpelm ELM class to have the same interface as sci-kit learn"""
 
-    def __init__(self, number_of_features, layers=None):
+    def __init__(self, layers=None):
+        self.layers = layers
         if layers is None:
-            layers = [(20, "sigm"), (3, "rbf_l2")]
+            self.layers = [(20, "sigm"), (3, "rbf_l2")]
 
-        self.elm = ELM(number_of_features, 2, "c")
-        for layer_tuple in layers:
-            self.elm.add_neurons(layer_tuple[0], layer_tuple[1])
+
+        self.elm = None
 
     def fit(self, x_train, class_1):
+        self.elm = ELM(len(x_train[0]), 2, "c")
+        for layer_tuple in self.layers:
+            self.elm.add_neurons(layer_tuple[0], layer_tuple[1])
+
         # TODO generalise this to multiple classes
         class_0 = np.array([0 if item == 1 else 1 for item in class_1])
         class_arr = [None] * len(class_1)

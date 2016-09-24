@@ -4,7 +4,7 @@ from sklearn.preprocessing import Imputer
 import numpy as np
 
 
-def apply_preprocessing(input_defaulter_set, numerical_columns, categorical_columns, classification_label, missing_value_strategy):
+def apply_preprocessing(input_defaulter_set, numerical_columns, categorical_columns, classification_label, missing_value_strategy, create_dummy_variables=True):
     if missing_value_strategy == "remove":
         input_defaulter_set = input_defaulter_set[numerical_columns + categorical_columns + classification_label]
         input_defaulter_set = input_defaulter_set.dropna(axis=0)
@@ -44,8 +44,12 @@ def apply_preprocessing(input_defaulter_set, numerical_columns, categorical_colu
         raise RuntimeError("{0} is an invalid missing value strategy, only delete, mean/most_frequent and median/most_frequent are supported.".format(missing_value_strategy))
 
     categorical_df_with_dummies = pd.DataFrame()
-    if len(categorical_columns) > 0:
+    if len(categorical_columns) > 0 and create_dummy_variables:
         categorical_df_with_dummies = pd.get_dummies(input_defaulter_set[categorical_columns])
+    else:
+        for categorical_column in categorical_columns:
+            input_defaulter_set[categorical_column] = input_defaulter_set[categorical_column].astype('category')
+        categorical_df_with_dummies = input_defaulter_set[categorical_columns].apply(lambda x: x.cat.codes)
 
     numerical_df = pd.DataFrame()
     if len(numerical_columns) > 0:

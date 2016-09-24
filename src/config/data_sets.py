@@ -54,3 +54,18 @@ australian_credit_enabled = False
 australian_credit_parameters = default_classifier_parameters
 append_data_set_details(australian_credit_path, australian_credit_numeric_columns, australian_credit_categorical_columns, australian_credit_classification_label,
                         australian_credit_missing_values_strategy, australian_credit_enabled, australian_credit_parameters, "Australian_credit", data_set_arr)
+
+# Lima TB data set
+lima_tb_reduced_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/../../data/lima_tb/Lima TB Treatment Default Data.csv")
+lima_tb_reduced_numeric_columns = []
+#lima_tb_reduced_categorical_columns = ["Completed Secondary Education", "Alcohol Use at Least Once Per Week", "History of Drug Use", "MDR-TB", "Body Mass Index", "HIV Status"]
+#lima_tb_reduced_categorical_columns = ["Completed Secondary Education", "Alcohol Use at Least Once Per Week", "History of Drug Use", "MDR-TB", "Hx Diabetes Melitus"]
+lima_tb_reduced_categorical_columns = ["Sex", "Prison Hx", "Completed Secondary Education", "Hx of Tobacco Use", "Alcohol Use at Least Once Per Week",
+                                       "History of Drug Use", "Hx of Rehab", "MDR-TB", "Body Mass Index", "HIV Status", "Hx Diabetes Melitus"]
+lima_tb_reduced_classification_label = ["Treatment Outcome"]
+lima_tb_reduced_missing_values_strategy = "remove"
+lima_tb_reduced_enabled = False
+lima_tb_reduced_classifier_parameters = default_classifier_parameters
+append_data_set_details(lima_tb_reduced_path, lima_tb_reduced_numeric_columns, lima_tb_reduced_categorical_columns, lima_tb_reduced_classification_label,
+                        lima_tb_reduced_missing_values_strategy, lima_tb_reduced_enabled,
+                        lima_tb_reduced_classifier_parameters, "Lima_TB reduced parameters", data_set_arr)

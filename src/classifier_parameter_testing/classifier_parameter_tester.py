@@ -6,6 +6,8 @@ import subprocess
 
 import sys
 
+from config.constants import DATA_BALANCER_STR
+
 warnings.filterwarnings("ignore")
 warnings.simplefilter('ignore')
 import multiprocessing
@@ -40,10 +42,10 @@ from generic_classifier import GenericClassifier
 from run_statistics import RunStatistics
 
 
-def execute_loop(classifier_description, classifier_dict, parameter_dict, defaulter_set_arr, results_recorder, z, parameter_grid_len, requires_random_state):
-    data_balancers = [None, ClusterCentroids, EditedNearestNeighbours, InstanceHardnessThreshold, NearMiss, NeighbourhoodCleaningRule,
-                      OneSidedSelection, RandomUnderSampler, TomekLinks, ADASYN, RandomOverSampler, SMOTE, SMOTEENN, SMOTETomek]
+data_balancers = [None, ClusterCentroids, EditedNearestNeighbours, InstanceHardnessThreshold, NearMiss, NeighbourhoodCleaningRule,
+                  OneSidedSelection, RandomUnderSampler, TomekLinks, ADASYN, RandomOverSampler, SMOTE, SMOTEENN, SMOTETomek]
 
+def execute_loop(classifier_description, classifier_dict, parameter_dict, defaulter_set_arr, results_recorder, z, parameter_grid_len, requires_random_state):
     if z % 5 == 0:
         print("==== {0} - {1}% ====".format(classifier_description, format((float(z) / parameter_grid_len) * 100, '.2f')))
 
@@ -91,6 +93,5 @@ if __name__ == "__main__":
                         delayed(execute_loop)(classifier_description, classifier_dict, parameter_grid[z], input_defaulter_set, result_recorder, z, len(parameter_grid), parameter_dict["requires_random_state"]) for z in
                         range(len(parameter_grid)))
 
-                    print(result_recorder.results)
                     if const.RECORD_RESULTS is True:
-                        result_recorder.save_results_to_file(sorted(parameter_grid[0]) + ["Data balancer"], prepend_name_description=data_set["data_set_description"] + "_" + classifier_description)
+                        result_recorder.save_results_to_file(sorted(parameter_grid[0]) + [DATA_BALANCER_STR], prepend_name_description=data_set["data_set_description"] + "_" + classifier_description)

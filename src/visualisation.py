@@ -103,13 +103,14 @@ def plot_roc_curve_of_classifier(roc_list, data_set_description, classifier_desc
                     bbox_inches="tight")
         plt.close(fig)
 
+
 def plot_mean_roc_curve_of_balancers(balancer_roc_list, data_set_description, classifier_description):
     if const.RECORD_RESULTS is True and not (None, None) in balancer_roc_list[0][0]:
         fig = plt.figure(figsize=(12, 10))
-        monochrome = (cycler('color', ['k']) * cycler('marker', ['']) *
-                      cycler('linestyle', ['-', '--', '-.']))
+        monochrome = (cycler("color", ["k"]) * cycler("marker", [""]) *
+                      cycler("linestyle", ["-", "--", "-."]))
         color = iter(cm.brg(np.linspace(0, 1, len(balancer_roc_list))))
-        plt.rc('axes', prop_cycle=monochrome)
+        plt.rc("axes", prop_cycle=monochrome)
 
         for (test_run_roc_list, balancer) in balancer_roc_list:
             mean_tpr = 0.0
@@ -142,10 +143,10 @@ def plot_mean_roc_curve_of_balancers(balancer_roc_list, data_set_description, cl
 def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description):
     if const.RECORD_RESULTS is True:
         fig = plt.figure(figsize=(12, 10))
-        monochrome = (cycler('color', ['k']) * cycler('marker', ['']) *
-                      cycler('linestyle', ['-', '--', '-.']))
+        monochrome = (cycler("color", ["k"]) * cycler("marker", [""]) *
+                      cycler("linestyle", ["-", "--", "-."]))
         color = iter(cm.brg(np.linspace(0, 1, len(classifier_roc_list))))
-        plt.rc('axes', prop_cycle=monochrome)
+        plt.rc("axes", prop_cycle=monochrome)
 
         for (test_run_roc_list, classifier_description) in classifier_roc_list:
             if not (None, None) in test_run_roc_list[0]:
@@ -174,3 +175,40 @@ def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/{0}_roc_classifier_plot_{1}.png".format(data_set_description, current_time), bbox_inches="tight")
         plt.close(fig)
+
+
+def plot_balancer_results_per_classifier(data_balancer_results_per_classifer, parameter="Average true rate"):
+    classifier_arr = []
+    color = iter(cm.brg(np.linspace(0, 1, len(data_balancer_results_per_classifer))))
+    for (classifier_name, data_balancer_results) in data_balancer_results_per_classifer:
+        individual_data_balance_plot = []
+        for (data_balancer_name, result_arr) in data_balancer_results:
+            individual_data_balance_plot.append(result_arr[parameter])  # Average True rate
+        classifier_arr.append(individual_data_balance_plot)
+
+    fig = plt.figure(figsize=(12, 10))
+
+    classifiers = np.arange(len(classifier_arr))
+    data_balancers = np.arange(len(classifier_arr[0])) * 2.5
+    bar_width = 0.3
+    opacity = 0.4
+
+    for i in range(len(classifier_arr)):
+        plt.bar(data_balancers + (i * bar_width), classifier_arr[i], bar_width,
+                alpha=opacity,
+                color=color.next(),
+                label=data_balancer_results_per_classifer[i][0])
+
+    plt.locator_params(axis='y', nbins=10)
+    plt.xlabel("Data balance algorithm")
+    plt.ylabel(parameter)
+    plt.title("{0} per data balance algorithm".format(parameter))
+    plt.ylim([0.0, 1.00])
+    data_balance_labels = [filter(str.isupper, data_balance_name) if data_balance_name is not "None" and len(filter(str.isupper, data_balance_name)) < 6 else data_balance_name for
+                           (data_balance_name, _) in data_balancer_results_per_classifer[0][1]]
+    plt.xticks(data_balancers + (bar_width / 2) * len(classifiers), data_balance_labels, rotation="vertical")
+    plt.legend()
+
+    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/roc_balancer_results_per_classifier_plot_{0}_{1}.png".format(parameter, current_time), bbox_inches="tight")
+    plt.close(fig)
