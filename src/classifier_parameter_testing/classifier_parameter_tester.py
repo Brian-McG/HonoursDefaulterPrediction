@@ -40,13 +40,13 @@ from data_preprocessing import apply_preprocessing
 from generic_classifier import GenericClassifier
 from run_statistics import RunStatistics
 
-
 data_balancers = [None, ClusterCentroids, EditedNearestNeighbours, InstanceHardnessThreshold, NearMiss, NeighbourhoodCleaningRule,
                   OneSidedSelection, RandomUnderSampler, TomekLinks, ADASYN, RandomOverSampler, SMOTE, SMOTEENN, SMOTETomek]
 
-def execute_loop(classifier_description, classifier_dict, parameter_dict, defaulter_set_arr, results_recorder, z, parameter_grid_len, requires_random_state):
+
+def execute_loop(classifier_description, classifier_dict, parameter_dict, defaulter_set_arr, results_recorder, z, parameter_grid_len, requires_random_state, data_set_description):
     if z % 5 == 0:
-        print("==== {0} - {1}% ====".format(classifier_description, format((float(z) / parameter_grid_len) * 100, '.2f')))
+        print("==== {0} - {1} - {2}% ====".format(data_set_description, classifier_description, format((float(z) / parameter_grid_len) * 100, '.2f')))
 
     for data_balancer in data_balancers:
         test_stats = RunStatistics()
@@ -77,7 +77,8 @@ if __name__ == "__main__":
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
 
             # Preprocess data set
-            input_defaulter_set = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["missing_values_strategy"])
+            input_defaulter_set = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"],
+                                                      data_set["missing_values_strategy"])
 
             cpu_count = multiprocessing.cpu_count()
             for classifier_description, classifier_dict in cfr.classifiers.iteritems():
@@ -89,8 +90,10 @@ if __name__ == "__main__":
                     # Execute enabled classifiers
                     parameter_grid = ParameterGrid(parameter_dict["parameters"])
                     Parallel(n_jobs=cpu_count)(
-                        delayed(execute_loop)(classifier_description, classifier_dict, parameter_grid[z], input_defaulter_set, result_recorder, z, len(parameter_grid), parameter_dict["requires_random_state"]) for z in
+                        delayed(execute_loop)(classifier_description, classifier_dict, parameter_grid[z], input_defaulter_set, result_recorder, z, len(parameter_grid),
+                                              parameter_dict["requires_random_state"], data_set["data_set_description"]) for z in
                         range(len(parameter_grid)))
 
                     if const.RECORD_RESULTS is True:
-                        result_recorder.save_results_to_file(sorted(parameter_grid[0]) + [DATA_BALANCER_STR], prepend_name_description=data_set["data_set_description"] + "_" + classifier_description)
+                        result_recorder.save_results_to_file(sorted(parameter_grid[0]) + [DATA_BALANCER_STR],
+                                                             prepend_name_description=data_set["data_set_description"] + "_" + classifier_description)
