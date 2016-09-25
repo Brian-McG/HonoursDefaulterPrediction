@@ -22,6 +22,7 @@ from joblib import Parallel
 from joblib import delayed
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from util import get_number_of_processes_to_use
 import config.classifiers as cfr
 import visualisation as vis
 from config import constants as const
@@ -44,7 +45,7 @@ def main():
             data_balancers = [None, ClusterCentroids, EditedNearestNeighbours, InstanceHardnessThreshold, NearMiss, NeighbourhoodCleaningRule,
                               OneSidedSelection, RandomUnderSampler, TomekLinks, ADASYN, RandomOverSampler, SMOTE, SMOTEENN, SMOTETomek]
 
-            cpu_count = multiprocessing.cpu_count()
+            cpu_count = get_number_of_processes_to_use()
             manager = Manager()
             result_recorder = DataBalancerResultRecorder(result_arr=manager.list())
             data_balance_roc_results = manager.list()

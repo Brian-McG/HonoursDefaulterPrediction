@@ -10,6 +10,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy import interp
 from sklearn.decomposition import PCA
 from sklearn.metrics import auc
+from lifelines.estimation import KaplanMeierFitter
 
 from config import constants as const
 
@@ -212,3 +213,17 @@ def plot_balancer_results_per_classifier(data_balancer_results_per_classifer, pa
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/roc_balancer_results_per_classifier_plot_{0}_{1}.png".format(parameter, current_time), bbox_inches="tight")
     plt.close(fig)
+
+
+def plot_kaplan_meier_graph_of_time_to_default(time_to_default, data_set_description=""):
+    kmf = KaplanMeierFitter()
+    kmf.fit(time_to_default, event_observed=[1] * len(time_to_default))
+    ax = kmf.plot(title="{0} Kaplan Meier analysis of time to default".format(data_set_description).replace("_", " "))
+    ax.get_figure().set_size_inches(12, 10)
+    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    plt.ylim([0.0, 1.00])
+    plt.ylabel("Probability")
+    plt.xlabel("Time to default (days)")
+    ax.get_figure().savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/kaplan_meier_time_to_default_{0}.png".format(current_time), bbox_inches="tight")
+    plt.close(ax.get_figure())
+

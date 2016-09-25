@@ -30,6 +30,7 @@ from joblib import delayed
 from sklearn.model_selection import ParameterGrid
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from util import get_number_of_processes_to_use
 from config.constants import DATA_BALANCER_STR
 import config.classifier_tester_parameters as ctp
 import config.classifiers as cfr
@@ -80,7 +81,7 @@ if __name__ == "__main__":
             input_defaulter_set = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"],
                                                       data_set["missing_values_strategy"])
 
-            cpu_count = multiprocessing.cpu_count()
+            cpu_count = get_number_of_processes_to_use()
             for classifier_description, classifier_dict in cfr.classifiers.iteritems():
                 parameter_dict = ctp.generic_classifier_parameter_dict[classifier_description]
                 if classifier_dict['status'] and parameter_dict is not None:

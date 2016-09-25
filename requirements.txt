@@ -3,3 +3,5 @@ joblib
 scikit-learn==0.18rc2
 hpelm
 seaborn
+lifelines
+psutil
