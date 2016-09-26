@@ -1,11 +1,13 @@
-import sys
 import os
-import pandas as pd
+import sys
+
 import numpy as np
+import pandas as pd
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from config import data_sets
 import visualisation as vis
+
 
 def main():
     for data_set in data_sets.data_set_arr:
@@ -16,6 +18,7 @@ def main():
             defaulters = input_defaulter_set[~np.isnan(input_defaulter_set[data_set["time_to_default"]])]
 
             vis.plot_kaplan_meier_graph_of_time_to_default(defaulters[data_set["time_to_default"]], data_set_description=data_set["data_set_description"])
+
 
 if __name__ == "__main__":
     main()

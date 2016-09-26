@@ -1,10 +1,9 @@
 """Primary script used to execute the defaulter prediction"""
-import multiprocessing
 import os
+import sys
 from multiprocessing import Manager
 
 import pandas as pd
-import sys
 from imblearn.combine import SMOTEENN
 from imblearn.combine import SMOTETomek
 from imblearn.over_sampling import ADASYN

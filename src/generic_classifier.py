@@ -2,10 +2,9 @@ import subprocess
 
 from sklearn.model_selection import StratifiedKFold
 
-from config import constants as const
 from classifier_statistics import ClassifierStatistics
+from config import constants as const
 from ml_technique import train_and_evaluate_fold, MLTechnique
-from util import verbose_print
 
 
 class GenericClassifier(MLTechnique):

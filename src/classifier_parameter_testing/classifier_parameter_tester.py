@@ -1,14 +1,10 @@
 """Primary script used to execute the defaulter prediction"""
 import os
-import warnings
-
-import subprocess
-
 import sys
+import warnings
 
 warnings.filterwarnings("ignore")
 warnings.simplefilter('ignore')
-import multiprocessing
 from multiprocessing import Manager
 
 import pandas as pd

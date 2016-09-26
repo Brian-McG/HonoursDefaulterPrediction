@@ -1,11 +1,11 @@
 import os
 import sys
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import pandas as pd
 import classifier_parameter_testing.classifier_parameter_tester as classifier_parameter_tester
 from config.constants import DATA_BALANCER_STR
 from visualisation import plot_balancer_results_per_classifier
-
 
 
 def main(parameter_results):
@@ -30,5 +30,5 @@ if __name__ == "__main__":
     else:
         classifier_arr = []
         for i in range(1, len(sys.argv), 2):
-            classifier_arr.append((sys.argv[i], sys.argv[i+1]))
+            classifier_arr.append((sys.argv[i], sys.argv[i + 1]))
         main(classifier_arr)

@@ -1,7 +1,6 @@
 import pandas as pd
 from sklearn import preprocessing
 from sklearn.preprocessing import Imputer
-import numpy as np
 
 
 def apply_preprocessing(input_defaulter_set, numerical_columns, categorical_columns, classification_label, missing_value_strategy, create_dummy_variables=True):

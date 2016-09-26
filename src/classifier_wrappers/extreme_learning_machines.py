@@ -1,6 +1,7 @@
 import numpy as np
 from hpelm import ELM
 
+
 class ExtremeLearningMachine:
     """Wraps the hpelm ELM class to have the same interface as sci-kit learn"""
 
@@ -8,7 +9,6 @@ class ExtremeLearningMachine:
         self.layers = layers
         if layers is None:
             self.layers = [(20, "sigm"), (3, "rbf_l2")]
-
 
         self.elm = None
 

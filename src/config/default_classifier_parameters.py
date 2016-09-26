@@ -76,7 +76,7 @@ append_classifier_details(k_nearest_data_balancer, k_nearest_parameters, clfrs.k
 
 # Bernoulli Naive Bayes
 bernoulli_naive_bayes_data_balancer = SMOTEENN
-bernoulli_naive_bayes_parameters = {"alpha":0.1, "binarize":None, "class_prior":None, "fit_prior":True}
+bernoulli_naive_bayes_parameters = {"alpha": 0.1, "binarize": None, "class_prior": None, "fit_prior": True}
 append_classifier_details(bernoulli_naive_bayes_data_balancer, bernoulli_naive_bayes_parameters, clfrs.bernoulli_naive_bayes_description, classifier_parameters)
 
 # Voting classifier

@@ -1,11 +1,6 @@
-import math
-
 from sklearn.metrics import cohen_kappa_score
 from sklearn.metrics import matthews_corrcoef
 
-from config import constants as const
-import operator
-import numpy as np
 
 class RunStatistics:
     """Contains functionality to calculate predictive accuracy rates across runs"""
@@ -24,7 +19,7 @@ class RunStatistics:
 
     def calculate_average_run_accuracy(self):
         overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
-            false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff, matthews_correlation_coefficient, cohen_kappa = [0] * 12
+        false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff, matthews_correlation_coefficient, cohen_kappa = [0] * 12
 
         for result_dictionary in self.errors:
             overall_true_rate += result_dictionary["avg_true_rate"]

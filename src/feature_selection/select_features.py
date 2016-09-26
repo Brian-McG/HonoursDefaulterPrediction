@@ -1,18 +1,12 @@
 """Primary script used to execute the defaulter prediction"""
 
-import pandas as pd
 import os
 import sys
-import numpy as np
-from sklearn.feature_selection import GenericUnivariateSelect
+
+import pandas as pd
 from sklearn.feature_selection import SelectFromModel
-from sklearn.feature_selection import SelectKBest
-from sklearn.feature_selection import SelectPercentile
-from sklearn.feature_selection import chi2
 from sklearn.feature_selection import f_classif
 from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import BernoulliNB
-from sklearn.svm import SVC
 
 from config.default_classifier_parameters import logistic_regression_parameters
 from data_preprocessing import apply_preprocessing
@@ -28,7 +22,8 @@ def main():
         if data_set["status"]:
             # Load in data set
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
-            input_defaulter_set = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["missing_values_strategy"], create_dummy_variables=False)
+            input_defaulter_set = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"],
+                                                      data_set["missing_values_strategy"], create_dummy_variables=False)
             X = pd.concat([input_defaulter_set[data_set["numeric_columns"]], input_defaulter_set[data_set["categorical_columns"]]], axis=1)
             y = input_defaulter_set[data_set["classification_label"]]
 

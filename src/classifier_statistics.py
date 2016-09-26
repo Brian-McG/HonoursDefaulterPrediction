@@ -1,10 +1,6 @@
 import numpy as np
-from sklearn.metrics import cohen_kappa_score
-from sklearn.metrics import f1_score
-from sklearn.metrics import matthews_corrcoef
 
 from config import constants as const
-import math
 
 
 class ClassifierStatistics:

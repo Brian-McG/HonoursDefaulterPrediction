@@ -2,16 +2,15 @@ import os
 from datetime import datetime
 
 import matplotlib.pyplot as plt
-import matplotlib
 import numpy as np
 import seaborn as sns
 from cycler import cycler
+from lifelines.estimation import KaplanMeierFitter
 from matplotlib.pyplot import cm
 from mpl_toolkits.mplot3d import Axes3D
 from scipy import interp
 from sklearn.decomposition import PCA
 from sklearn.metrics import auc
-from lifelines.estimation import KaplanMeierFitter
 
 from config import constants as const
 
@@ -212,7 +211,8 @@ def plot_balancer_results_per_classifier(data_balancer_results_per_classifer, pa
     plt.legend()
 
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/roc_balancer_results_per_classifier_plot_{0}_{1}.png".format(parameter, current_time), bbox_inches="tight")
+    plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/roc_balancer_results_per_classifier_plot_{0}_{1}.png".format(parameter, current_time),
+                bbox_inches="tight")
     plt.close(fig)
 
 
@@ -229,4 +229,3 @@ def plot_kaplan_meier_graph_of_time_to_default(time_to_default, data_set_descrip
 
     ax.get_figure().savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/kaplan_meier_time_to_default_{0}.png".format(current_time), bbox_inches="tight")
     plt.close(ax.get_figure())
-

@@ -1,14 +1,7 @@
 import numpy as np
-from multiprocessing import Manager
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.ensemble import ExtraTreesClassifier
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import Perceptron
-from sklearn.linear_model import RidgeClassifierCV
 from sklearn.linear_model import SGDClassifier
-from sklearn.naive_bayes import BernoulliNB, MultinomialNB
-from sklearn.svm import NuSVC
-from sklearn.svm import SVC
+from sklearn.naive_bayes import BernoulliNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.tree import ExtraTreeClassifier
 
