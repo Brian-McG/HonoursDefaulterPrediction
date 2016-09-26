@@ -1,6 +1,10 @@
 import numpy as np
+from sklearn.metrics import cohen_kappa_score
+from sklearn.metrics import f1_score
+from sklearn.metrics import matthews_corrcoef
 
 from config import constants as const
+import math
 
 
 class ClassifierStatistics:
@@ -18,6 +22,9 @@ class ClassifierStatistics:
     def calculate_classification_accuracy(test_classification, actual_outcome, test_probabilities=None, probability_cutoff=const.CUTOFF_RATE):
         """Compares the test_classification and actual_outcome. It returns a dictionary with the true positive,
         true negative, false positive and false negative rate."""
+
+        # print(cohen_kappa_score(test_classification, actual_outcome))
+
         fold_accuracy_dict = {}
         true_positive_count = 0
         true_negative_count = 0
@@ -45,6 +52,12 @@ class ClassifierStatistics:
         fold_accuracy_dict["true negative rate"] = true_negative_count / float(np.count_nonzero(actual_outcome == 0))
         fold_accuracy_dict["false positive rate"] = false_positive_count / float(np.count_nonzero(actual_outcome == 0))
         fold_accuracy_dict["false negative rate"] = false_negative_count / float(np.count_nonzero(actual_outcome == 1))
+        fold_accuracy_dict["true positives"] = true_positive_count
+        fold_accuracy_dict["true negatives"] = true_negative_count
+        fold_accuracy_dict["false positives"] = false_positive_count
+        fold_accuracy_dict["false negatives"] = false_negative_count
+        fold_accuracy_dict["test_classification"] = test_classification
+        fold_accuracy_dict["actual_outcome"] = actual_outcome
 
         # Probabilities
         true_positive_count_with_probability_cutoff = 0
@@ -93,32 +106,50 @@ class ClassifierStatistics:
         avg_true_negative_rate = 0
         avg_false_positive_rate = 0
         avg_false_negative_rate = 0
+        true_positives = 0
+        true_negatives = 0
+        false_positives = 0
+        false_negatives = 0
         avg_true_positive_rate_probability_cutoff = 0
         avg_true_negative_rate_probability_cutoff = 0
         avg_false_positive_rate_probability_cutoff = 0
         avg_false_negative_rate_probability_cutoff = 0
         unclassified = 0
+        classification_arr = np.array([])
+        actual_result_arr = np.array([])
         for error_dict in self.errors:
             avg_true_rate += (error_dict["true positive rate"] + error_dict["true negative rate"]) / 2
             avg_true_positive_rate += error_dict["true positive rate"]
             avg_true_negative_rate += error_dict["true negative rate"]
             avg_false_positive_rate += error_dict["false positive rate"]
             avg_false_negative_rate += error_dict["false negative rate"]
+            true_positives += error_dict["true positives"]
+            true_negatives += error_dict["true negatives"]
+            false_positives += error_dict["false positives"]
+            false_negatives += error_dict["false negatives"]
             avg_true_positive_rate_probability_cutoff += error_dict["true positive rate with probability cutoff"]
             avg_true_negative_rate_probability_cutoff += error_dict["true negative rate with probability cutoff"]
             avg_false_positive_rate_probability_cutoff += error_dict["false positive rate with probability cutoff"]
             avg_false_negative_rate_probability_cutoff += error_dict["false negative rate with probability cutoff"]
             unclassified += error_dict["unclassified with probability cutoff"]
+            classification_arr = np.append(classification_arr, error_dict["test_classification"])
+            actual_result_arr = np.append(actual_result_arr, error_dict["actual_outcome"])
 
         avg_accuracy_dict["avg_true_rate"] = avg_true_rate / float(len(self.errors))
         avg_accuracy_dict["avg_true_positive_rate"] = avg_true_positive_rate / float(len(self.errors))
         avg_accuracy_dict["avg_true_negative_rate"] = avg_true_negative_rate / float(len(self.errors))
         avg_accuracy_dict["avg_false_positive_rate"] = avg_false_positive_rate / float(len(self.errors))
         avg_accuracy_dict["avg_false_negative_rate"] = avg_false_negative_rate / float(len(self.errors))
+        avg_accuracy_dict["true positives"] = true_positives
+        avg_accuracy_dict["true negatives"] = true_negatives
+        avg_accuracy_dict["false positives"] = false_positives
+        avg_accuracy_dict["false negatives"] = false_negatives
         avg_accuracy_dict["avg_true_positive_rate_with_prob_cutoff"] = avg_true_positive_rate_probability_cutoff / float(len(self.errors))
         avg_accuracy_dict["avg_true_negative_rate_with_prob_cutoff"] = avg_true_negative_rate_probability_cutoff / float(len(self.errors))
         avg_accuracy_dict["avg_false_positive_rate_with_prob_cutoff"] = avg_false_positive_rate_probability_cutoff / float(len(self.errors))
         avg_accuracy_dict["avg_false_negative_rate_with_prob_cutoff"] = avg_false_negative_rate_probability_cutoff / float(len(self.errors))
         avg_accuracy_dict["avg_unclassified_with_prob_cutoff"] = unclassified / float(len(self.errors))
+        avg_accuracy_dict["test_classification"] = classification_arr
+        avg_accuracy_dict["actual_outcome"] = actual_result_arr
 
         return avg_accuracy_dict

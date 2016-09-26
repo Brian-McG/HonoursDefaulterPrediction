@@ -40,11 +40,13 @@ def main():
                     avg_results = test_stats.calculate_average_run_accuracy()
                     roc_plot.append((test_stats.roc_list, classifier_description))
                     result_recorder.record_results(avg_results, classifier_description)
-                    print("Average true rate: {0}".format(avg_results[0]))
-                    print("Average true positive rate: {0}".format(avg_results[1]))
-                    print("Average true negative rate: {0}".format(avg_results[2]))
-                    print("Average false positive rate: {0}".format(avg_results[3]))
-                    print("Average false negative rate: {0}".format(avg_results[4]))
+                    print("Matthews correlation coefficient: {0}".format(avg_results[0]))
+                    print("Cohen Kappa score: {0}".format(avg_results[1]))
+                    print("Average true rate: {0}".format(avg_results[2]))
+                    print("Average true positive rate: {0}".format(avg_results[3]))
+                    print("Average true negative rate: {0}".format(avg_results[4]))
+                    print("Average false positive rate: {0}".format(avg_results[5]))
+                    print("Average false negative rate: {0}".format(avg_results[6]))
 
             if const.RECORD_RESULTS:
                 vis.plot_mean_roc_curve_of_classifiers(roc_plot, data_set["data_set_description"])

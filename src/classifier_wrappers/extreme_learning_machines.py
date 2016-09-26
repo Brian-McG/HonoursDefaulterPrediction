@@ -1,7 +1,6 @@
 import numpy as np
 from hpelm import ELM
 
-
 class ExtremeLearningMachine:
     """Wraps the hpelm ELM class to have the same interface as sci-kit learn"""
 

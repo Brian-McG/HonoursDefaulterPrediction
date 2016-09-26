@@ -21,7 +21,7 @@ class DataBalancerResultRecorder:
             file_name = "{0}_data_balancer_{1}-folds_{2}.csv".format(prepend_file_name, const.NUMBER_OF_FOLDS, current_time)
             output_file = open(os.path.dirname(os.path.realpath(__file__)) + "/../../results/" + file_name, "wb")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
-            title_row = ["Classifier description", "Data balancer", "Average true rate", "Average true positive rate",
+            title_row = ["Classifier description", "Data balancer", "Matthews correlation coefficient", "Cohen Kappa score", "Average true rate", "Average true positive rate",
                          "Average true negative rate", "Average false positive rate", "Average false negative rate", "Average true positive with cutoff",
                          "Average true negative rate with cutoff", "Average false positive rate with cutoff", "Average false negative rate with cutoff",
                          "Average unclassified from cutoff"]
@@ -29,5 +29,5 @@ class DataBalancerResultRecorder:
             for result_tuple in self.results:
                 csv_writer.writerow((result_tuple[0], result_tuple[1][0], result_tuple[1][1][0], result_tuple[1][1][1], result_tuple[1][1][2], result_tuple[1][1][3],
                                      result_tuple[1][1][4], result_tuple[1][1][5], result_tuple[1][1][6], result_tuple[1][1][7], result_tuple[1][1][8],
-                                     result_tuple[1][1][9]))
+                                     result_tuple[1][1][9], result_tuple[1][1][10], result_tuple[1][1][11]))
             output_file.close()

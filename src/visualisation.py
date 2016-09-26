@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 
 import matplotlib.pyplot as plt
+import matplotlib
 import numpy as np
 import seaborn as sns
 from cycler import cycler
@@ -224,6 +225,8 @@ def plot_kaplan_meier_graph_of_time_to_default(time_to_default, data_set_descrip
     plt.ylim([0.0, 1.00])
     plt.ylabel("Probability")
     plt.xlabel("Time to default (days)")
+    plt.locator_params(axis='x', nbins=10)
+
     ax.get_figure().savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/kaplan_meier_time_to_default_{0}.png".format(current_time), bbox_inches="tight")
     plt.close(ax.get_figure())
 
