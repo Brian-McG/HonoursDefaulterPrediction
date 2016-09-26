@@ -143,11 +143,14 @@ def plot_mean_roc_curve_of_balancers(balancer_roc_list, data_set_description, cl
 
 def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description):
     if const.RECORD_RESULTS is True:
-        fig = plt.figure(figsize=(12, 10))
+        fig = plt.figure(figsize=(8, 6.66))
         monochrome = (cycler("color", ["k"]) * cycler("marker", [""]) *
                       cycler("linestyle", ["-", "--", "-."]))
         color = iter(cm.brg(np.linspace(0, 1, len(classifier_roc_list))))
+        color_arr = ["#64B3DE", "#1f78b4", "#e31a1c", "#FBAC44", "#F77D7B", "#6ABF20", "#33a02c", "#ff7f00", "#6a3d9a", "black", "#B9B914"] * 11
         plt.rc("axes", prop_cycle=monochrome)
+        line_style_index = 0
+        color_index = 0
 
         for (test_run_roc_list, classifier_description) in classifier_roc_list:
             if not (None, None) in test_run_roc_list[0]:
@@ -164,11 +167,21 @@ def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description
                 mean_tpr[-1] = 1.0
                 mean_auc = auc(mean_fpr, mean_tpr)
                 c = next(color)
-                plt.plot(mean_fpr, mean_tpr, c=c, lw=1, alpha=0.7, label="{0} (area = {1:.4f})".format(classifier_description, mean_auc))
+                line_width = 0.5
+                if line_style_index == 1:
+                    line_width = 0.8
+                elif line_style_index == 2:
+                    line_width = 1.5
 
+                plt.plot(mean_fpr, mean_tpr, c=color_arr[color_index], lw=line_width, alpha=1, label="{0} ({1:.3f})".format(classifier_description, mean_auc))
+                line_style_index = (line_style_index + 1) % 3
+                color_index += 1
+
+        plt.locator_params(axis='x', nbins=10)
+        plt.locator_params(axis='y', nbins=10)
         plt.plot([0, 1], [0, 1], "k--", label="Random classification")
         plt.xlim([0.0, 1.0])
-        plt.ylim([0.0, 1.05])
+        plt.ylim([0.0, 1.0])
         plt.xlabel("False Positive Rate")
         plt.ylabel("True Positive Rate")
         plt.title("ROC curve for each classifier")

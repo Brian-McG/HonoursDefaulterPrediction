@@ -6,8 +6,11 @@ from config import constants as const
 
 
 class ResultRecorder:
-    def __init__(self):
-        self.results = []
+    def __init__(self, result_arr=None):
+        if result_arr is None:
+            self.results = []
+        else:
+            self.results = result_arr
 
     def record_results(self, result_dict, classifier_dict):
         self.results.append((result_dict, classifier_dict))
