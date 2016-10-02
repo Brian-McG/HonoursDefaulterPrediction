@@ -13,7 +13,6 @@ def main(parameter_results):
     classifiers = []
     for (classifier_name, classifier_path) in parameter_results:
         parameter_results = pd.DataFrame.from_csv(classifier_path, index_col=None, encoding="UTF-8")
-        print(type(parameter_results["layers"][0]))
         data_balancers = classifier_parameter_tester.data_balancers
         data_balance_results = []
         for data_balancer in data_balancers:
