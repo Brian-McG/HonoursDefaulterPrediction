@@ -1,6 +1,6 @@
 imbalanced-learn
 joblib
-scikit-learn==0.18rc2
+scikit-learn==0.18
 hpelm
 seaborn
 lifelines

@@ -11,10 +11,12 @@ import visualisation as vis
 from config import constants as const
 from config import data_sets
 from data_preprocessing import apply_preprocessing
+from feature_selection.select_features import select_features
 from generic_classifier import GenericClassifier
 from result_recorder import ResultRecorder
 from run_statistics import RunStatistics
 from util import get_number_of_processes_to_use
+import numpy as np
 
 
 def execute_classifier_run(input_defaulter_set, classifier_parameters, data_balancer, data_set_description, classifier_dict, classifier_description, roc_plot, result_recorder):
@@ -24,8 +26,7 @@ def execute_classifier_run(input_defaulter_set, classifier_parameters, data_bala
         for i in range(const.TEST_REPEAT):
 
             generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer)
-            result_dictionary = generic_classifier.train_and_evaluate(input_defaulter_set, None)
-            vis.plot_roc_curve_of_classifier(generic_classifier.ml_stats.roc_list, data_set_description + "_run{0}_".format(i + 1), classifier_description)
+            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set, None)
             test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
 
         avg_results = test_stats.calculate_average_run_accuracy()
@@ -39,16 +40,21 @@ def main():
         if data_set["status"]:
             # Load in data set
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
+            # input_defaulter_set = pd.concat([input_defaulter_set[np.isnan(input_defaulter_set["Time to Default (Days)"])], input_defaulter_set[input_defaulter_set["Time to Default (Days)"] < 200]])
+
+            input_defaulter_set = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["missing_values_strategy"], create_dummy_variables=False)
+
+            # Apply feature selection
+            input_defaulter_set, numeric_columns, categorical_columns = select_features(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["data_set_classifier_parameters"], selection_strategy=data_set["feature_selection_strategy"])
 
             # Preprocess data set
-            input_defaulter_set = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["missing_values_strategy"])
+            input_defaulter_set = apply_preprocessing(input_defaulter_set, numeric_columns, categorical_columns, data_set["classification_label"], data_set["missing_values_strategy"], create_dummy_variables=True)
             manager = Manager()
             result_recorder = ResultRecorder(result_arr=manager.list())
 
             roc_plot = manager.list()
 
             cpu_count = get_number_of_processes_to_use()
-
             # Execute enabled classifiers
             Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(input_defaulter_set, data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], data_set["data_set_description"], classifier_dict, classifier_description, roc_plot, result_recorder) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
 

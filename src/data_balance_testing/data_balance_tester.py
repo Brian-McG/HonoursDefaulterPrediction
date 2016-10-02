@@ -73,7 +73,7 @@ def run_test(classifier_description, classifier_dict, classifier_parameters, inp
     for i in range(const.TEST_REPEAT):
         print("==== {0} - Run {1} ====".format(data_balancer.__name__ if data_balancer is not None else "None", i + 1))
         classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer)
-        result_dictionary = classifier.train_and_evaluate(input_defaulter_set, i)
+        result_dictionary = classifier.k_fold_train_and_evaluate(input_defaulter_set, i)
 
         # Add ROC results
         classifier_roc_results.append(classifier.ml_stats.roc_list)

@@ -129,7 +129,7 @@ def plot_mean_roc_curve_of_balancers(balancer_roc_list, data_set_description, cl
 
         plt.plot([0, 1], [0, 1], "k--", label="Random classification")
         plt.xlim([0.0, 1.0])
-        plt.ylim([0.0, 1.05])
+        plt.ylim([0.0, 1.0])
         plt.xlabel("False Positive Rate")
         plt.ylabel("True Positive Rate")
         plt.title("{0} ROC curve for each balancer".format(classifier_description))
@@ -147,7 +147,7 @@ def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description
         monochrome = (cycler("color", ["k"]) * cycler("marker", [""]) *
                       cycler("linestyle", ["-", "--", "-."]))
         color = iter(cm.brg(np.linspace(0, 1, len(classifier_roc_list))))
-        color_arr = ["#64B3DE", "#1f78b4", "#e31a1c", "#FBAC44", "#F77D7B", "#6ABF20", "#33a02c", "#ff7f00", "#6a3d9a", "black", "#B9B914"] * 11
+        color_arr = ["#64B3DE", "#1f78b4", "#6ABF20", "#FBAC44", "#F2504E", "#e31a1c", "#33a02c", "#ff7f00", "#6a3d9a", "black", "#B9B914"] * 11
         plt.rc("axes", prop_cycle=monochrome)
         line_style_index = 0
         color_index = 0
@@ -179,7 +179,7 @@ def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description
 
         plt.locator_params(axis='x', nbins=10)
         plt.locator_params(axis='y', nbins=10)
-        plt.plot([0, 1], [0, 1], "k--", label="Random classification")
+        plt.plot([0, 1], [0, 1], "k--", label="Random classification", lw=0.8)
         plt.xlim([0.0, 1.0])
         plt.ylim([0.0, 1.0])
         plt.xlabel("False Positive Rate")
@@ -191,41 +191,51 @@ def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description
         plt.close(fig)
 
 
-def plot_balancer_results_per_classifier(data_balancer_results_per_classifer, parameter="Average true rate"):
+def plot_balancer_results_per_classifier(data_balancer_results_per_classifier, parameter="Average true rate"):
     classifier_arr = []
-    color = iter(cm.brg(np.linspace(0, 1, len(data_balancer_results_per_classifer))))
-    for (classifier_name, data_balancer_results) in data_balancer_results_per_classifer:
+    color = iter(cm.Set1(np.linspace(0, 1, len(data_balancer_results_per_classifier) + 1)))
+    mean_classifier_arr = [0] * len(data_balancer_results_per_classifier[0][1])
+    for (classifier_name, data_balancer_results) in data_balancer_results_per_classifier:
         individual_data_balance_plot = []
+        x = 0
         for (data_balancer_name, result_arr) in data_balancer_results:
             individual_data_balance_plot.append(result_arr[parameter])  # Average True rate
+            mean_classifier_arr[x] += result_arr[parameter]
+            x += 1
         classifier_arr.append(individual_data_balance_plot)
+
+    classifier_arr.append([value / float(len(data_balancer_results_per_classifier)) for value in mean_classifier_arr])
 
     fig = plt.figure(figsize=(12, 10))
 
     classifiers = np.arange(len(classifier_arr))
-    data_balancers = np.arange(len(classifier_arr[0])) * 2.5
-    bar_width = 0.3
-    opacity = 0.4
+    data_balancers = np.arange(len(classifier_arr[0])) * 3
+    bar_width = 0.2
+    opacity = 0.9
 
     for i in range(len(classifier_arr)):
+        if i + 1 != len(classifier_arr):
+            label = data_balancer_results_per_classifier[i][0]
+        else:
+            label = "Mean classification"
+
         plt.bar(data_balancers + (i * bar_width), classifier_arr[i], bar_width,
                 alpha=opacity,
                 color=color.next(),
-                label=data_balancer_results_per_classifer[i][0])
+                label=label)
 
     plt.locator_params(axis='y', nbins=10)
     plt.xlabel("Data balance algorithm")
     plt.ylabel(parameter)
+    plt.legend(loc="lower right", fancybox=True, frameon=True)
     plt.title("{0} per data balance algorithm".format(parameter))
     plt.ylim([0.0, 1.00])
     data_balance_labels = [filter(str.isupper, data_balance_name) if data_balance_name is not "None" and len(filter(str.isupper, data_balance_name)) < 6 else data_balance_name for
-                           (data_balance_name, _) in data_balancer_results_per_classifer[0][1]]
+                           (data_balance_name, _) in data_balancer_results_per_classifier[0][1]]
     plt.xticks(data_balancers + (bar_width / 2) * len(classifiers), data_balance_labels, rotation="vertical")
-    plt.legend()
 
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/roc_balancer_results_per_classifier_plot_{0}_{1}.png".format(parameter, current_time),
-                bbox_inches="tight")
+    plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/data_balancer_results_per_classifier_plot_{0}_{1}.png".format(parameter, current_time))
     plt.close(fig)
 
 
@@ -236,9 +246,107 @@ def plot_kaplan_meier_graph_of_time_to_default(time_to_default, data_set_descrip
     ax.get_figure().set_size_inches(12, 10)
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     plt.ylim([0.0, 1.00])
-    plt.ylabel("Probability")
+    plt.ylabel("Percentage Remaining")
     plt.xlabel("Time to default (days)")
     plt.locator_params(axis='x', nbins=10)
 
     ax.get_figure().savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/kaplan_meier_time_to_default_{0}.png".format(current_time), bbox_inches="tight")
     plt.close(ax.get_figure())
+
+
+def plot_percentage_difference_on_feature_selection(feature_selection_results_per_classifier, parameter="Mean True Rate"):
+    no_feature_selection = feature_selection_results_per_classifier[0][1]
+    color = iter(cm.Set1(np.linspace(0, 1, len(no_feature_selection) + 1)))
+    classifier_arr = []
+    for i in range(len(no_feature_selection) + 1):
+        classifier_arr.append(list())
+    for i in range(1, len(feature_selection_results_per_classifier)):
+        data_balancer_results = feature_selection_results_per_classifier[i][1]
+        x = 0
+        mean_classification = 0
+        for (result_arr, data_balancer_name) in data_balancer_results:
+            value = result_arr[2] - no_feature_selection[x][0][2]
+            classifier_arr[x].append(value)
+            mean_classification += value
+            x += 1
+        mean_classification /= float(len(data_balancer_results))
+        classifier_arr[x].append(mean_classification)
+
+
+    fig = plt.figure(figsize=(12, 10))
+
+    classifiers = np.arange(len(classifier_arr))
+    data_balancers = np.arange(len(classifier_arr[0])) * 3
+    bar_width = 0.2
+    opacity = 0.9
+
+    for i in range(len(classifier_arr)):
+        if i + 1 != len(classifier_arr):
+            label = feature_selection_results_per_classifier[0][1][i][1]
+        else:
+            label = "Mean classification"
+        plt.bar(data_balancers + (i * bar_width), classifier_arr[i], bar_width,
+                alpha=opacity,
+                color=color.next(),
+                label=label)
+
+    plt.locator_params(axis='y', nbins=10)
+    plt.xlabel("Feature selection approach")
+    plt.ylabel(parameter)
+    plt.legend(loc="lower right", fancybox=True, frameon=True)
+    plt.title("{0} per data balance algorithm".format(parameter))
+    feature_selection_labels = [feature_selection_results_per_classifier[i][0] for i in range(1, len(feature_selection_results_per_classifier))]
+    plt.xticks(data_balancers + (bar_width / 2) * len(classifiers), feature_selection_labels, rotation="vertical")
+
+    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/feature_selection_results_per_classifier_plot_{0}_{1}.png".format(parameter, current_time))
+    plt.close(fig)
+
+
+def plot_time_to_default_results(time_to_default_results_per_classifier, parameter="Mean True Rate"):
+    color = iter(cm.Set1(np.linspace(0, 1, len(time_to_default_results_per_classifier[0][1]) + 1)))
+    classifier_arr = []
+    for i in range(len(time_to_default_results_per_classifier[0][1]) + 1):
+        classifier_arr.append(list())
+
+    for i in range(0, len(time_to_default_results_per_classifier)):
+        data_balancer_results = time_to_default_results_per_classifier[i][1]
+        x = 0
+        mean_classification = 0
+        for (result_arr, data_balancer_name) in data_balancer_results:
+            result = result_arr[2]
+            classifier_arr[x].append(result)
+            mean_classification += result
+            x += 1
+        mean_classification /= float(len(data_balancer_results))
+        classifier_arr[x].append(mean_classification)
+
+    fig = plt.figure(figsize=(12, 10))
+
+    classifiers = np.arange(len(classifier_arr))
+    data_balancers = np.arange(len(classifier_arr[0])) * 3
+    bar_width = 0.2
+    opacity = 0.9
+
+    for i in range(len(classifier_arr)):
+        if i == len(classifier_arr) - 1:
+            label = "Mean classification"
+        else:
+            label = time_to_default_results_per_classifier[0][1][i][1]
+        plt.bar(data_balancers + (i * bar_width), classifier_arr[i], bar_width,
+                alpha=opacity,
+                color=color.next(),
+                label=label)
+
+    plt.locator_params(axis='y', nbins=10)
+    plt.xlabel("Default range (days)")
+    plt.ylabel(parameter)
+    plt.ylim([0.0, 1.00])
+    plt.legend(loc="lower right", fancybox=True, frameon=True)
+    plt.title("{0} when trained on different default ranges".format(parameter))
+    feature_selection_labels = [time_to_default_results_per_classifier[i][0] for i in range(0, len(time_to_default_results_per_classifier))]
+    plt.xticks(data_balancers + (bar_width / 2) * len(classifiers), feature_selection_labels)
+
+    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/time_to_default_results_per_classifier_plot_{0}_{1}.png".format(parameter, current_time))
+    plt.close(fig)

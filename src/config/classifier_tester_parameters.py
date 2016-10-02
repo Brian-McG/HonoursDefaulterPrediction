@@ -86,6 +86,3 @@ generic_classifier_parameter_dict[clf.k_nearest_description] = k_nearest_dict
 bernoulli_dict = {"parameters": {"alpha": np.linspace(0.1, 1, 10).tolist(), "fit_prior": [True, False], "binarize": [None] + np.linspace(0, 10, 10).tolist()},
                   "requires_random_state": False}
 generic_classifier_parameter_dict[clf.bernoulli_naive_bayes_description] = bernoulli_dict
-
-# Voting classifier
-generic_classifier_parameter_dict[clf.voting_classifier_description] = None

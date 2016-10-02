@@ -52,9 +52,9 @@ def execute_loop(classifier_description, classifier_dict, parameter_dict, defaul
             try:
                 generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer)
                 if requires_random_state:
-                    result_dictionary = generic_classifier.train_and_evaluate(defaulter_set_arr, None)
+                    result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr, None)
                 else:
-                    result_dictionary = generic_classifier.train_and_evaluate(defaulter_set_arr, x)
+                    result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr, x)
                 test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
             except Exception:
                 success = False

@@ -94,8 +94,6 @@ class ClassifierStatistics:
     def calculate_average_predictive_accuracy(self):
         """Averages true positive, true negative, false positive and false negative rate contained in errors"""
 
-        assert len(self.errors) == const.NUMBER_OF_FOLDS
-
         avg_accuracy_dict = {}
         avg_true_rate = 0
         avg_true_positive_rate = 0
