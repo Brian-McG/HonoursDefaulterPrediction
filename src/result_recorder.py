@@ -15,7 +15,7 @@ class ResultRecorder:
     def record_results(self, result_dict, classifier_dict):
         self.results.append((result_dict, classifier_dict))
 
-    def save_results_to_file(self, data_set_description):
+    def save_results_to_file(self, random_values, data_set_description):
         """Records results to file. If file_name is None, then a default filename of data_<number of folds>_<timestamp>.csv"""
         if len(self.results) > 0:
             current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -23,9 +23,9 @@ class ResultRecorder:
             output_file = open(os.path.dirname(os.path.realpath(__file__)) + "/../results/" + file_name, "wb")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
             title_row = ["Classifier description", "Matthews correlation coefficient", "Cohen Kappa score", "Average true rate", "Average true positive rate",
-                         "Average true negative rate", "Average false positive rate", "Average false negative rate"]
+                         "Average true negative rate", "Average false positive rate", "Average false negative rate", "initialisation_values"]
             csv_writer.writerow(title_row)
             for result_tuple in self.results:
                 csv_writer.writerow((result_tuple[1], result_tuple[0][0], result_tuple[0][1],
-                                     result_tuple[0][2], result_tuple[0][3], result_tuple[0][4], result_tuple[0][5], result_tuple[0][6]))
+                                     result_tuple[0][2], result_tuple[0][3], result_tuple[0][4], result_tuple[0][5], result_tuple[0][6], random_values))
             output_file.close()

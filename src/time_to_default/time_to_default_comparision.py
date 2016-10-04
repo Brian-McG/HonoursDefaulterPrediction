@@ -8,6 +8,7 @@ from joblib import delayed
 import sys
 import os
 
+from random import Random
 from sklearn.model_selection import train_test_split
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
@@ -24,13 +25,14 @@ from run_statistics import RunStatistics
 from util import get_number_of_processes_to_use
 import numpy as np
 
+const.TEST_REPEAT = 500
 
-def execute_classifier_run(defaulters_in_range, defaulters_out_of_range, non_defaulters, numeric_columns, categorical_columns, classification_label, missing_values_strategy, classifier_parameters, data_balancer, classifier_dict, classifier_description, roc_plot, result_recorder):
+def execute_classifier_run(random_values, defaulters_in_range, defaulters_out_of_range, non_defaulters, numeric_columns, categorical_columns, classification_label, missing_values_strategy, classifier_parameters, data_balancer, classifier_dict, classifier_description, roc_plot, result_recorder):
     if classifier_dict["status"]:
         print("=== Executing {0} ===".format(classifier_description))
         test_stats = RunStatistics()
-        for i in range(500):
-            X_train, X_test, y_train, y_test = train_test_split(non_defaulters[numeric_columns + categorical_columns], non_defaulters[classification_label], test_size=0.5, random_state=i)
+        for i in range(const.TEST_REPEAT):
+            X_train, X_test, y_train, y_test = train_test_split(non_defaulters[numeric_columns + categorical_columns], non_defaulters[classification_label], test_size=0.5, random_state=random_values[i])
             X_train = pd.concat([X_train, defaulters_in_range[numeric_columns + categorical_columns]])
             y_train = pd.concat([y_train, defaulters_in_range[classification_label]])
             X_test = pd.concat([X_test, defaulters_out_of_range[numeric_columns + categorical_columns]])
@@ -44,8 +46,8 @@ def execute_classifier_run(defaulters_in_range, defaulters_out_of_range, non_def
             y_train = training.iloc[:, -1:].as_matrix().flatten()
             X_test = testing.iloc[:, :-1].as_matrix()
             y_test = testing.iloc[:, -1:].as_matrix().flatten()
-            generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer)
-            result_dictionary = generic_classifier.train_and_evaluate(X_train, y_train, X_test, y_test, i)
+            generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer, random_values[i])
+            result_dictionary = generic_classifier.train_and_evaluate(X_train, y_train, X_test, y_test)
             test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
 
         avg_results = test_stats.calculate_average_run_accuracy()
@@ -70,6 +72,15 @@ def main():
 
             non_defaulters = input_defaulter_set[np.isnan(input_defaulter_set["Time to Default (Days)"])]
 
+            random_values = []
+            random = Random()
+            for i in range(const.TEST_REPEAT):
+                while True:
+                    random_value = random.randint(const.RANDOM_RANGE[0], const.RANDOM_RANGE[1])
+                    if random_value not in random_values:
+                        random_values.append(random_value)
+                        break
+
             cpu_count = get_number_of_processes_to_use()
 
             for time_range in time_ranges:
@@ -85,7 +96,7 @@ def main():
                 roc_plot = manager.list()
 
                 # Execute enabled classifiers
-                Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(defaulters_in_range, defaulters_out_of_range, non_defaulters, numeric_columns, categorical_columns, data_set["classification_label"], data_set["missing_values_strategy"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], classifier_dict, classifier_description, roc_plot, result_recorder) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
+                Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(random_values, defaulters_in_range, defaulters_out_of_range, non_defaulters, numeric_columns, categorical_columns, data_set["classification_label"], data_set["missing_values_strategy"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], classifier_dict, classifier_description, roc_plot, result_recorder) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
 
                 result_recorder.results = sorted(result_recorder.results, key=lambda tup: tup[1])
                 for (result_arr, classifier_description) in result_recorder.results:

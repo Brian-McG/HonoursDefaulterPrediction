@@ -146,8 +146,7 @@ def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description
         fig = plt.figure(figsize=(8, 6.66))
         monochrome = (cycler("color", ["k"]) * cycler("marker", [""]) *
                       cycler("linestyle", ["-", "--", "-."]))
-        color = iter(cm.brg(np.linspace(0, 1, len(classifier_roc_list))))
-        color_arr = ["#64B3DE", "#1f78b4", "#6ABF20", "#FBAC44", "#F2504E", "#e31a1c", "#33a02c", "#ff7f00", "#6a3d9a", "black", "#B9B914"] * 11
+        color_arr = ["#64B3DE", "#1f78b4", "#6ABF20", "#FBAC44", "#bc1659", "#B9B914", "#33a02c", "#ff7f00", "#6a3d9a", "black", "#b15928", "#e31a1c"]
         plt.rc("axes", prop_cycle=monochrome)
         line_style_index = 0
         color_index = 0
@@ -166,7 +165,6 @@ def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description
                 mean_tpr /= float(count)
                 mean_tpr[-1] = 1.0
                 mean_auc = auc(mean_fpr, mean_tpr)
-                c = next(color)
                 line_width = 0.5
                 if line_style_index == 1:
                     line_width = 0.8
@@ -185,7 +183,7 @@ def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description
         plt.xlabel("False Positive Rate")
         plt.ylabel("True Positive Rate")
         plt.title("ROC curve for each classifier")
-        plt.legend(loc="lower right")
+        plt.legend(loc="lower right", fancybox=True, frameon=True)
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/{0}_roc_classifier_plot_{1}.png".format(data_set_description, current_time), bbox_inches="tight")
         plt.close(fig)

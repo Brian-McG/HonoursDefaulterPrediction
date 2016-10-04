@@ -3,8 +3,10 @@
 import pandas as pd
 from multiprocessing import Manager
 
+import sys
 from joblib import Parallel
 from joblib import delayed
+from random import Random
 
 import config.classifiers as cfr
 import visualisation as vis
@@ -19,14 +21,13 @@ from util import get_number_of_processes_to_use
 import numpy as np
 
 
-def execute_classifier_run(input_defaulter_set, classifier_parameters, data_balancer, data_set_description, classifier_dict, classifier_description, roc_plot, result_recorder):
+def execute_classifier_run(input_defaulter_set, classifier_parameters, data_balancer, random_values, classifier_dict, classifier_description, roc_plot, result_recorder):
     if classifier_dict["status"]:
         print("=== Executing {0} ===".format(classifier_description))
         test_stats = RunStatistics()
         for i in range(const.TEST_REPEAT):
-
-            generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer)
-            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set, None)
+            generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer, random_values[i])
+            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set)
             test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
 
         avg_results = test_stats.calculate_average_run_accuracy()
@@ -35,7 +36,7 @@ def execute_classifier_run(input_defaulter_set, classifier_parameters, data_bala
         print("=== Completed {0} ===".format(classifier_description))
 
 
-def main():
+def main(random_value_arr):
     for data_set in data_sets.data_set_arr:
         if data_set["status"]:
             # Load in data set
@@ -53,10 +54,21 @@ def main():
             result_recorder = ResultRecorder(result_arr=manager.list())
 
             roc_plot = manager.list()
+            if len(random_value_arr) == 0:
+                random_value_arr = []
+                random = Random()
+                for i in range(const.TEST_REPEAT):
+                    while True:
+                        random_value = random.randint(const.RANDOM_RANGE[0], const.RANDOM_RANGE[1])
+                        if random_value not in random_value_arr:
+                            random_value_arr.append(random_value)
+                            break
+            elif len(random_value_arr) != const.TEST_REPEAT:
+                raise RuntimeError("Random value does not match length of test repeat {0} != {1}".format(len(random_value_arr), const.TEST_REPEAT))
 
             cpu_count = get_number_of_processes_to_use()
             # Execute enabled classifiers
-            Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(input_defaulter_set, data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], data_set["data_set_description"], classifier_dict, classifier_description, roc_plot, result_recorder) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
+            Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(input_defaulter_set, data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], random_value_arr, classifier_dict, classifier_description, roc_plot, result_recorder) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
 
             roc_plot = sorted(roc_plot, key=lambda tup: tup[1])
             result_recorder.results = sorted(result_recorder.results, key=lambda tup: tup[1])
@@ -72,9 +84,12 @@ def main():
 
             if const.RECORD_RESULTS:
                 vis.plot_mean_roc_curve_of_classifiers(roc_plot, data_set["data_set_description"])
-                result_recorder.save_results_to_file(data_set["data_set_description"])
+                result_recorder.save_results_to_file(random_value_arr, data_set["data_set_description"])
 
 
 if __name__ == "__main__":
     # Run main
-    main()
+    random_values = []
+    for p in range(1, len(sys.argv)):
+        random_values.append(int(sys.argv[p]))
+    main(random_values)

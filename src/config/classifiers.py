@@ -1,11 +1,12 @@
 """Contains all classifiers used (except ANNs)"""
 from collections import OrderedDict
+
 from sklearn import svm
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import VotingClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import BernoulliNB
+from sklearn.naive_bayes import BernoulliNB, GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -31,7 +32,7 @@ append_classifier_details(clustering_launched_classifier, clustering_launched_cl
 # Extreme learning machines
 elm = ExtremeLearningMachine
 elm_description = "Extreme Learning Machine"
-elm_enabled = True
+elm_enabled = False
 append_classifier_details(elm, elm_enabled, elm_description, classifiers)
 
 # Artificial Neural network
@@ -43,7 +44,7 @@ append_classifier_details(ann, ann_enabled, ann_description, classifiers)
 # Support Vector Machines (with RDF kernel)
 svm_rdf = svm.SVC
 svm_rdf_description = "SVM (RDF)"
-svm_rdf_enabled = False
+svm_rdf_enabled = True
 append_classifier_details(svm_rdf, svm_rdf_enabled, svm_rdf_description, classifiers)
 
 # Support Vector Machines (with linear kernel)
@@ -88,14 +89,14 @@ k_nearest_description = "K-nearest neighbours"
 k_nearest_enabled = False
 append_classifier_details(k_nearest, k_nearest_enabled, k_nearest_description, classifiers)
 
+# Gaussian Naive Bayes
+gaussian_naive_bayes = GaussianNB
+gaussian_naive_bayes_description = "Gaussian Naive Bayes"
+gaussian_naive_bayes_enabled = False
+append_classifier_details(gaussian_naive_bayes, gaussian_naive_bayes_enabled, gaussian_naive_bayes_description, classifiers)
+
 # Bernoulli Naive Bayes
 bernoulli_naive_bayes = BernoulliNB
 bernoulli_naive_bayes_description = "Bernoulli Naive Bayes"
 bernoulli_naive_bayes_enabled = False
 append_classifier_details(bernoulli_naive_bayes, bernoulli_naive_bayes_enabled, bernoulli_naive_bayes_description, classifiers)
-
-# Voting classifier
-voting_classifier = VotingClassifier
-voting_classifier_description = "Voting classifier"
-voting_classifier_enabled = False
-append_classifier_details(voting_classifier, voting_classifier_enabled, voting_classifier_description, classifiers)

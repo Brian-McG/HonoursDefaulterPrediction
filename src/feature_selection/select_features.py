@@ -121,7 +121,7 @@ def execute_classifier_run(input_defaulter_set, classifier_parameters, data_bala
     if classifier_dict["status"]:
         print("=== Executing {0} ===".format(classifier_description))
         test_stats = RunStatistics()
-        for i in range(500):
+        for i in range(100):
             generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer)
             result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set, i)
             test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)

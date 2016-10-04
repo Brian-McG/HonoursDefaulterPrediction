@@ -79,6 +79,11 @@ k_nearest_data_balancer = ClusterCentroids
 k_nearest_parameters = {"weights": "uniform", "p": 1, "n_neighbors": 115, "leaf_size": 20, "algorithm": "brute"}
 append_classifier_details(k_nearest_data_balancer, k_nearest_parameters, clfrs.k_nearest_description, classifier_parameters)
 
+# Gaussian Naive Bayes
+gaussian_naive_bayes_data_balancer = OneSidedSelection
+gaussian_naive_bayes_parameters = {}
+append_classifier_details(gaussian_naive_bayes_data_balancer, gaussian_naive_bayes_parameters, clfrs.gaussian_naive_bayes_description, classifier_parameters)
+
 # Bernoulli Naive Bayes
 bernoulli_naive_bayes_data_balancer = OneSidedSelection
 bernoulli_naive_bayes_parameters = {"alpha": 0.2, "fit_prior": False}

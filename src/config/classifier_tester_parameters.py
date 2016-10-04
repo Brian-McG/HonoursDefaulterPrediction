@@ -82,6 +82,10 @@ k_nearest_dict = {"parameters": {"n_neighbors": list(range(5, 120, 10)), "weight
                                  "leaf_size": list(range(20, 50, 5)), "p": list(range(1, 5))}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.k_nearest_description] = k_nearest_dict
 
+# Gaussian Naive Bayes
+gaussian_dict = {"parameters": {}, "requires_random_state": False}
+generic_classifier_parameter_dict[clf.gaussian_naive_bayes_description] = gaussian_dict
+
 # Bernoulli Naive Bayes
 bernoulli_dict = {"parameters": {"alpha": np.linspace(0.1, 1, 10).tolist(), "fit_prior": [True, False], "binarize": [None] + np.linspace(0, 10, 10).tolist()},
                   "requires_random_state": False}

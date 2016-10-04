@@ -50,15 +50,15 @@ def execute_loop(classifier_description, classifier_dict, parameter_dict, defaul
         success = True
         for x in range(const.TEST_REPEAT):
             try:
-                generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer)
+                generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer, x)
                 if requires_random_state:
-                    result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr, None)
+                    result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr)
                 else:
-                    result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr, x)
+                    result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr)
                 test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
-            except Exception:
+            except Exception as e:
                 success = False
-                print("INFO: parameter caused classifier to raise exception")
+                print("INFO: parameter caused classifier to raise exception - {0}".format(e))
 
         if success:
             avg_results = test_stats.calculate_average_run_accuracy()
@@ -76,8 +76,10 @@ if __name__ == "__main__":
             # Preprocess data set
             input_defaulter_set = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"],
                                                       data_set["missing_values_strategy"])
-
-            cpu_count = get_number_of_processes_to_use()
+            try:
+                cpu_count = int(sys.argv[1])
+            except IndexError:
+                cpu_count = get_number_of_processes_to_use()
             for classifier_description, classifier_dict in cfr.classifiers.iteritems():
                 parameter_dict = ctp.generic_classifier_parameter_dict[classifier_description]
                 if classifier_dict['status'] and parameter_dict is not None:
