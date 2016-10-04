@@ -51,7 +51,7 @@ generic_classifier_parameter_dict[clf.svm_linear_description] = linear_svm_param
 
 # Support Vector Machines (poly)
 poly_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_function_shape": ["ovr"], "kernel": ["poly"], "C": np.linspace(0.01, 5, 10).tolist() + [1],
-                                          "gamma": ["auto"] + np.linspace(0.0001, 1, 10).tolist(), 'class_weight': [None, 'balanced'], 'degree': [2, 3, 4],
+                                          "gamma": ["auto"] + np.linspace(0.0001, 1, 10).tolist(), 'class_weight': [None, 'balanced'], 'degree': [2, 3],
                                           'coef0': [0, 5, 10]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.svm_poly_description] = poly_svm_parameter_dict
 
