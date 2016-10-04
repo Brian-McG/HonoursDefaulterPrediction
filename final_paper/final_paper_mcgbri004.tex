@@ -50,232 +50,281 @@
 
 
 \begin{document}
-
-% Copyright
-\setcopyright{acmcopyright}
-%\setcopyright{acmlicensed}
-%\setcopyright{rightsretained}
-%\setcopyright{usgov}
-%\setcopyright{usgovmixed}
-%\setcopyright{cagov}
-%\setcopyright{cagovmixed}
-
-
-% DOI
-\doi{n/a}
-
-% ISBN
-\isbn{n/a}
-
-%Conference
-%\conferenceinfo{PLDI '13}{June 16--19, 2013, Seattle, WA, USA}
-
-%\acmPrice{\$15.00}
-
-%
-% --- Author Metadata here ---
-%\conferenceinfo{WOODSTOCK}{'97 El Paso, Texas USA}
-%\CopyrightYear{2015} % Allows default copyright year (20XX) to be over-ridden - IF NEED BE.
-%\crdata{0-12345-67-8/90/01}  % Allows default copyright data (0-89791-88-6/97/05) to be over-ridden - IF NEED BE.
-% --- End of Author Metadata ---
-
-\title{Analysis of Classification Techniques for Prediction of Tuberculosis Defaulters}
-%
-% You need the command \numberofauthors to handle the 'placement
-% and alignment' of the authors beneath the title.
-%
-% For aesthetic reasons, we recommend 'three authors at a time'
-% i.e. three 'name/affiliation blocks' be placed beneath the title.
-%
-% NOTE: You are NOT restricted in how many 'rows' of
-% "name/affiliations" may appear. We just ask that you restrict
-% the number of 'columns' to three.
-%
-% Because of the available 'opening page real-estate'
-% we ask you to refrain from putting more than six authors
-% (two rows with three columns) beneath the article title.
-% More than six makes the first-page appear very cluttered indeed.
-%
-% Use the \alignauthor commands to handle the names
-% and affiliations for an 'aesthetic maximum' of six authors.
-% Add names, affiliations, addresses for
-% the seventh etc. author(s) as the argument for the
-% \additionalauthors command.
-% These 'additional authors' will be output/set for you
-% without further effort on your part as the last section in
-% the body of your article BEFORE References or any Appendices.
-
-%\numberofauthors{8} %  in this sample file, there are a *total*
-% of EIGHT authors. SIX appear on the 'first-page' (for formatting
-% reasons) and the remaining two appear in the \additionalauthors section.
-%
-\author{
-% You can go ahead and credit any number of authors here,
-% e.g. one 'row of three' or two rows (consisting of one row of three
-% and a second row of one, two or three).
-%
-% The command \alignauthor (no curly braces needed) should
-% precede each author name, affiliation/snail-mail address and
-% e-mail address. Additionally, tag each line of
-% affiliation/address with \affaddr, and tag the
-% e-mail address with \email.
-%
-% 1st. author
-\alignauthor
-Brian Mc George\\
-       \affaddr{University of Cape Town}\\
-       \affaddr{Cape Town, South Africa}\\
-       \email{mcgbri004@myuct.ac.za}
-}
-
-\maketitle
-\begin{abstract}
-\end{abstract}
-
-%
-%  Use this command to print the description
-%
-\printccsdesc
-
-% We no longer use \terms command
-%\terms{Theory}
-
-%\keywords{ACM proceedings; \LaTeX; text tagging}
-
-\section{Introduction}
-In 2013 over 210\hspace*{1mm}000 patients defaulted from Tuberculosis (TB) treatment worldwide \cite{world2015TB}. The rate of default in the Americas is the highest at 8\% with Africa at 5\% \cite{world2015TB}. The consequences of defaulting TB treatment include: increased drug resistance, increased health system costs \cite{Lackey:10356751520150601, muture:6660173120110101}, higher risk of mortality, continued risk of transmitting the disease to others \cite{Lackey:10356751520150601} and increased rate of recurrent disease \cite{Jha:10.1371/journal.pone.0008873}. The spread of TB can be reduced if the individuals who have a high risk of defaulting can be predicted. This will also reduce health system costs.
-
-The field of credit scoring in the financial space aims to determine if a financial institution should provide credit to an individual. This area has been well researched. This paper aims to determine if classification techniques that have been evaluated for the credit scoring problem will show similar results for predicting TB defaulters. There are notable similarities in these problems which could make them comparable. Both problems typically have a labelled dataset consisting of both nominal and numerical data as well as the occurrence of missing data [citation needed]. However, TB datasets are more prone to missing data as well as inaccuracies due to the nature of the data collection [citation needed]. The selected classification techniques are evaluated against real-world treatment default datasets and financial datasets. The paper will evaluate how the techniques differ across the datasets. If the relative results are similar then future credit scoring research could be applicable to treatment default prediction too.
-
-\begin{enumerate}
-	\item Discuss datasets used and possibly expansion of TB issues in those specific counties (Peru and Malawi)
-	\item Outline briefly how the datasets are used and that each technique is also benchmarked against the well known Australian and German financial to determine how applicable credit scoring research is to TB default prediction for the two TB datasets.
-	\item Link TB classification to credit scoring and outline notable similarities and differences
-	\item Summarise overall paper
-\end{enumerate}
-
-\section{Background}
-\subsection{Definition of a defaulter}
-The definition of a defaulter depends on its context. TB literature typically uses the World Health Organisation (WHO) definition that a defaulter is a person whose treatment has been disrupted for two or more consecutive months \cite{chan:2003prevalence, cherkaoui:19326203, Jha:10.1371/journal.pone.0008873,jittimanee:10.1111/j.1440-172X.2007.00650.x,muture:6660173120110101, world2015TB}.
-
-\subsection{Determining predictors of TB default}
-There have been many studies which focus on determining the factors associated with TB default but few have used machine learning techniques to predict treatment defaulters. Table \ref{table:predictors_of_tb_default} contains an overview of a selection of publications on determining the factors associated with TB default. The majority of techniques use a form of logistic regression ti determine the association. 
-
-The datasets used by the publications contain different features. Age and gender are common throughout the datasets. History of past default is available for all datasets except for Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037}. Lackey \textit{et al.} \cite{Lackey:10356751520150601} only picked individuals who did not have a history of past default. Jittimanee \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} [28] was the only publication with the feature that did not find it to be significant to the 95\% confidence level. However, it did have an odds ratio of 2.19 and a p-value of 0.12. It can therefore be deduced that a history of past default has a strong correlation to default. Two out of three publications with the alcohol abuse feature available, found it to be significant. Three of the four publications with side effects, as a feature found it was significant. Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037} and Jittimanee \textit{et al.} \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} measured distance and time to treatment site respectively. It can be reasoned that the aforementioned feature's significance will generalise to other datasets since they were found to be significant in the majority of the publications. Other significant features such as illegal drug use, use of herbal medication, daily jobs, history of lung cancer and history of liver disease only appeared once in the datasets. It cannot be discerned if the significance is generalisable or specific to the dataset. The identification of the same features as significant is fairly consistent for the publications that have those features in their dataset. 
-
-\begin{table*}
-	\small
-	\centering
-	\caption{Overview of publications on predictors of TB treatment defaulters}
-	\label{table:predictors_of_tb_default}
-	\makebox[\linewidth]{
-		\begin{tabular}{l|c|c|c} \hline
-			Publication&Sample Size&Key factors identified\textsuperscript{*}&Evaluation\rule{0pt}{3.5mm}\rule[-1mm]{0pt}{0pt}\\ \hline
-			\parbox[t]{1.5cm}{Chan-Yeung \textit{et al.} \cite{chan:2003prevalence}}
-			&\parbox[t]{2.6cm}{1768 non-defaulters\\442 defaulters.}
-			&\parbox[t]{7cm}{History of default, history of lung cancer, liver disease and male patients}
-			&\parbox[t]{8cm}{Multiple logistic regression is used to determine what factors are associated with default.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-			\parbox[t]{1.5cm}{Jha \textit{et al.} \cite{Jha:10.1371/journal.pone.0008873}}
-			&\parbox[t]{2.6cm}{1189 non-defaulters\\1141 defaulters.}
-			&\parbox[t]{7cm}{Male patients, patients directly-observed treatment at public facilities, previous treatment outside India's Revised National Tuberculosis Control Programme and history of previous default\vspace{1mm}}
-			&\parbox[t]{8cm}{The chi-square test or Fisher's exact test (if there were less than 10 observations) was used to test the differences between defaulters and non-defaulters. Bivariate analysis was calculated on the features. Multivariate logistic regression using pre-selected features based on previous studies.}\rule{0pt}{3.5mm}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-			\parbox[t]{1.5cm}{Jittimanee \textit{et al.} \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x}}
-			&\parbox[t]{2.6cm}{106 non-defaulters\\54 defaulters.}
-			&\parbox[t]{7cm}{Jobs where one is only paid if one is at work that day, severe medication side-effects and time to travel to clinic.}
-			&\parbox[t]{8cm}{Patients were interviewed and completed a questionnaire to obtain the information. Hierarchical logistic regression  was carried out to assess the variable's relation to default.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-			\parbox[t]{1.5cm}{Lackey \textit{et al.} \cite{Lackey:10356751520150601}}
-			&\parbox[t]{2.6cm}{1106 non-defaulters\\127 defaulters.}
-			&\parbox[t]{7cm}{Has used illegal drugs, has multidrug-resistant TB, has not been tested for HIV, drinks alcohol at least once a week, underweight or has not completed secondary education.}
-			&\parbox[t]{8cm}{{Patients were interviewed to obtain the information. Bivariate analysis using Chi-square tests and odds ratios with 95\% confidence intervals. Multivariate logistic regression is used with a backward fitting algorithm to determine if a variable is associated with default.}}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline		
-			\parbox[t]{1.5cm}{Muture \textit{et al.} \cite{muture:6660173120110101}}
-			&\parbox[t]{2.6cm}{5659 non-defaulters\\945 defaulters.}
-			&\parbox[t]{7cm}{Inadequate knowledge on TB, herbal medication use, low income, alcohol abuse, previous default, suffering from HIV and male patients were determined through analysis to be associated with default.}
-			&\parbox[t]{8cm}{Two-tailed $\chi^2$ tests and Fisher exact tests (if a cell has less than 5 values) to assess categorical information. Odds ratio tests were used to measure association between features with a 95\% confidence interval.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-			\parbox[t]{1.5cm}{Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037}}
-			&\parbox[t]{2.6cm}{310 non-defaulters\\81 defaulters.}
-			&\parbox[t]{7cm}{Distance from home to treatment site, age greater than 25 and the need to use public transport to get to treatment site.}
-			&\parbox[t]{8cm}{Continuous features were analysed using sample t-test $\chi^2$ tests and hazard ratios with 95\% confidence intervals. The effect of each factor was assessed using Cox regression model with a backwards fitting algorithm.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-			\noalign{\vskip 4pt}                     
-			\multicolumn{4}{l}{\textsuperscript{*}\footnotesize{\parbox[t]{\linewidth}{Ordered in descending order of significance  based on odds ratio and hazard ratio at a confidence interval of at least 95\%. }}}\\
-		\end{tabular}
-	}
-\end{table*} 
-
-\subsection{Predicting defaulters in financial institutions}
-\begin{table}
-	\small
-	\caption{Predicting financial defaulters using SVM\textsuperscript{\textparagraph}}
-	\label{table:SVM}	
-	\begin{tabular}{c|c|c|c} \hline		
-		Publication&Accuracy&\parbox[t]{1.2cm}{\centering Type I\\Error}&\parbox[t]{1.2cm}{\centering Type II\\Error}\rule{0pt}{3mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-		\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2004543}}
-		&\parbox[t]{2.3cm}{\centering \textbf{79.87\%}\textsuperscript{\textdagger}}
-		&\parbox[t]{1.1cm}{\centering n/a}
-		&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-		\parbox[t]{2.3cm}{Li \textit{et al.} \cite{Li2006772}}
-		&\parbox[t]{2.3cm}{\centering \textbf{84.83\%}}
-		&\parbox[t]{1.1cm}{\centering 10-20\%\textsuperscript{*}}
-		&\parbox[t]{1.2cm}{\centering 10-20\%\textsuperscript{*}}\\ \hline
-		\parbox[t]{2.3cm}{Luo \textit{et al.} \cite{Luo20097562}}
-		&\parbox[t]{2.3cm}{\centering 77.06\% (MySVM), 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
-		&\parbox[t]{1.1cm}{\centering n/a}
-		&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-		\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2007847}}
-		&\parbox[t]{2.3cm}{\centering 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
-		&\parbox[t]{1.1cm}{\centering n/a}
-		&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-		\parbox[t]{2.3cm}{Danenas \textit{et al.} \cite{Danenas20153194}}
-		&\parbox[t]{2.3cm}{\centering \textbf{94.41\%} (Linear SVM), \textbf{92.37\%} (PSO-LinSVM)\textsuperscript{\textdagger}}
-		&\parbox[t]{1.1cm}{\centering n/a\textsuperscript{\textdaggerdbl}}
-		&\parbox[t]{1.2cm}{\centering n/a\textsuperscript{\textdaggerdbl}}\rule{0pt}{3.5mm}\rule[-8mm]{0pt}{0pt}		
-	\end{tabular}		
-\end{table}
-
-\begin{enumerate}
-	\item Summarised version of original literature review except the parts using temporal aspects
-	\item Summarise what has been done determining TB predictors (which is a different aim)
-	\item Summarise what has been done in the credit scoring financial space as a lot of research has been done in this field.
-\end{enumerate}
-
-\section{Method}
-\begin{enumerate}
-	\item Outline each dataset fully: number of nominal and numerical fields and number of entries. Also outline how balanced each dataset is.
-	\item Outline testing procedure and optimisation strategy for each classification technique. To optimise each classification technique, a grid search is conducted across a reasonable parameter space. For each parameter set, the results are averaged over 3 runs, this is done because of the stochastic nature of initialising the training of each classifier. To ensure consistent results for each run, the same fold allocations are used.
-	\item Brief overview of each classification technique and possibly give a reason why this technique may work well for our application
-\end{enumerate}
-
-\section{Results}
-\begin{enumerate}
-	\item Tables with true positive, true negative, false positive and false negative rate for each classifier on each dataset
-	\item ROC curves which can be used to determine true positive for an acceptable amount of false positives for each classification technique on each dataset
-	\item Graphs which outline difference in accuracy of each data balancing technique for each dataset
-\end{enumerate}
-
-\section{Discussion}
-\begin{enumerate}
-	\item Discussion on best classification technique
-	\item Discussion on data balancing results
-	\item Outline similarities and differences in results between the two TB datasets and between TB and financial datasets and determine if they are similar enough that results for the German and Australian credit scoring datasets could be used for the two TB datasets.
 	
-\end{enumerate}
-
-\section{Future Work}
-\begin{enumerate}
-	\item Likely something along the lines of utilising more temporal based data so that classification is not just done at registration but also at each check-up for example. Future work may also be the testing of more classification techniques as well as datasets from other parts of the world.
-\end{enumerate}
-
-\section{Conclusions}
-
-%
-% The following two commands are all you need in the
-% initial runs of your .tex file to
-% produce the bibliography for the citations in your paper.
-\bibliographystyle{abbrv}
-\bibliography{sigproc}  % sigproc.bib is the name of the Bibliography in this case
-% You must have a proper ".bib" file
-%  and remember to run:
-% latex bibtex latex latex
-% to resolve all references
-%
-%\balancecolumns
+	% Copyright
+	\setcopyright{acmcopyright}
+	%\setcopyright{acmlicensed}
+	%\setcopyright{rightsretained}
+	%\setcopyright{usgov}
+	%\setcopyright{usgovmixed}
+	%\setcopyright{cagov}
+	%\setcopyright{cagovmixed}
+	
+	
+	% DOI
+	\doi{n/a}
+	
+	% ISBN
+	\isbn{n/a}
+	
+	%Conference
+	%\conferenceinfo{PLDI '13}{June 16--19, 2013, Seattle, WA, USA}
+	
+	%\acmPrice{\$15.00}
+	
+	%
+	% --- Author Metadata here ---
+	%\conferenceinfo{WOODSTOCK}{'97 El Paso, Texas USA}
+	%\CopyrightYear{2015} % Allows default copyright year (20XX) to be over-ridden - IF NEED BE.
+	%\crdata{0-12345-67-8/90/01}  % Allows default copyright data (0-89791-88-6/97/05) to be over-ridden - IF NEED BE.
+	% --- End of Author Metadata ---
+	
+	\title{Analysis of Classification Techniques for Prediction of Tuberculosis Defaulters}
+	%
+	% You need the command \numberofauthors to handle the 'placement
+	% and alignment' of the authors beneath the title.
+	%
+	% For aesthetic reasons, we recommend 'three authors at a time'
+	% i.e. three 'name/affiliation blocks' be placed beneath the title.
+	%
+	% NOTE: You are NOT restricted in how many 'rows' of
+	% "name/affiliations" may appear. We just ask that you restrict
+	% the number of 'columns' to three.
+	%
+	% Because of the available 'opening page real-estate'
+	% we ask you to refrain from putting more than six authors
+	% (two rows with three columns) beneath the article title.
+	% More than six makes the first-page appear very cluttered indeed.
+	%
+	% Use the \alignauthor commands to handle the names
+	% and affiliations for an 'aesthetic maximum' of six authors.
+	% Add names, affiliations, addresses for
+	% the seventh etc. author(s) as the argument for the
+	% \additionalauthors command.
+	% These 'additional authors' will be output/set for you
+	% without further effort on your part as the last section in
+	% the body of your article BEFORE References or any Appendices.
+	
+	%\numberofauthors{8} %  in this sample file, there are a *total*
+	% of EIGHT authors. SIX appear on the 'first-page' (for formatting
+	% reasons) and the remaining two appear in the \additionalauthors section.
+	%
+	\author{
+		% You can go ahead and credit any number of authors here,
+		% e.g. one 'row of three' or two rows (consisting of one row of three
+		% and a second row of one, two or three).
+		%
+		% The command \alignauthor (no curly braces needed) should
+		% precede each author name, affiliation/snail-mail address and
+		% e-mail address. Additionally, tag each line of
+		% affiliation/address with \affaddr, and tag the
+		% e-mail address with \email.
+		%
+		% 1st. author
+		\alignauthor
+		Brian Mc George\\
+		\affaddr{University of Cape Town}\\
+		\affaddr{Cape Town, South Africa}\\
+		\email{mcgbri004@myuct.ac.za}
+	}
+	
+	\maketitle
+	\begin{abstract}
+	\end{abstract}
+	
+	%
+	%  Use this command to print the description
+	%
+	\printccsdesc
+	
+	% We no longer use \terms command
+	%\terms{Theory}
+	
+	%\keywords{ACM proceedings; \LaTeX; text tagging}
+	
+	\section{Introduction}
+	In 2013 over 210\hspace*{1mm}000 patients defaulted from Tuberculosis (TB) treatment worldwide \cite{world2015TB}. The rate of default in the Americas is the highest at 8\% with Africa at 5\% \cite{world2015TB}. The consequences of defaulting TB treatment include: increased drug resistance, increased health system costs \cite{Lackey:10356751520150601, muture:6660173120110101}, higher risk of mortality, continued risk of transmitting the disease to others \cite{Lackey:10356751520150601} and increased rate of recurrent disease \cite{Jha:10.1371/journal.pone.0008873}. The spread of TB can be reduced if the individuals who have a high risk of defaulting can be predicted. This will also reduce health system costs.
+	
+	The field of credit scoring in the financial space aims to determine if a financial institution should provide credit to an individual. This area has been well researched. This paper aims to determine if classification techniques that have been evaluated for the credit scoring problem will show similar results for predicting TB defaulters. There are notable similarities in these problems which could make them comparable. Both problems typically have a labelled dataset consisting of both nominal and numerical data as well as the occurrence of missing data [citation needed]. However, TB datasets are more prone to missing data as well as inaccuracies due to the nature of the data collection [citation needed]. The selected classification techniques are evaluated against real-world treatment default datasets and financial datasets. The paper will evaluate how the techniques differ across the datasets. If the relative results are similar then future credit scoring research could be applicable to treatment default prediction too.
+	
+	\begin{enumerate}
+		\item Discuss datasets used and possibly expansion of TB issues in those specific counties (Peru and Malawi)
+		\item Outline briefly how the datasets are used and that each technique is also benchmarked against the well known Australian and German financial to determine how applicable credit scoring research is to TB default prediction for the two TB datasets.
+		\item Link TB classification to credit scoring and outline notable similarities and differences
+		\item Summarise overall paper
+	\end{enumerate}
+	
+	\section{Background and related work}
+	\subsection{Definition of a defaulter}
+	The definition of a defaulter depends on its context. TB literature typically uses the World Health Organisation (WHO) definition that a defaulter is a person whose treatment has been disrupted for two or more consecutive months \cite{chan:2003prevalence, cherkaoui:19326203, Jha:10.1371/journal.pone.0008873,jittimanee:10.1111/j.1440-172X.2007.00650.x,muture:6660173120110101, world2015TB}.
+	
+	\subsection{Determining predictors of TB default}
+	There have been many studies which focus on determining the factors associated with TB default but few have used machine learning techniques to predict treatment defaulters. Table \ref{table:predictors_of_tb_default} contains an overview of a selection of publications on determining the factors associated with TB default. The majority of techniques use a form of logistic regression ti determine the association. 
+	
+	The datasets used by the publications contain different features. Age and gender are common throughout the datasets. History of past default is available for all datasets except for Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037}. Lackey \textit{et al.} \cite{Lackey:10356751520150601} only picked individuals who did not have a history of past default. Jittimanee \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} [28] was the only publication with the feature that did not find it to be significant to the 95\% confidence level. However, it did have an odds ratio of 2.19 and a p-value of 0.12. It can therefore be deduced that a history of past default has a strong correlation to default. Two out of three publications with the alcohol abuse feature available, found it to be significant. Three of the four publications with side effects, as a feature found it was significant. Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037} and Jittimanee \textit{et al.} \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} measured distance and time to treatment site respectively. It can be reasoned that the aforementioned feature's significance will generalise to other datasets since they were found to be significant in the majority of the publications. Other significant features such as illegal drug use, use of herbal medication, daily jobs, history of lung cancer and history of liver disease only appeared once in the datasets. It cannot be discerned if the significance is generalisable or specific to the dataset. The identification of the same features as significant is fairly consistent for the publications that have those features in their dataset. 
+	
+	\begin{table*}
+		\small
+		\centering
+		\caption{Overview of publications on predictors of TB treatment defaulters}
+		\label{table:predictors_of_tb_default}
+		\makebox[\linewidth]{
+			\begin{tabular}{l|c|c|c} \hline
+				Publication&Sample Size&Key factors identified\textsuperscript{*}&Evaluation\rule{0pt}{3.5mm}\rule[-1mm]{0pt}{0pt}\\ \hline
+				\parbox[t]{1.5cm}{Chan-Yeung \textit{et al.} \cite{chan:2003prevalence}}
+				&\parbox[t]{2.6cm}{1768 non-defaulters\\442 defaulters.}
+				&\parbox[t]{7cm}{History of default, history of lung cancer, liver disease and male patients}
+				&\parbox[t]{8cm}{Multiple logistic regression is used to determine what factors are associated with default.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+				\parbox[t]{1.5cm}{Jha \textit{et al.} \cite{Jha:10.1371/journal.pone.0008873}}
+				&\parbox[t]{2.6cm}{1189 non-defaulters\\1141 defaulters.}
+				&\parbox[t]{7cm}{Male patients, patients directly-observed treatment at public facilities, previous treatment outside India's Revised National Tuberculosis Control Programme and history of previous default\vspace{1mm}}
+				&\parbox[t]{8cm}{The chi-square test or Fisher's exact test (if there were less than 10 observations) was used to test the differences between defaulters and non-defaulters. Bivariate analysis was calculated on the features. Multivariate logistic regression using pre-selected features based on previous studies.}\rule{0pt}{3.5mm}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+				\parbox[t]{1.5cm}{Jittimanee \textit{et al.} \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x}}
+				&\parbox[t]{2.6cm}{106 non-defaulters\\54 defaulters.}
+				&\parbox[t]{7cm}{Jobs where one is only paid if one is at work that day, severe medication side-effects and time to travel to clinic.}
+				&\parbox[t]{8cm}{Patients were interviewed and completed a questionnaire to obtain the information. Hierarchical logistic regression  was carried out to assess the variable's relation to default.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+				\parbox[t]{1.5cm}{Lackey \textit{et al.} \cite{Lackey:10356751520150601}}
+				&\parbox[t]{2.6cm}{1106 non-defaulters\\127 defaulters.}
+				&\parbox[t]{7cm}{Has used illegal drugs, has multidrug-resistant TB, has not been tested for HIV, drinks alcohol at least once a week, underweight or has not completed secondary education.}
+				&\parbox[t]{8cm}{{Patients were interviewed to obtain the information. Bivariate analysis using Chi-square tests and odds ratios with 95\% confidence intervals. Multivariate logistic regression is used with a backward fitting algorithm to determine if a variable is associated with default.}}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline		
+				\parbox[t]{1.5cm}{Muture \textit{et al.} \cite{muture:6660173120110101}}
+				&\parbox[t]{2.6cm}{5659 non-defaulters\\945 defaulters.}
+				&\parbox[t]{7cm}{Inadequate knowledge on TB, herbal medication use, low income, alcohol abuse, previous default, suffering from HIV and male patients were determined through analysis to be associated with default.}
+				&\parbox[t]{8cm}{Two-tailed $\chi^2$ tests and Fisher exact tests (if a cell has less than 5 values) to assess categorical information. Odds ratio tests were used to measure association between features with a 95\% confidence interval.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+				\parbox[t]{1.5cm}{Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037}}
+				&\parbox[t]{2.6cm}{310 non-defaulters\\81 defaulters.}
+				&\parbox[t]{7cm}{Distance from home to treatment site, age greater than 25 and the need to use public transport to get to treatment site.}
+				&\parbox[t]{8cm}{Continuous features were analysed using sample t-test $\chi^2$ tests and hazard ratios with 95\% confidence intervals. The effect of each factor was assessed using Cox regression model with a backwards fitting algorithm.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+				\noalign{\vskip 4pt}                     
+				\multicolumn{4}{l}{\textsuperscript{*}\footnotesize{\parbox[t]{\linewidth}{Ordered in descending order of significance  based on odds ratio and hazard ratio at a confidence interval of at least 95\%. }}}\\
+			\end{tabular}
+		}
+	\end{table*} 
+	
+	\subsection{Predicting defaulters in financial institutions}
+	\begin{table}
+		\small
+		\caption{German data set\textsuperscript{\textparagraph}}
+		\label{table:german_dataset}	
+		\begin{tabular}{c|c|c|c} \hline		
+			Publication&Accuracy&\parbox[t]{1.2cm}{\centering Type I\\Error}&\parbox[t]{1.2cm}{\centering Type II\\Error}\rule{0pt}{3mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2004543}}
+			&\parbox[t]{2.3cm}{\centering \textbf{79.87\%}\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a}
+			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Li \textit{et al.} \cite{Li2006772}}
+			&\parbox[t]{2.3cm}{\centering \textbf{84.83\%}}
+			&\parbox[t]{1.1cm}{\centering 10-20\%\textsuperscript{*}}
+			&\parbox[t]{1.2cm}{\centering 10-20\%\textsuperscript{*}}\\ \hline
+			\parbox[t]{2.3cm}{Luo \textit{et al.} \cite{Luo20097562}}
+			&\parbox[t]{2.3cm}{\centering 77.06\% (MySVM), 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a}
+			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2007847}}
+			&\parbox[t]{2.3cm}{\centering 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a}
+			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Danenas \textit{et al.} \cite{Danenas20153194}}
+			&\parbox[t]{2.3cm}{\centering \textbf{94.41\%} (Linear SVM), \textbf{92.37\%} (PSO-LinSVM)\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a\textsuperscript{\textdaggerdbl}}
+			&\parbox[t]{1.2cm}{\centering n/a\textsuperscript{\textdaggerdbl}}\rule{0pt}{3.5mm}\rule[-8mm]{0pt}{0pt}		
+		\end{tabular}		
+	\end{table}
+	
+	\begin{table}
+		\small
+		\caption{Australian data set\textsuperscript{\textparagraph}}
+		\label{table:australian_dataset}	
+		\begin{tabular}{c|c|c|c} \hline		
+			Publication&Accuracy&\parbox[t]{1.2cm}{\centering Type I\\Error}&\parbox[t]{1.2cm}{\centering Type II\\Error}\rule{0pt}{3mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2004543}}
+			&\parbox[t]{2.3cm}{\centering \textbf{79.87\%}\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a}
+			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Li \textit{et al.} \cite{Li2006772}}
+			&\parbox[t]{2.3cm}{\centering \textbf{84.83\%}}
+			&\parbox[t]{1.1cm}{\centering 10-20\%\textsuperscript{*}}
+			&\parbox[t]{1.2cm}{\centering 10-20\%\textsuperscript{*}}\\ \hline
+			\parbox[t]{2.3cm}{Luo \textit{et al.} \cite{Luo20097562}}
+			&\parbox[t]{2.3cm}{\centering 77.06\% (MySVM), 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a}
+			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2007847}}
+			&\parbox[t]{2.3cm}{\centering 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a}
+			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Danenas \textit{et al.} \cite{Danenas20153194}}
+			&\parbox[t]{2.3cm}{\centering \textbf{94.41\%} (Linear SVM), \textbf{92.37\%} (PSO-LinSVM)\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a\textsuperscript{\textdaggerdbl}}
+			&\parbox[t]{1.2cm}{\centering n/a\textsuperscript{\textdaggerdbl}}\rule{0pt}{3.5mm}\rule[-8mm]{0pt}{0pt}		
+		\end{tabular}		
+	\end{table}
+	
+	\begin{enumerate}
+		\item Summarised version of original literature review except the parts using temporal aspects
+		\item Summarise what has been done determining TB predictors (which is a different aim)
+		\item Summarise what has been done in the credit scoring financial space as a lot of research has been done in this field.
+		\item Brief overview of each classification technique and possibly give a reason why this technique may work well for our application
+		\item Brief outline of the data balancing techniques used
+	\end{enumerate}
+	
+	\section{Methods}
+	\begin{enumerate}
+		\item Outline each dataset fully: number of nominal and numerical fields and number of entries. Also outline how balanced each dataset is.
+		\item Outline testing procedure and optimisation strategy for each classification technique. To optimise each classification technique, a grid search is conducted across a reasonable parameter space. For each parameter set, the results are averaged over 3 runs, this is done because of the stochastic nature of initialising the training of each classifier. To ensure consistent results for each run, the same fold allocations are used.
+		\item Outline that data balancing techniques are compared by using true positive, true negative, false positive, false negative by using the optimised parameters for each data balancing technique. 
+		
+	\end{enumerate}
+	\subsection{Approach}
+	The study aimed to evaluate a set of statistical and machine learning classification techniques on treatment default data sets and compare it to that applied to financial defaulter data sets. A variety of classification techniques that were chosen to test against: artificial neural network, support vector machine (SVM) using a linear, RBF and polynomial kernel, logistic regression, decision tree, AdaBoost, random forest, k-nearest neighbours (kNN), Gaussian naive Bayes, Bernoulli naive Bayes, extreme learning machines and clustering-Launched classification. These were chosen to include a selection of well known techniques, ensemble techniques and newer techniques that have shown promising results in other studies. Four related experiments were conducted in total.
+	
+	\subsubsection{Experiment 1}
+	The first experiment finds the optimal parameters for each classifier on each dataset by searching a grid of reasonable parameters and then compares the classification strength of each classifier. These include the parameters of the classifier as well as different data balancing techniques. The data balancing techniques included are: no data balancing, cluster centroids, edited nearest neighbours (ENN), instance hardness threshold, near miss (version 1), neighbourhood cleaning rule, one sided selection, random under sampling, Tomek links, adaptive synthetic sampling (ADASYN), random over-sampling, synthetic minority over-sampling (SMOTE), ensemble of SMOTE + EEN and ensemble of SMOTE + Tomek links. These balancing techniques were chosen to facilitate an evaluation of both over-sampling and under-sampling techniques. Included in the evaluation is techniques that use simple approaches and as others that use sophisticated algorithms. For each parameter set in the grid search, Three runs of 5-fold cross-validation is executed and the results averaged. To provide fair comparison, the data balancer, k-fold algorithm and classifier itself use fixed initialisation values, which differ across each of the three runs, so that each parameter set utilises the same training and testing data. The following metrics are recorded for this experiment: Matthews correlation coefficient (MCC), Cohen kappa coefficient (CKC), balanced classification rate (BCR), true positive rate (TPR), true negative rate (TNR), false positive rate (FPR) and false negative rate (FNR). Accuracy was not used as it is misleading in datasets that are imbalanced. MCC, CKC and BCR provide a balanced measure of the quality of the classification. The parameter set that yields in the highest BCR is used as the parameters for the classifier on the particular dataset. To test each classifier with their optimal parameters, three random numbers are generated to be used as the initialisation parameter. This allows each run to use a different initialisation parameter and ensures that the same folds are used foe each classifier. The aforementioned metrics are recorded for the test as well as the initialisation parameters that were used so results can be replicated. In addition a receiver operating characteristic (ROC) curve is also plotted as an additional means of comparing the classification techniques and to indicate what true positive rate can be achieved for an acceptable false positive rate. 
+	
+	\subsubsection{Experiment 2}
+	
+	
+	\subsection{Evaluation}
+	
+	\subsubsection{Data sets}
+	\begin{table*}
+		\centering
+		\caption{Data set summary}
+		\label{table:australian_dataset}
+		\begin{tabular}{c|c|c|c|c} \hline	
+			Data set&Entries&Number of numerical features&Number of categorical features&Data balance ratio (Cured:Default)\\ \hline
+			Lima Peru TB \cite{Lackey:10356751520150601}&1186&0&15&8.65:1 \\
+			German Credit Scoring&1000&7&13&2.33:1 \\
+			Australian Credit Scoring&690&6&8&1.25:1
+		\end{tabular}
+	\end{table*}
+	
+	
+	\section{Results}
+	\begin{enumerate}
+		\item Tables with true positive, true negative, false positive and false negative rate for each classifier on each dataset
+		\item ROC curves which can be used to determine true positive for an acceptable amount of false positives for each classification technique on each dataset
+		\item Graphs which outline difference in accuracy of each data balancing technique for each dataset
+		\item Discussion on best classification technique
+		\item Discussion on data balancing results
+		\item Outline similarities and differences in results between the two TB datasets and between TB and financial datasets and determine if they are similar enough that results for the German and Australian credit scoring datasets could be used for the two TB datasets.
+	\end{enumerate}
+	
+	\section{Conclusions and Future Work}
+	\begin{enumerate}
+		\item Likely something along the lines of utilising more temporal based data so that classification is not just done at registration but also at each check-up for example. Future work may also be the testing of more classification techniques as well as datasets from other parts of the world.
+	\end{enumerate}
+	
+	%
+	% The following two commands are all you need in the
+	% initial runs of your .tex file to
+	% produce the bibliography for the citations in your paper.
+	\bibliographystyle{abbrv}
+	\bibliography{sigproc}  % sigproc.bib is the name of the Bibliography in this case
+	% You must have a proper ".bib" file
+	%  and remember to run:
+	% latex bibtex latex latex
+	% to resolve all references
+	%
+	%\balancecolumns
 \end{document}
