@@ -3,6 +3,7 @@
 import os
 import sys
 from multiprocessing import Manager
+from random import Random
 
 import pandas as pd
 from joblib import Parallel
@@ -15,6 +16,8 @@ from sklearn.feature_selection import f_classif
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.tree import DecisionTreeClassifier
+
+from feature_selection.select_features_result_recorder import FeatureSelectionResultRecorder
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from data_preprocessing import apply_preprocessing
@@ -36,6 +39,8 @@ DECISION_TREE = "Decision Tree"
 RANDOM_FOREST = "Random forest"
 
 feature_selection_strategies = [None, ANOVA, CHI2, LOGISTIC_REGRESSION, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, DECISION_TREE, RANDOM_FOREST]
+
+const.TEST_REPEAT = 75
 
 
 def select_features(input_defaulter_set, numeric_columns, categorical_columns, classification_label, data_set_classifier_parameters, selection_strategy="ANOVA"):
@@ -117,18 +122,18 @@ def select_features(input_defaulter_set, numeric_columns, categorical_columns, c
     return pd.concat([input_defaulter_set[X.columns.values], input_defaulter_set[classification_label]], axis=1), new_numeric_columns, new_categorical_columns
 
 
-def execute_classifier_run(input_defaulter_set, classifier_parameters, data_balancer, data_set_description, classifier_dict, classifier_description, roc_plot, result_recorder):
+def execute_classifier_run(random_values, input_defaulter_set, classifier_parameters, data_balancer, feature_selection_strategy, classifier_dict, classifier_description, roc_plot, result_recorder):
     if classifier_dict["status"]:
         print("=== Executing {0} ===".format(classifier_description))
         test_stats = RunStatistics()
-        for i in range(100):
-            generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer)
-            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set, i)
+        for i in range(const.TEST_REPEAT):
+            generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer, random_values[i])
+            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set)
             test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
 
         avg_results = test_stats.calculate_average_run_accuracy()
         roc_plot.append((test_stats.roc_list, classifier_description))
-        result_recorder.record_results(avg_results, classifier_description)
+        result_recorder.record_results(avg_results, classifier_description, feature_selection_strategy)
         print("=== Completed {0} ===".format(classifier_description))
 
 
@@ -142,6 +147,19 @@ def main():
 
             feature_selection_results = []
 
+            manager = Manager()
+            result_recorder = FeatureSelectionResultRecorder()
+            cpu_count = get_number_of_processes_to_use()
+
+            random_values = []
+            random = Random()
+            for i in range(const.TEST_REPEAT):
+                while True:
+                    random_value = random.randint(const.RANDOM_RANGE[0], const.RANDOM_RANGE[1])
+                    if random_value not in random_values:
+                        random_values.append(random_value)
+                        break
+
             for feature_selection_strategy in feature_selection_strategies:
                 # Apply feature selection
                 new_defaulter_set, numeric_columns, categorical_columns = select_features(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["data_set_classifier_parameters"], selection_strategy=feature_selection_strategy)
@@ -149,30 +167,21 @@ def main():
                 # Preprocess data set
                 new_defaulter_set = apply_preprocessing(new_defaulter_set, numeric_columns, categorical_columns, data_set["classification_label"], data_set["missing_values_strategy"], create_dummy_variables=True)
                 manager = Manager()
-                result_recorder = ResultRecorder(result_arr=manager.list())
+                feature_selection_result_recorder = FeatureSelectionResultRecorder(result_arr=manager.list())
 
                 roc_plot = manager.list()
 
-                cpu_count = get_number_of_processes_to_use()
                 # Execute enabled classifiers
-                Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(new_defaulter_set, data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], data_set["data_set_description"], classifier_dict, classifier_description, roc_plot, result_recorder) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
+                Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(random_values, new_defaulter_set, data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], feature_selection_strategy, classifier_dict, classifier_description, roc_plot, feature_selection_result_recorder) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
 
-                result_recorder.results = sorted(result_recorder.results, key=lambda tup: tup[1])
-                for (result_arr, classifier_description) in result_recorder.results:
-                    print("\n=== {0} ===".format(classifier_description))
-                    print("Matthews correlation coefficient: {0}".format(result_arr[0]))
-                    print("Cohen Kappa score: {0}".format(result_arr[1]))
-                    print("Average true rate: {0}".format(result_arr[2]))
-                    print("Average true positive rate: {0}".format(result_arr[3]))
-                    print("Average true negative rate: {0}".format(result_arr[4]))
-                    print("Average false positive rate: {0}".format(result_arr[5]))
-                    print("Average false negative rate: {0}".format(result_arr[6]))
+                feature_selection_result_recorder.results = sorted(feature_selection_result_recorder.results, key=lambda tup: tup[1])
 
-                feature_selection_results.append((feature_selection_strategy, result_recorder.results))
+                for (avg_results, classifier_description, feature_selection) in feature_selection_result_recorder.results:
+                    result_recorder.record_results(avg_results, classifier_description, feature_selection)
+
+                feature_selection_results.append((feature_selection_strategy, feature_selection_result_recorder.results, feature_selection_strategy))
             vis.plot_percentage_difference_on_feature_selection(feature_selection_results)
-
-
-
+            result_recorder.save_results_to_file(random_values, "select_features")
 
 if __name__ == "__main__":
     # Run main

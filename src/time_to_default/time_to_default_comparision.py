@@ -7,6 +7,7 @@ from joblib import Parallel
 from joblib import delayed
 import sys
 import os
+import numpy as np
 
 from random import Random
 from sklearn.model_selection import train_test_split
@@ -23,11 +24,11 @@ from generic_classifier import GenericClassifier
 from result_recorder import ResultRecorder
 from run_statistics import RunStatistics
 from util import get_number_of_processes_to_use
-import numpy as np
+from time_to_default.time_to_default_result_recorder import TimeToDefaultResultRecorder
 
-const.TEST_REPEAT = 500
+const.TEST_REPEAT = 100
 
-def execute_classifier_run(random_values, defaulters_in_range, defaulters_out_of_range, non_defaulters, numeric_columns, categorical_columns, classification_label, missing_values_strategy, classifier_parameters, data_balancer, classifier_dict, classifier_description, roc_plot, result_recorder):
+def execute_classifier_run(time_range, random_values, defaulters_in_range, defaulters_out_of_range, non_defaulters, numeric_columns, categorical_columns, classification_label, missing_values_strategy, classifier_parameters, data_balancer, classifier_dict, classifier_description, roc_plot, result_recorder):
     if classifier_dict["status"]:
         print("=== Executing {0} ===".format(classifier_description))
         test_stats = RunStatistics()
@@ -52,7 +53,7 @@ def execute_classifier_run(random_values, defaulters_in_range, defaulters_out_of
 
         avg_results = test_stats.calculate_average_run_accuracy()
         roc_plot.append((test_stats.roc_list, classifier_description))
-        result_recorder.record_results(avg_results, classifier_description)
+        result_recorder.record_results(avg_results, classifier_description, time_range)
         print("=== Completed {0} ===".format(classifier_description))
 
 
@@ -83,6 +84,8 @@ def main():
 
             cpu_count = get_number_of_processes_to_use()
 
+            manager = Manager()
+            result_recorder = TimeToDefaultResultRecorder()
             for time_range in time_ranges:
                 print("Time range {0} - {1}".format(time_range[0], time_range[1]))
                 defaulters_in_range = input_defaulter_set[(input_defaulter_set["Time to Default (Days)"] >= time_range[0]) & (input_defaulter_set["Time to Default (Days)"] <= time_range[1])]
@@ -90,28 +93,20 @@ def main():
                 print("defaulters_in_range", len(defaulters_in_range))
                 print("defaulters_out_of_range", len(defaulters_out_of_range))
 
-                manager = Manager()
-                result_recorder = ResultRecorder(result_arr=manager.list())
-
                 roc_plot = manager.list()
+                run_results = TimeToDefaultResultRecorder(result_arr=manager.list())
 
                 # Execute enabled classifiers
-                Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(random_values, defaulters_in_range, defaulters_out_of_range, non_defaulters, numeric_columns, categorical_columns, data_set["classification_label"], data_set["missing_values_strategy"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], classifier_dict, classifier_description, roc_plot, result_recorder) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
+                Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(time_range, random_values, defaulters_in_range, defaulters_out_of_range, non_defaulters, numeric_columns, categorical_columns, data_set["classification_label"], data_set["missing_values_strategy"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], classifier_dict, classifier_description, roc_plot, run_results) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
 
                 result_recorder.results = sorted(result_recorder.results, key=lambda tup: tup[1])
-                for (result_arr, classifier_description) in result_recorder.results:
-                    print("\n=== {0} ===".format(classifier_description))
-                    print("Matthews correlation coefficient: {0}".format(result_arr[0]))
-                    print("Cohen Kappa score: {0}".format(result_arr[1]))
-                    print("Average true rate: {0}".format(result_arr[2]))
-                    print("Average true positive rate: {0}".format(result_arr[3]))
-                    print("Average true negative rate: {0}".format(result_arr[4]))
-                    print("Average false positive rate: {0}".format(result_arr[5]))
-                    print("Average false negative rate: {0}".format(result_arr[6]))
+                time_range_results.append(("{0} - {1}".format(time_range[0], time_range[1]), run_results.results))
 
-                time_range_results.append(("{0} - {1}".format(time_range[0], time_range[1]), result_recorder.results))
+                for (avg_results, classifier_description, time_range) in run_results.results:
+                    result_recorder.record_results(avg_results, classifier_description, time_range)
 
             vis.plot_time_to_default_results(time_range_results)
+            result_recorder.save_results_to_file(random_values, "time_to_default")
 
 
 if __name__ == "__main__":
