@@ -41,17 +41,17 @@ append_classifier_details(ann_data_balancer, ann_parameters, clfrs.ann_descripti
 
 # Support Vector Machines (with RDF kernel)
 svm_rdf_data_balancer = ADASYN
-svm_parameters = {"cache_size": 1000, "gamma": 0.0527263157894736, "C": 3.69052631578947, "kernel": "rbf", "class_weight": None, "decision_function_shape": "ovr", "probability": True}
+svm_parameters = {"cache_size": 1000, "gamma": 0.0527263157894736, "C": 3.69052631578947, "kernel": "rbf", "class_weight": None, "decision_function_shape": "ovr", "probability": True, "max_iter": 1000}
 append_classifier_details(svm_rdf_data_balancer, svm_parameters, clfrs.svm_rdf_description, classifier_parameters)
 
 # Support Vector Machines (with linear kernel)
 svm_linear_data_balancer = TomekLinks
-svm_linear_parameters = {"C": 1.06157894736842, "decision_function_shape": "ovr", "cache_size": 1000, "kernel": "linear", "probability": True, "class_weight": "balanced"}
+svm_linear_parameters = {"C": 1.06157894736842, "decision_function_shape": "ovr", "cache_size": 1000, "kernel": "linear", "probability": True, "class_weight": "balanced", "max_iter": 1000}
 append_classifier_details(svm_linear_data_balancer, svm_linear_parameters, clfrs.svm_linear_description, classifier_parameters)
 
 # Support Vector Machines (with polynomial kernel)
 svm_poly_data_balancer = ADASYN
-svm_poly_parameters = {"C": 5, "cache_size": 1000, "coef0": 0, "gamma": "auto", "kernel": "poly", "degree": 3, "class_weight": None, "probability": True}
+svm_poly_parameters = {"C": 5, "cache_size": 1000, "coef0": 0, "gamma": "auto", "kernel": "poly", "degree": 3, "class_weight": None, "probability": True, "max_iter": 1000}
 append_classifier_details(svm_poly_data_balancer, svm_poly_parameters, clfrs.svm_poly_description, classifier_parameters)
 
 # Logistic Regression
