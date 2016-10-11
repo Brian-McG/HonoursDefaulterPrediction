@@ -11,6 +11,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy import interp
 from sklearn.decomposition import PCA
 from sklearn.metrics import auc
+import math
 
 from config import constants as const
 
@@ -303,7 +304,7 @@ def plot_percentage_difference_on_feature_selection(feature_selection_results_pe
     plt.close(fig)
 
 
-def plot_time_to_default_results(time_to_default_results_per_classifier, parameter="Mean True Rate"):
+def plot_time_to_default_results(time_to_default_results_per_classifier, parameter="Difference in balanced classification rate from no feature selection"):
     color = iter(cm.Set1(np.linspace(0, 1, len(time_to_default_results_per_classifier[0][1]) + 1)))
     classifier_arr = []
     for i in range(len(time_to_default_results_per_classifier[0][1]) + 1):
@@ -349,4 +350,38 @@ def plot_time_to_default_results(time_to_default_results_per_classifier, paramet
 
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/time_to_default_results_per_classifier_plot_{0}_{1}.png".format(parameter, current_time))
+    plt.close(fig)
+
+
+
+def sigmoid(x):
+    a = []
+    for item in x:
+        a.append(1/(1+math.exp(-item)))
+    return a
+
+
+def visualise_dataset_classifier_results(dataset_results):
+    x = np.arange(-10., 10., 0.2)
+    sig = sigmoid(x)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+
+    # Move left y-axis and bottim x-axis to centre, passing through (0,0)
+    ax.spines['left'].set_position('center')
+    ax.spines['bottom'].set_position('center')
+
+    # Eliminate upper and right axes
+    ax.spines['right'].set_color('none')
+    ax.spines['top'].set_color('none')
+
+    # Show ticks in the left and lower axes only
+    ax.xaxis.set_ticks_position('bottom')
+    ax.yaxis.set_ticks_position('left')
+
+    plt.plot(x, sig)
+
+    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/classifier_dataset_plt_{0}.png".format(current_time))
     plt.close(fig)

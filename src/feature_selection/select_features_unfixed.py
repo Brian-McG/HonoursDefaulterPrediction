@@ -146,6 +146,7 @@ def execute_classifier_run(random_values, input_defaulter_set, classifier_parame
 
 
 def main():
+    vis.visualise_dataset_classifier_results(10)
     for data_set in data_sets.data_set_arr:
         if data_set["status"]:
             # Load in data set
