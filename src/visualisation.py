@@ -230,7 +230,7 @@ def plot_balancer_results_per_classifier(data_balancer_results_per_classifier, p
     plt.ylim([0.0, 1.00])
     data_balance_labels = [filter(str.isupper, data_balance_name) if data_balance_name != "None" and len(filter(str.isupper, data_balance_name)) < 6 else data_balance_name for
                            (data_balance_name, _) in data_balancer_results_per_classifier[0][1]]
-    plt.xticks(data_balancers + (bar_width / 2) * len(classifiers), data_balance_labels, rotation="vertical")
+    plt.xticks(data_balancers + (bar_width / 2) * len(classifiers), data_balance_labels)
 
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/data_balancer_results_per_classifier_plot_{0}_{1}.png".format(parameter[1], current_time))
@@ -252,7 +252,7 @@ def plot_kaplan_meier_graph_of_time_to_default(time_to_default, data_set_descrip
     plt.close(ax.get_figure())
 
 
-def plot_percentage_difference_on_feature_selection(feature_selection_results_per_classifier, parameter="Mean True Rate"):
+def plot_percentage_difference_on_feature_selection(feature_selection_results_per_classifier, name_suffix="", parameter="Mean True Rate"):
     no_feature_selection = feature_selection_results_per_classifier[0][1]
     color = iter(cm.Set1(np.linspace(0, 1, len(no_feature_selection) + 1)))
     classifier_arr = []
@@ -271,7 +271,7 @@ def plot_percentage_difference_on_feature_selection(feature_selection_results_pe
         classifier_arr[x].append(mean_classification)
 
 
-    fig = plt.figure(figsize=(12, 10))
+    fig = plt.figure(figsize=(11, 8))
 
     classifiers = np.arange(len(classifier_arr))
     data_balancers = np.arange(len(classifier_arr[0])) * 3
@@ -288,16 +288,18 @@ def plot_percentage_difference_on_feature_selection(feature_selection_results_pe
                 color=color.next(),
                 label=label)
 
-    plt.locator_params(axis='y', nbins=10)
     plt.xlabel("Feature selection approach")
     plt.ylabel(parameter)
-    plt.legend(loc="lower right", fancybox=True, frameon=True)
+    legend = plt.legend(loc='lower center', bbox_to_anchor=(0.5, -0.2), fancybox=True, frameon=True, ncol=4)
+    legend.get_frame().set_facecolor('#ffffff')
     plt.title("{0} per data balance algorithm".format(parameter))
     feature_selection_labels = [feature_selection_results_per_classifier[i][0] for i in range(1, len(feature_selection_results_per_classifier))]
-    plt.xticks(data_balancers + (bar_width / 2) * len(classifiers), feature_selection_labels, rotation="vertical")
+    plt.xticks(data_balancers + (bar_width / 2) * len(classifiers), feature_selection_labels)
 
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/feature_selection_results_per_classifier_plot_{0}_{1}.png".format(parameter, current_time))
+
+    plt.locator_params(axis='y', nbins=15)
+    plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/feature_selection_results_per_classifier_plot{0}_{1}_{2}.png".format(name_suffix, parameter, current_time), bbox_extra_artists=(legend,), bbox_inches='tight')
     plt.close(fig)
 
 

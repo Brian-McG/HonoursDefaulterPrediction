@@ -41,15 +41,19 @@ def main(random_value_arr):
         if data_set["status"]:
             # Load in data set
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
-            # input_defaulter_set = pd.concat([input_defaulter_set[np.isnan(input_defaulter_set["Time to Default (Days)"])], input_defaulter_set[input_defaulter_set["Time to Default (Days)"] < 200]])
-
-            input_defaulter_set = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["missing_values_strategy"], create_dummy_variables=False)
-
-            # Apply feature selection
-            input_defaulter_set, numeric_columns, categorical_columns = select_features(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["data_set_classifier_parameters"], selection_strategy=data_set["feature_selection_strategy"])
 
             # Preprocess data set
-            input_defaulter_set = apply_preprocessing(input_defaulter_set, numeric_columns, categorical_columns, data_set["classification_label"], data_set["missing_values_strategy"], create_dummy_variables=True)
+            numeric_columns = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], [], data_set["classification_label"], data_set["missing_values_strategy"], create_dummy_variables=True)
+            categorical_columns = apply_preprocessing(input_defaulter_set, [], data_set["categorical_columns"], data_set["classification_label"], data_set["missing_values_strategy"], create_dummy_variables=True)
+            input_defaulter_set = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["missing_values_strategy"], create_dummy_variables=True)
+            numeric_columns = numeric_columns.columns[:-1]
+            categorical_columns = categorical_columns.columns[:-1]
+
+            # Apply feature selection
+            print("Features before", len(input_defaulter_set.columns))
+            input_defaulter_set, numeric_columns, categorical_columns = select_features(input_defaulter_set, numeric_columns, categorical_columns, data_set["classification_label"], data_set["data_set_classifier_parameters"], selection_strategy=data_set["feature_selection_strategy"])
+            print("Features after", len(input_defaulter_set.columns))
+
             manager = Manager()
             result_recorder = ResultRecorder(result_arr=manager.list())
 

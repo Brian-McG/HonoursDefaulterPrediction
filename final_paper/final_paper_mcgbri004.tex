@@ -268,6 +268,8 @@
 		\item Brief outline of the data balancing techniques used
 	\end{enumerate}
 	
+	\section{Background}
+	
 	\section{Methods}
 	\begin{enumerate}
 		\item Outline each dataset fully: number of nominal and numerical fields and number of entries. Also outline how balanced each dataset is.
@@ -276,14 +278,27 @@
 		
 	\end{enumerate}
 	\subsection{Approach}
-	The study aimed to evaluate a set of statistical and machine learning classification techniques on treatment default data sets and compare it to that applied to financial defaulter data sets. A variety of classification techniques that were chosen to test against: artificial neural network, support vector machine (SVM) using a linear, RBF and polynomial kernel, logistic regression, decision tree, AdaBoost, random forest, k-nearest neighbours (kNN), Gaussian naive Bayes, Bernoulli naive Bayes, extreme learning machines and clustering-Launched classification. These were chosen to include a selection of well known techniques, ensemble techniques and newer techniques that have shown promising results in other studies. Four related experiments were conducted in total.
+	The study aimed to evaluate a set of statistical and machine learning classification techniques on treatment default data sets and compare it to that applied to other related classification datasets. A variety of classification techniques were chosen to test against: artificial neural network (ANN), support vector machine (SVM) using a linear, RBF and polynomial kernel, logistic regression, decision tree, AdaBoost, random forest, k-nearest neighbours (kNN), Gaussian naive Bayes, Bernoulli naive Bayes, extreme learning machines and clustering-Launched classification. These were chosen to include a selection of well known techniques, ensemble techniques and newer techniques that have shown promising results in other studies. Four related experiments were conducted in total.
 	
-	\subsubsection{Experiment 1}
+	\subsubsection{Comparison of classification techniques}
 	\label{method-experiment-1}
-	The first experiment finds the optimal parameters for each classifier on each dataset by searching a grid of reasonable parameters and then compares the classification strength of each classifier. These include the parameters of the classifier as well as different data balancing techniques. The data balancing techniques included are: no data balancing, cluster centroids, edited nearest neighbours (ENN), instance hardness threshold, near miss (version 1), neighbourhood cleaning rule, one sided selection, random under sampling, Tomek links, adaptive synthetic sampling (ADASYN), random over-sampling, synthetic minority over-sampling (SMOTE), ensemble of SMOTE + EEN and ensemble of SMOTE + Tomek links. These balancing techniques were chosen to facilitate an evaluation of both over-sampling and under-sampling techniques. Included in the evaluation is techniques that use simple approaches and as others that use sophisticated algorithms. For each parameter set in the grid search, Three runs of 5-fold cross-validation is executed and the results averaged. To provide fair comparison, the data balancer, k-fold algorithm and classifier itself use fixed initialisation values, which differ across each of the three runs, so that each parameter set utilises the same training and testing data. The following metrics are recorded for this experiment: Matthews correlation coefficient (MCC), Cohen kappa coefficient (CKC), balanced classification rate (BCR), true positive rate (TPR), true negative rate (TNR), false positive rate (FPR) and false negative rate (FNR). Accuracy was not used as it is misleading in datasets that are imbalanced. MCC, CKC and BCR provide a balanced measure of the quality of the classification. The parameter set that yields in the highest BCR is used as the parameters for the classifier on the particular dataset. To test each classifier with their optimal parameters, three random numbers are generated. This allows each run to use a different initialisation parameter and ensures that the same folds are used for each classifier. The aforementioned metrics are recorded for the test as well as the initialisation parameters that were used so results can be replicated. In addition a receiver operating characteristic (ROC) curve is also plotted as an additional means of comparing the classification techniques and to indicate what true positive rate can be achieved for an acceptable false positive rate. 
+	The first experiment finds the optimal parameters for each classifier on each dataset by searching a grid of reasonable parameters and then compares the classification strength of each classifier. These include the parameters of the classifier as well as different data balancing techniques. Data balancing algorithms are required since the rate of default is often relatively low. Many datasets have substantially fewer defaulters than those cured. However, most classification algorithms expect a 50:50 split between classes. The data balancing techniques included are: no data balancing, cluster centroids, edited nearest neighbours (ENN), instance hardness threshold, near miss (version 1), neighbourhood cleaning rule, one sided selection, random under sampling, Tomek links, adaptive synthetic sampling (ADASYN), random over-sampling, synthetic minority over-sampling (SMOTE), ensemble of SMOTE + EEN and ensemble of SMOTE + Tomek links. These balancing techniques were chosen to facilitate an evaluation of both over-sampling and under-sampling techniques. Included in the evaluation is techniques that use simple approaches and as others that use sophisticated algorithms. 
 	
-	\subsubsection{Experiment 2}
-	The second experiment compares each data balancing technique on each classifier. The optimal parameters for each classifier are used for every data balancer. As in experiment 1, the highest BCR is used to determine the optimal parameters. Each classifier is run using every data balance technique and the metrics outlined in section \ref{method-experiment-1} is recorded. A bar chart is plotted with each classifier against the MCC.
+	For each parameter set in the grid search, Three runs of 5-fold cross-validation is executed and the results averaged. To provide fair comparison, the data balancer, k-fold algorithm and classifier itself use fixed initialisation values, which differ across each of the three runs. This ensures that each parameter set utilises the same training and testing data. 
+	
+	The following metrics are recorded for this experiment: Matthews correlation coefficient (MCC), Cohen kappa coefficient (CKC), balanced classification rate (BCR), true positive rate (TPR), true negative rate (TNR), false positive rate (FPR) and false negative rate (FNR). Accuracy was not used as it is misleading in datasets that are imbalanced. MCC, CKC and BCR provide a balanced measure of the quality of the classification. 
+	
+	The parameter set that yields in the highest BCR is used as the parameters for the classifier on the particular dataset. To test each classifier with their optimal parameters, three random numbers are generated. This allows each run to use a different initialisation parameter and ensures that the same folds are used for each classifier. The aforementioned metrics are recorded for the test as well as the initialisation parameters that were used so results can be replicated. In addition a receiver operating characteristic (ROC) curve is also plotted as an additional means of comparing the classification techniques and to indicate what true positive rate can be achieved for an acceptable false positive rate. To determine how the results generalise against the other similar classification datasets, a final scatter plot is presented which compares difference of true positive and false positive from the median of each for each classifier on each dataset.
+	% TODO: insert bit about the multi-dataset plot
+	
+	\subsubsection{Comparison of data balancing algorithms}
+	The second experiment compares each data balancing technique on each classifier. The optimal parameters for each classifier are used for every data balancer. As in experiment 1, the highest BCR is used to determine the optimal parameters. Each classifier is run using every data balance technique and the metrics outlined in section \ref{method-experiment-1} is recorded. To ensure repeatable results, 10 runs of 5-fold cross validation is executed and the results averaged. A set of unique randomly selected initialisation keys are selected for each run. These are used so that k-fold cross validation, data balancing and classification algorithms produce deterministic output. The initialisation values are saved in the results to ensure they can be reproduced.
+	
+	A bar chart is plotted with each classifier against the MCC for the treatment default datasets. As in section \ref{method-experiment-1}, a scatter plot is presented which compares difference of true positive and false positive from the median of each for each classifier on each data balancing algorithm on each dataset. 
+	
+	\subsubsection{Comparison of feature selection algorithms}
+	The third experiment investigates a number of different feature selection approaches in order to improve overall classification through the removal of features that each algorithm deems irrelevant to the classification. A number of feature selection strategies were selected for this experiment: Analysis of variance (ANOVA) F-value, logistic regression, linear SVM, Bernoulli naive Bayes, decision tree, random forest. For the ANOVA F-test, a p-value of greater 0.05 was selected to 
+	\subsubsection{An analysis of time to default in the Lima Peru dataset}
 	
 	\subsection{Evaluation}
 	
@@ -300,6 +315,7 @@
 		\end{tabular}
 	\end{table*}
 	
+	\section{Implementation}
 	
 	\section{Results}
 	\begin{enumerate}
