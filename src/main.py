@@ -18,7 +18,6 @@ from generic_classifier import GenericClassifier
 from result_recorder import ResultRecorder
 from run_statistics import RunStatistics
 from util import get_number_of_processes_to_use
-import numpy as np
 
 
 def execute_classifier_run(input_defaulter_set, classifier_parameters, data_balancer, random_values, classifier_dict, classifier_description, roc_plot, result_recorder):
@@ -37,6 +36,7 @@ def execute_classifier_run(input_defaulter_set, classifier_parameters, data_bala
 
 
 def main(random_value_arr):
+    data_set_arr = []
     for data_set in data_sets.data_set_arr:
         if data_set["status"]:
             # Load in data set
@@ -86,9 +86,13 @@ def main(random_value_arr):
                 print("Average false positive rate: {0}".format(result_arr[5]))
                 print("Average false negative rate: {0}".format(result_arr[6]))
 
+            data_set_arr.append((data_set["data_set_description"], result_recorder.results))
             if const.RECORD_RESULTS:
                 vis.plot_mean_roc_curve_of_classifiers(roc_plot, data_set["data_set_description"])
                 result_recorder.save_results_to_file(random_value_arr, data_set["data_set_description"])
+
+    vis.visualise_dataset_classifier_results(data_set_arr)
+
 
 
 if __name__ == "__main__":

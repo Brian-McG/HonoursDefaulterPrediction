@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-
+import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -11,6 +11,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy import interp
 from sklearn.decomposition import PCA
 from sklearn.metrics import auc
+import matplotlib.patches as mpatches
+import matplotlib.lines as mlines
 import math
 
 from config import constants as const
@@ -353,22 +355,14 @@ def plot_time_to_default_results(time_to_default_results_per_classifier, paramet
     plt.close(fig)
 
 
-
-def sigmoid(x):
-    a = []
-    for item in x:
-        a.append(1/(1+math.exp(-item)))
-    return a
-
-
 def visualise_dataset_classifier_results(dataset_results):
-    x = np.arange(-10., 10., 0.2)
-    sig = sigmoid(x)
-
-    fig = plt.figure()
+    sns.set(style='ticks')
+    fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(1, 1, 1)
+    markers = ["s", "o", "^", "*"]
+    colors = ["#64B3DE", "#1f78b4", "#6ABF20", "#FBAC44", "#bc1659", "#B9B914", "#33a02c", "#ff7f00", "#6a3d9a", "black", "#b15928", "#e31a1c"]
 
-    # Move left y-axis and bottim x-axis to centre, passing through (0,0)
+    # Move left y-axis and bottom x-axis to centre, passing through (0,0)
     ax.spines['left'].set_position('center')
     ax.spines['bottom'].set_position('center')
 
@@ -379,9 +373,102 @@ def visualise_dataset_classifier_results(dataset_results):
     # Show ticks in the left and lower axes only
     ax.xaxis.set_ticks_position('bottom')
     ax.yaxis.set_ticks_position('left')
+    ax.set_axis_on()
+    ax.spines['left'].set_color('black')
+    ax.spines['bottom'].set_color('black')
+    plt.xlabel("Difference in TPR")
+    plt.ylabel("Difference in TNR")
+    plt.title("Comparision of TNR toTPR across data sets for each classifier", y=1.03, fontsize=16)
 
-    plt.plot(x, sig)
+    ax.xaxis.set_label_coords(0.1, 0.52)
+    ax.yaxis.set_label_coords(0.53, 0.9)
 
+    plt.ylim(-0.2, 0.2)
+    plt.xlim(-0.2, 0.2)
+    data_set_labels = []
+    classifier_labels = []
+    data_set_index = 0
+    for (data_set, dataset_result) in dataset_results:
+        data_set_labels.append(mlines.Line2D(range(1), range(1), color="white", marker=markers[data_set_index], markeredgecolor="black", markeredgewidth=1.0, label=data_set.replace("_", " ")))
+        median_true_pos = np.median(np.array([result_arr[3] for (result_arr, classifier_description) in dataset_result]))
+        median_true_neg = np.median(np.array([result_arr[4] for (result_arr, classifier_description) in dataset_result]))
+
+        i = 0
+        for (result_arr, classifier_description) in dataset_result:
+            if data_set_index == 0:
+                classifier_labels.append(mpatches.Patch(color=colors[i], label=classifier_description, alpha=0.8))
+            ax.scatter(result_arr[3] - median_true_pos, result_arr[4] - median_true_neg, marker=markers[data_set_index], s=100, alpha=0.8, color=colors[i], edgecolor="white", zorder=data_set_index, lw=0)
+            i += 1
+        data_set_index += 1
+
+    plt.legend(handles=data_set_labels + classifier_labels)
+    sns.despine()
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/classifier_dataset_plt_{0}.png".format(current_time))
+    plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/classifier_dataset_plt_{0}.png".format(current_time), bbox_inches='tight')
+    plt.close(fig)
+
+
+def visualise_dataset_balancer_results(dataset_results):
+    print(dataset_results)
+    sns.set(style='ticks')
+    fig = plt.figure(figsize=(10, 10))
+    ax = fig.add_subplot(1, 1, 1)
+    markers = ["s", "o", "^", "*", "v", "^", "<", ">", "H", "d"]
+    colors = ["#64B3DE", "#1f78b4", "#6ABF20", "#FBAC44", "#bc1659", "#B9B914", "#33a02c", "#ff7f00", "#6a3d9a", "black", "#b15928", "#e31a1c"]
+    hatches = ["///////", "*", "."]
+
+    # Move left y-axis and bottom x-axis to centre, passing through (0,0)
+    ax.spines['left'].set_position('center')
+    ax.spines['bottom'].set_position('center')
+
+    # Eliminate upper and right axes
+    ax.spines['right'].set_color('none')
+    ax.spines['top'].set_color('none')
+
+    # Show ticks in the left and lower axes only
+    ax.xaxis.set_ticks_position('bottom')
+    ax.yaxis.set_ticks_position('left')
+    ax.set_axis_on()
+    ax.spines['left'].set_color('black')
+    ax.spines['bottom'].set_color('black')
+    plt.xlabel("Difference in TPR")
+    plt.ylabel("Difference in TNR")
+    plt.title("Comparision of TNR toTPR across data sets for each classifier", y=1.03, fontsize=16)
+
+    ax.xaxis.set_label_coords(0.1, 0.52)
+    ax.yaxis.set_label_coords(0.53, 0.9)
+
+    plt.ylim(-0.2, 0.2)
+    plt.xlim(-0.2, 0.2)
+    data_set_labels = []
+    classifier_labels = []
+    data_set_index = 0
+    for (data_set, dataset_result) in dataset_results:
+        data_set_labels.append(mlines.Line2D(range(1), range(1), color="white", marker=markers[data_set_index], markeredgecolor="black", markeredgewidth=1.0, label=data_set.replace("_", " ")))
+        true_pos_arr = []
+        true_neg_arr = []
+
+        for (classifier_description, result_arr) in dataset_result:
+            for (balancer_description, results) in result_arr:
+                true_pos_arr.append(results[3])
+                true_neg_arr.append(results[4])
+
+        median_true_pos = np.median(np.array(true_pos_arr))
+        median_true_neg = np.median(np.array(true_neg_arr))
+
+        i = 0
+        for (classifier_description, result_arr) in dataset_result:
+            balancer_index = 0
+            for (balancer_description, results) in result_arr:
+                if data_set_index == 0:
+                    classifier_labels.append(mpatches.Patch(color=colors[i], label=classifier_description, alpha=0.8))
+                ax.scatter(results[3] - median_true_pos, results[4] - median_true_neg, marker=markers[data_set_index], s=100, alpha=0.8, color=colors[i], edgecolor="white", zorder=data_set_index, lw=0)
+                balancer_index += 1
+            i += 1
+        data_set_index += 1
+
+    plt.legend(handles=data_set_labels + classifier_labels)
+    sns.despine()
+    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/classifier_dataset_plt_{0}.png".format(current_time), bbox_inches='tight')
     plt.close(fig)

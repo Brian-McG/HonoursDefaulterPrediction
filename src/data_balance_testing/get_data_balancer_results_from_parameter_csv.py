@@ -49,7 +49,7 @@ import config.constants as const
 import config.classifiers as cfr
 import visualisation as vis
 
-const.TEST_REPEAT = 10
+const.TEST_REPEAT = 1
 
 def override_parameters(parameter_results):
     data_balancer_arr = {}
@@ -109,6 +109,7 @@ def execute_classifier_run(data_balancer_results, random_values, input_defaulter
 
 
 def main(dataset, parameter_results):
+    data_set_results = []
     for data_set in data_sets.data_set_arr:
         if data_set["data_set_description"] == dataset:
             # Load in data set
@@ -148,7 +149,8 @@ def main(dataset, parameter_results):
             plot_balancer_results_per_classifier(data_balancer_results, (2, "Average Balanced classification rate"))
             plot_balancer_results_per_classifier(data_balancer_results, (3, "Average true positive rate"))
             plot_balancer_results_per_classifier(data_balancer_results, (4, "Average true negative rate"))
-
+            data_set_results.append((data_set["data_set_description"], data_balancer_results))
+    vis.visualise_dataset_balancer_results(data_set_results)
 if __name__ == "__main__":
     if len(sys.argv) < 3 and len(sys.argv) % 2 == 0:
         print('Expected "cdn_perf.py <parameter_result_label> <parameter_results_path>"')
