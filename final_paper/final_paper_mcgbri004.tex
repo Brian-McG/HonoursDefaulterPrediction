@@ -151,13 +151,6 @@
 	
 	The field of credit scoring in the financial space aims to determine if a financial institution should provide credit to an individual. This area has been well researched. In this paper we aim to determine if our results generalise across the different fields. There are notable similarities in these problems which could make them comparable. Both problems typically have a labelled dataset consisting of both nominal and numerical data as well as the occurrence of missing data [citation needed]. However, TB datasets are more prone to missing data as well as inaccuracies due to the nature of the data collection [citation needed]. The selected classification techniques are evaluated against real-world treatment default datasets and financial datasets. The paper will evaluate how the techniques differ across the datasets. If the relative results are similar then future credit scoring research could be applicable to treatment default prediction too.
 	
-	\begin{enumerate}
-		\item Discuss datasets used and possibly expansion of TB issues in those specific counties (Peru and Malawi)
-		\item Outline briefly how the datasets are used and that each technique is also benchmarked against the well known Australian and German financial to determine how applicable credit scoring research is to TB default prediction for the two TB datasets.
-		\item Link TB classification to credit scoring and outline notable similarities and differences
-		\item Summarise overall paper
-	\end{enumerate}
-	
 	\section{Related work}
 	\subsection{Definition of a defaulter}
 	The definition of a defaulter depends on its context. TB literature typically uses the World Health Organisation (WHO) definition that a defaulter is a person whose treatment has been disrupted for two or more consecutive months \cite{chan:2003prevalence, cherkaoui:19326203, Jha:10.1371/journal.pone.0008873,jittimanee:10.1111/j.1440-172X.2007.00650.x,muture:6660173120110101, world2015TB}.
@@ -263,33 +256,72 @@
 			&\parbox[t]{1.2cm}{\centering n/a\textsuperscript{\textdaggerdbl}}\rule{0pt}{3.5mm}\rule[-8mm]{0pt}{0pt}		
 		\end{tabular}		
 	\end{table}
-	
-	\begin{enumerate}
-		\item Summarised version of original literature review except the parts using temporal aspects
-		\item Summarise what has been done determining TB predictors (which is a different aim)
-		\item Summarise what has been done in the credit scoring financial space as a lot of research has been done in this field.
-		\item Brief overview of each classification technique and possibly give a reason why this technique may work well for our application
-		\item Brief outline of the data balancing techniques used
-	\end{enumerate}
+
 	
 	\section{Background}
+	This section aims to provide an overview of all the techniques used in this paper.
 	\subsection{Classifiers}
+	This section examines the different classification techniques and outlines how each technique produces its output.
 	\subsubsection{Support Vector Machines}
 	Support vector machine (SVM) is a machine learning technique that can be used to produce regression or classification functions from a set of training data \cite{Luo20097562}. SVM works by mapping the input vectors into a high-dimensional feature space with the use of a kernel function \cite{Danenas20153194}. The kernel function selected determines the if the mapping is linear or non-linear \cite{Luo20097562}. Linear, polynomial and radial basis function (RBF) are common kernel functions \cite{hsu2003practical}. The polynomial and RBF kernel performs a non-linear mapping into the high-dimensional space \cite{hsu2003practical}. This feature space is then searched to acquire an optimal hyperplane that separates the space with the maximum distance between the two classes \cite{Danenas20153194}. Hsu \textit{et al.} \cite{hsu2003practical} recommends the RBF kernel as a reasonable first choice but notes that it is not suitable when there are a large number of features. The linear kernel is recommend when there are a large number of features.
+	
 	\subsubsection{Artificial Neural Network}
 	An artificial neural network (ANN) is based on the functionality of the human brain \cite{Wang2003}. Neurons in the brain are interconnected and process information in parallel \cite{Wang2003}. A typical ANN is comprised of an input layer, $k$ number of hidden layers and an output layer. The neurons in each layer are connected to the neurons in the next layer. A numeric weight is defined between each pair of connected neurons. An activation function defines if a neuron will fire \cite{Wang2003}. The activation function bounds the value of a neuron to a specific range to limit the effect of divergent neurons \cite{Wang2003}. By using an activation function, a non-linear combination of weights can be generated \cite{Wang2003}. It has been proven that an ANN is able to approximate any continuous function if has at least one hidden node and an activation function that is both bounded to some range and non-constant \cite{Hornik1991251}.
 	
 	Extreme learning machines (ELM) is an alternative approach to the conventional back-propagated ANN. Huang \textit{el al.} \cite{Huang2006489} proved that the input and hidden layer weights can be randomly assigned if the activation function in the hidden layer is infinitely differentiable. By randomly assigning these weights, the weights for the output nodes can be determined analytically \cite{Huang2006489}. This allows ELMs to be trained orders of magnitude faster than a back-propagated ANN \cite{Huang2006489} \cite{6035797}. Various studies have shown ELMs to provide better results than SVMs and ANNs on classification and regression tasks \cite{Huang2006489} \cite{6035797}.
+	
+	\subsubsection{Logistic Regression}
+	Logistic regression is a technique that models the chance of an outcome based on the input features \cite{doi:10.11613/BM.2014.003}. Since chance is a ratio, the logarithm of the chance is what is modelled instead \cite{doi:10.11613/BM.2014.003}:
+	log$(\frac{\mathcal{P}}{1 - \mathcal{P}}) = \beta_0 + \beta_1 x_1 + ... + \beta_m x_m$. $\mathcal{P}$ represents the probability of an event (likelihood to default for example). $\beta_0$ represents the value of the criterion when the predictor is equal to 0. $\beta_1, ..., \beta_m$ are the regression coefficients associated with the $x_1, ..., x_m$ input features. The probability of an event can then be calculated as $\mathcal{P}$ = $\frac{1}{1 + e^{-(\beta_0 + \beta_1 x_1 + ... + \beta_m x_m)}}$. A detailed overview of logistic regression can be found in \cite{Mood01022010} and \cite{doi:10.11613/BM.2014.003}.
+	
+	\subsubsection{$k$-Nearest Neighbours}
+	The $k$-Nearest Neighbours ($k$NN) algorithm determines the output classification by examining the $k$ nearest training examples in the feature space \cite{6313426}. An input is classified by the majority vote of its neighbours.
+	
+	\subsubsection{Ensembles}
+	An ensemble classifier is one which typically makes use of multiple classifiers and aggregate the results. A decision tree can be used for classification by branching on conjunctions of features and having the leaves represent the output class. A decision tree allows for easy interpretation of the generated model, however, typically provides relatively poor classification accuracy \cite{doi:10.1021/ci034160g}. 
+	
+	Random forest is a technique that fits a number of decision trees on \textit{random samples with replacement} of the dataset. For each tree, $n$ features are randomly selected and the tree is grown \cite{WIDM:WIDM1072}. Data that was not selected for training the tree is called out-of-bag data \cite{WIDM:WIDM1072}. It is used to test the error rate of the tree \cite{WIDM:WIDM1072, doi:10.1021/ci034160g}. The output classification is decided by the majority vote of each tree \cite{WIDM:WIDM1072}.
+	
+	Freund and Schapire's \cite{FREUND1997119} AdaBoost uses a weighted sum of multiple classifiers in order to determine the output. A classifier is constructed in an iterative fashion. At each iteration a pool of classifiers are considered and one classifier is added to the committee of classifiers. Input which is still misclassified is assigned a higher weight at each iteration \cite{Bergstra2006, rojas2009adaboost}. The aim being that the process will select a classifier which helps the still misclassified inputs. The chosen classifier is assigned a weight which determines its power in the overall classification \cite{Bergstra2006, rojas2009adaboost}. The sign of the function: $C(x) = \sum_{i=1}^{m} \alpha_i k_i$ is used to determine the final classification with $\alpha_i$ denoting the weight of each classifier $k_i$ \cite{Bergstra2006}. 
+	
+	\subsubsection{Naive Bayes}
+	Naive Bayes makes an assumption that each input feature is independent of each other \cite{Lewis1998, rish2001empirical}. This allows multiple features be uncoupled from one another which simplifies the algorithm. Naive Bayes uses conditional probability to classify new inputs \cite{Lewis1998}. Using Bayes theorem, the following equation is derived: $p(C_i|\textbf{x}) = \frac{p(C_i) \times p(x_1|C_i) \times...\times p(x_n|C_i)}{p(\textbf{x})}$ with input $\textbf{x} = (x_1,...,x_n)$ and class label $C_i$ \cite{Lewis1998, rish2001empirical}. Since $p(\textit{x})$ is identical for each class, it is typically ignored \cite{rish2001empirical}. To classify an input, the probabilities for each class are calculated using the aforementioned equation and the output is the class with the highest probability \cite{Lewis1998}.
+	
+	\subsubsection{Clustering-launched classification}
+	Clustering-launched classification (CLC) is a binary classifier. CLC first clusters the data into groups using diverse hierarchical k-means algorithm \cite{Luo20097562}. The clusters are divided into positive subsets and negative subsets \cite{Luo20097562}. Support vectors are then used to separate the positive and negative subsets for each cluster \cite{Luo20097562}. Redundant or repeated support vectors are removed thereafter \cite{Luo20097562}.
+	
 	\subsection{Data Balancers}
-	\subsection{Feature selection}
+	\subsubsection{Over-sampling}
+	Random over-sampling is a technique that randomly replicates examples in the minority class \cite{Batista:2004:SBS:1007730.1007735}. However, this technique can increase the likelihood of over-fitting since exact copies are made from the minority class \cite{Batista:2004:SBS:1007730.1007735}.
+	
+	The Synthetic minority over-sampling technique (SMOTE) \cite{Chawla:2002:SSM:1622407.1622416} forms new minority samples by interpolating along the line segment on some or all of the $k$ nearest minority class neighbours of a minority example. This approach attempts to alleviate the over-fitting that can occur from using random over-sampling.
+	
+	Adaptive synthetic sampling (ADASYN) \cite{4633969} is a variation of SMOTE which uses a weighed distribution for different minority class examples according to their difficulty in learning. More synthetic data is generated for minority class examples that are more difficult to learn compared to those that are easier to learn.
+	
+	\subsubsection{Under-sampling}
+	Random over-sampling is a technique that randomly eliminates examples in the majority class \cite{Batista:2004:SBS:1007730.1007735}. However, this technique can remove potentially useful information from the training set \cite{Batista:2004:SBS:1007730.1007735}. 
+	
+	Condensed Nearest Neighbour (CNN) rule \cite{1056066} finds a consistent subset of examples. A subset $D$ of $E$ is consistent if using 1-nearest neighbour using $D$ correctly classifies $E$ \cite{Batista:2004:SBS:1007730.1007735}. The process draws one random majority class example and all minority class examples and puts them in $D$ \cite{Batista:2004:SBS:1007730.1007735}. Every misclassified example is then moved from $E$ to $D$ \cite{Batista:2004:SBS:1007730.1007735}. This process attempts to remove examples that are far away from the decision border and therefore seen as less relevant for learning \cite{Batista:2004:SBS:1007730.1007735}.
+	
+	Tomek links \cite{4309452} examines two examples $\textbf{x}_i$ and $\textbf{x}_j$ belonging to different classes. A Tomek link occurs if there is not an example $\textbf{x}_l$ such that $d(\textbf{x}_i, \textbf{x}_l) < d(\textbf{x}_i, \textbf{x}_j)$ or $d(\textbf{x}_j, \textbf{x}_l) < d(\textbf{x}_j, \textbf{x}_i)$. If two examples form a Tomek link then either one is noise or it is a borderline case \cite{Batista:2004:SBS:1007730.1007735}. This information can then be used to under-sample the majority class \cite{Batista:2004:SBS:1007730.1007735}.
+	
+	One-sided selection \cite{Kubat97addressingthe} applies Tomek links to remove borderline and noisy majority class examples then applies CNN to remove majority examples far from the decision border.
+	
+	Neighbourhood cleaning rule (NCL) \cite{Laurikkala:2001:IID:648155.757340} uses the edited nearest neighbour rule (ENN) to remove majority class examples. ENN removes examples whose label differs from the class of at least two of its nearest 3 neighbours. NCL examines each example $\textbf{x}_i$ and its 3 nearest neighbours. If $\textbf{x}_i$ belongs to the majority class and the neighbours contradict this class then $\textbf{x}_i$ is removed \cite{Batista:2004:SBS:1007730.1007735}. If $\textbf{x}_i$ belongs to the minority class and the neighbours contradict this class then the neighbours from the majority class are removed \cite{Batista:2004:SBS:1007730.1007735}.
+	
+	Instance threshold hardening \cite{Smith:2014:ILA:2843614.2843686} uses the probability estimates from a classifier when k-fold cross validation is applied to only select those examples from the majority class that have the highest probability in order to match the number of examples in the minority class.
+	
+	NearMiss-1 \cite{mani2003knn} picks majority class examples which have the smallest average distance to the three nearest minority class examples.
+	
+	Cluster centroids applies the $k$-means algorithm with $N$ clusters to the majority class and uses the coordinates of the cluster centroids as the majority sample.	
+	
+	\subsubsection{Combination}
+	SMOTE + Tomek links \cite{batista2003balancing} first applies SMOTE then applies Tomek links. Applying SMOTE can cause minority samples to extend too deep into the majority class space or the opposite where majority class samples extend too deep into the minority class space \cite{batista2003balancing} . Tomek links is used as a data cleaning method to remove examples from both classes to produce well-defined class clusters \cite{batista2003balancing} .
+	
+	SMOTE + ENN works similarly to SMOTE + Tomek links but ENN is more aggressive at removing samples than Tomek links \cite{Batista:2004:SBS:1007730.1007735}.
+	
 	
 	\section{Methods}
-	\begin{enumerate}
-		\item Outline each dataset fully: number of nominal and numerical fields and number of entries. Also outline how balanced each dataset is.
-		\item Outline testing procedure and optimisation strategy for each classification technique. To optimise each classification technique, a grid search is conducted across a reasonable parameter space. For each parameter set, the results are averaged over 3 runs, this is done because of the stochastic nature of initialising the training of each classifier. To ensure consistent results for each run, the same fold allocations are used.
-		\item Outline that data balancing techniques are compared by using true positive, true negative, false positive, false negative by using the optimised parameters for each data balancing technique. 
-		
-	\end{enumerate}
 	\subsection{Approach}
 	The study aimed to evaluate a set of statistical and machine learning classification techniques on treatment default data sets and compare it to that applied to other related classification datasets. A variety of classification techniques were chosen to test against: artificial neural network (ANN), support vector machine (SVM) using a linear, RBF and polynomial kernel, logistic regression, decision tree, AdaBoost, random forest, k-nearest neighbours (kNN), Gaussian naive Bayes, Bernoulli naive Bayes, extreme learning machines and clustering-Launched classification. These were chosen to include a selection of well known techniques, ensemble techniques and newer techniques that have shown promising results in other studies. Four related experiments were conducted in total.
 	
