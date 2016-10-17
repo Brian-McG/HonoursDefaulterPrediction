@@ -79,7 +79,7 @@ def main(random_value_arr):
             for (result_arr, classifier_description) in result_recorder.results:
                 print("\n=== {0} ===".format(classifier_description))
                 print("Matthews correlation coefficient: {0}".format(result_arr[0]))
-                print("Cohen Kappa score: {0}".format(result_arr[1]))
+                print("Informedness: {0}".format(result_arr[1]))
                 print("Average true rate: {0}".format(result_arr[2]))
                 print("Average true positive rate: {0}".format(result_arr[3]))
                 print("Average true negative rate: {0}".format(result_arr[4]))
@@ -89,7 +89,10 @@ def main(random_value_arr):
             data_set_arr.append((data_set["data_set_description"], result_recorder.results))
             if const.RECORD_RESULTS:
                 vis.plot_mean_roc_curve_of_classifiers(roc_plot, data_set["data_set_description"])
-                result_recorder.save_results_to_file(random_value_arr, data_set["data_set_description"])
+                if cpu_count == 1:
+                    result_recorder.save_results_to_file(random_value_arr, data_set["data_set_description"], display_time_to_fit_results=True)
+                else:
+                    result_recorder.save_results_to_file(random_value_arr, data_set["data_set_description"], display_time_to_fit_results=False)
 
     vis.visualise_dataset_classifier_results(data_set_arr)
 

@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.metrics import roc_curve
 
 from util import verbose_print
+from timeit import default_timer as timer
 
 
 def train_and_evaluate_fold_with_indices(generic_classifier, defaulter_set, training_set_indices, testing_set_indices, classifier, index, data_balancer=None):
@@ -30,7 +31,10 @@ def train_and_evaluate_fold(generic_classifier, x_train, y_train, x_test, y_test
     verbose_print("Number of rows for training fold {0}: {1}".format(index + 1, x_train.shape[0]))
     verbose_print("Number of defaulters for training fold {0}: {1}".format(index + 1, y_train[y_train == 1].shape[0]))
 
+    start_time = timer()
     classifier.fit(x_train, y_train)
+    end_time = timer()
+    fit_time = end_time - start_time
 
     # Testing fold specific statistics
     verbose_print("== Testing Stats Fold {0} ==".format(index + 1))
@@ -61,7 +65,7 @@ def train_and_evaluate_fold(generic_classifier, x_train, y_train, x_test, y_test
         fpr = fpr.tolist()
         tpr = tpr.tolist()
 
-    generic_classifier.ml_stats.calculate_and_append_fold_accuracy(test_classification, y_test, tpr, fpr, test_probabilities=test_probabilities)
+    generic_classifier.ml_stats.calculate_and_append_fold_accuracy(test_classification, y_test, tpr, fpr, fit_time, test_probabilities=test_probabilities)
 
 
 class MLTechnique:

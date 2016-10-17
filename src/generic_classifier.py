@@ -37,7 +37,7 @@ class GenericClassifier(MLTechnique):
 
         for i in range(5 + 1):
             try:
-                self.ml_stats.errors = []
+                self.ml_stats.results = []
                 self.ml_stats.roc_list = []
 
                 kf = StratifiedKFold(n_splits=const.NUMBER_OF_FOLDS, shuffle=True, random_state=self.k_fold_state)
@@ -55,12 +55,12 @@ class GenericClassifier(MLTechnique):
                     print("INFO: Repeating classification step - attempt {0} of {1}".format(i + 1, 5))
 
         # Error rates
-        avg_accuracy_dict = self.ml_stats.calculate_average_predictive_accuracy()
+        avg_accuracy_dict = self.ml_stats.calculate_average_results()
 
         return avg_accuracy_dict
 
     def train_and_evaluate(self, x_train, y_train, x_test, y_test):
-        self.ml_stats.errors = []
+        self.ml_stats.results = []
         self.ml_stats.roc_list = []
         try:
             classifier = self.classifier_class(random_state=self.classifier_state, **self.classifier_parameters)
@@ -71,7 +71,7 @@ class GenericClassifier(MLTechnique):
         train_and_evaluate_fold(self, x_train, y_train, x_test, y_test, classifier, 0, data_balancer=self.data_balancer)
 
         # Error rates
-        avg_accuracy_dict = self.ml_stats.calculate_average_predictive_accuracy()
+        avg_accuracy_dict = self.ml_stats.calculate_average_results()
 
         return avg_accuracy_dict
 
