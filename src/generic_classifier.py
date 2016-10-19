@@ -4,7 +4,8 @@ from sklearn.model_selection import StratifiedKFold
 
 from classifier_statistics import ClassifierStatistics
 from config import constants as const
-from ml_technique import train_and_evaluate_fold_with_indices, MLTechnique, train_and_evaluate_fold
+from data_preprocessing import apply_preprocessing_to_train_test_dataset
+from ml_technique import MLTechnique, train_and_evaluate_fold
 
 
 class GenericClassifier(MLTechnique):
@@ -25,7 +26,7 @@ class GenericClassifier(MLTechnique):
             self.k_fold_state = None
             self.classifier_state = None
 
-    def k_fold_train_and_evaluate(self, defaulter_set):
+    def k_fold_train_and_evaluate(self, defaulter_set, numerical_columns=None, categorical_columns=None, classification_label=None, missing_value_strategy=None, apply_preprocessing=False):
         """Applies k-fold cross validation to train and evaluate a classifier"""
         try:
             classifier = self.classifier_class(random_state=self.classifier_state, **self.classifier_parameters)
@@ -44,7 +45,13 @@ class GenericClassifier(MLTechnique):
                 index = 0
 
                 for train, test in kf.split(defaulter_set.iloc[:, :-1].as_matrix(), defaulter_set.iloc[:, -1:].as_matrix().flatten()):
-                    train_and_evaluate_fold_with_indices(self, defaulter_set, train, test, classifier, index, data_balancer=self.data_balancer)
+                    if apply_preprocessing:
+                        train, test = apply_preprocessing_to_train_test_dataset(defaulter_set, train, test, numerical_columns, categorical_columns, classification_label, missing_value_strategy, create_dummy_variables=True)
+
+                    x_train, y_train = train.iloc[:, :-1].as_matrix(), train.iloc[:, -1:].as_matrix().flatten()
+                    x_test, y_test = test.iloc[:, :-1].as_matrix(), test.iloc[:, -1:].as_matrix().flatten()
+
+                    train_and_evaluate_fold(self, x_train, y_train, x_test, y_test, classifier, index, data_balancer=self.data_balancer)
                     index += 1
 
                 break
@@ -60,8 +67,6 @@ class GenericClassifier(MLTechnique):
         return avg_accuracy_dict
 
     def train_and_evaluate(self, x_train, y_train, x_test, y_test):
-        self.ml_stats.results = []
-        self.ml_stats.roc_list = []
         try:
             classifier = self.classifier_class(random_state=self.classifier_state, **self.classifier_parameters)
         except TypeError:

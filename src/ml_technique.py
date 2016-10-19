@@ -3,23 +3,9 @@ from abc import ABCMeta, abstractmethod
 import numpy as np
 from sklearn.metrics import roc_curve
 
+from data_preprocessing import apply_preprocessing
 from util import verbose_print
 from timeit import default_timer as timer
-
-
-def train_and_evaluate_fold_with_indices(generic_classifier, defaulter_set, training_set_indices, testing_set_indices, classifier, index, data_balancer=None):
-    # Prepare data set
-    input_set = defaulter_set.iloc[:, :-1].as_matrix()
-    output_set = defaulter_set.iloc[:, -1:].as_matrix().flatten()
-
-    # Apply Data balancing
-    x_resampled, y_resampled = input_set[training_set_indices], output_set[training_set_indices]
-
-    # Testing set
-    x_testing = input_set[testing_set_indices]
-    y_testing = output_set[testing_set_indices]
-
-    train_and_evaluate_fold(generic_classifier, x_resampled, y_resampled, x_testing, y_testing, classifier, index, data_balancer=data_balancer)
 
 
 def train_and_evaluate_fold(generic_classifier, x_train, y_train, x_test, y_test, classifier, index, data_balancer=None):
@@ -48,14 +34,16 @@ def train_and_evaluate_fold(generic_classifier, x_train, y_train, x_test, y_test
 
     try:
         test_probabilities = classifier.predict_proba(x_test)
-    except AttributeError:
+        if len(test_probabilities[0]) < 2:
+            raise RuntimeError("test probabilities is not correct length")
+    except Exception:
         test_probabilities = [[-1, -1]] * len(test_classification)
 
     outcome_decision_values = None
     try:
         predictions = classifier.predict_proba(x_test)
         outcome_decision_values = predictions[:, 1]
-    except AttributeError as e:
+    except Exception as e:
         outcome_decision_values = None
         verbose_print("WARNING: unable to calculate classification accuracy - {0} - {1}".format(classifier.__class__.__name__, e))
 

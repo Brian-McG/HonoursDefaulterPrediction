@@ -25,7 +25,7 @@ from config.constants import LOGISTIC_REGRESSION
 from feature_selection.select_features_result_recorder import FeatureSelectionResultRecorder
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from data_preprocessing import apply_preprocessing
+from data_preprocessing import apply_preprocessing, apply_preprocessing_to_train_test_dataset
 from generic_classifier import GenericClassifier
 from result_recorder import ResultRecorder
 from run_statistics import RunStatistics
@@ -36,7 +36,7 @@ import visualisation as vis
 import config.classifiers as cfr
 import matplotlib.pyplot as plt
 
-feature_selection_strategies = [None, ANOVA_CHI2, LOGISTIC_REGRESSION, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, DECISION_TREE, RANDOM_FOREST]
+feature_selection_strategies = [None, LOGISTIC_REGRESSION, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, RANDOM_FOREST]
 
 const.TEST_REPEAT = 10
 
@@ -50,7 +50,6 @@ def select_features(input_defaulter_set, numeric_columns, categorical_columns, c
     if selection_strategy is None or selection_strategy == "None":
         return input_defaulter_set, numeric_columns, categorical_columns
     split_arr = selection_strategy.split("-")
-    print("INFO: Number of features before selection: {0}".format(len(numeric_columns) + len(categorical_columns)))
     for selection_strategy_split in split_arr:
         if ANOVA_CHI2 == selection_strategy_split:
             X_numeric = pd.concat([input_defaulter_set[numeric_columns]], axis=1)
@@ -83,7 +82,7 @@ def select_features(input_defaulter_set, numeric_columns, categorical_columns, c
 
         elif LOGISTIC_REGRESSION == selection_strategy_split:
             estimator = LogisticRegression(random_state=random_state, **classifier_parameters["Logistic regression"]["classifier_parameters"])
-            selector = SelectFromModel(estimator, threshold="0.3*median")
+            selector = SelectFromModel(estimator, threshold="median")
             selector = selector.fit(X.as_matrix(), y.as_matrix().flatten())
             indices_usable = selector.get_support(indices=True)
             y = X.columns.values
@@ -91,23 +90,23 @@ def select_features(input_defaulter_set, numeric_columns, categorical_columns, c
 
         elif BERNOULLI_NAIVE_BAYES == selection_strategy_split:
             estimator = BernoulliNB(**classifier_parameters[BERNOULLI_NAIVE_BAYES]["classifier_parameters"])
-            selector = SelectFromModel(estimator, threshold="0.3*median")
+            selector = SelectFromModel(estimator, threshold="median")
             selector = selector.fit(X.as_matrix(), y.as_matrix().flatten())
             indices_usable = selector.get_support(indices=True)
             y = X.columns.values
             X = X[[X.columns.values[i] for i in range(len(X.columns.values)) if i in indices_usable]]
 
         elif SVM_LINEAR == selection_strategy_split:
-            estimator = svm.SVC(random_state=random_state, **classifier_parameters[SVM_LINEAR]["classifier_parameters"])
-            selector = SelectFromModel(estimator, threshold="0.3*median")
+            estimator = svm.SVC(random_state=random_state, C=7.371053, decision_function_shape="ovr", class_weight="balanced", kernel="linear")
+            selector = SelectFromModel(estimator, threshold="median")
             selector = selector.fit(X.as_matrix(), y.as_matrix().flatten())
             indices_usable = selector.get_support(indices=True)
             y = X.columns.values
             X = X[[X.columns.values[i] for i in range(len(X.columns.values)) if i in indices_usable]]
 
         elif DECISION_TREE == selection_strategy_split:
-            estimator = DecisionTreeClassifier(random_state=random_state, **classifier_parameters[DECISION_TREE]["classifier_parameters"])
-            selector = SelectFromModel(estimator, threshold="0.3*median")
+            estimator = DecisionTreeClassifier(random_state=random_state, class_weight="balanced")
+            selector = SelectFromModel(estimator, threshold="median")
             selector = selector.fit(X.as_matrix(), y.as_matrix().flatten())
             indices_usable = selector.get_support(indices=True)
             y = X.columns.values
@@ -115,7 +114,8 @@ def select_features(input_defaulter_set, numeric_columns, categorical_columns, c
 
         elif RANDOM_FOREST == selection_strategy_split:
             forest = RandomForestClassifier(random_state=random_state, **classifier_parameters[RANDOM_FOREST]["classifier_parameters"])
-            selector = SelectFromModel(forest, threshold="0.3*median")
+            selector = SelectFromModel(forest, threshold="median")
+
             selector.fit(X.as_matrix(), y.as_matrix().flatten())
             indices_usable = selector.get_support(indices=True)
             y = X.columns.values
@@ -126,11 +126,10 @@ def select_features(input_defaulter_set, numeric_columns, categorical_columns, c
 
     new_numeric_columns = [numeric_column for numeric_column in numeric_columns if numeric_column in X.columns.values]
     new_categorical_columns = [categorical_column for categorical_column in categorical_columns if categorical_column in X.columns.values]
-    print("INFO: Number of features after selection: {0}".format(len(new_numeric_columns) + len(new_categorical_columns)))
     return pd.concat([input_defaulter_set[X.columns.values], input_defaulter_set[classification_label]], axis=1), new_numeric_columns, new_categorical_columns
 
 
-def execute_classifier_run(random_values, input_defaulter_set_with_dummy_variables, numeric_columns, categorical_columns, classification_label, all_classifier_parameters, classifier_parameters, data_balancer, feature_selection_strategy, classifier_dict, classifier_description, roc_plot, result_recorder):
+def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, categorical_columns, classification_label, all_classifier_parameters, classifier_parameters, data_balancer, feature_selection_strategy, classifier_dict, classifier_description, roc_plot, result_recorder, missing_value_strategy):
     if classifier_dict["status"]:
         print("=== Executing {0} ===".format(classifier_description))
         test_stats = RunStatistics()
@@ -140,14 +139,39 @@ def execute_classifier_run(random_values, input_defaulter_set_with_dummy_variabl
             generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer, random_values[i])
             kf = StratifiedKFold(n_splits=const.NUMBER_OF_FOLDS, shuffle=True, random_state=generic_classifier.k_fold_state)
             result_dictionary = None
-            for train, test in kf.split(input_defaulter_set_with_dummy_variables.iloc[:, :-1], input_defaulter_set_with_dummy_variables.iloc[:, -1:].as_matrix().flatten()):
-                feature_selection_df_from_dummies, _, _ = select_features(input_defaulter_set_with_dummy_variables.iloc[train], numeric_columns, categorical_columns, classification_label,
+            avg_features_selected = 0
+            min_features_selected = sys.maxint
+            max_features_selected = -sys.maxint - 1
+            loop_count = 0
+            for train, test in kf.split(input_defaulter_set.iloc[:, :-1], input_defaulter_set.iloc[:, -1:].as_matrix().flatten()):
+                numeric_columns_with_dummy = apply_preprocessing(input_defaulter_set, numeric_columns, [], classification_label, missing_value_strategy,
+                                                                 create_dummy_variables=True).columns[:-1]
+                categorical_columns_with_dummy = apply_preprocessing(input_defaulter_set, [], categorical_columns, classification_label, missing_value_strategy,
+                                                                     create_dummy_variables=True).columns[:-1]
+                train_df, test_df = apply_preprocessing_to_train_test_dataset(input_defaulter_set, train, test, numeric_columns, categorical_columns, classification_label,
+                                                                              missing_value_strategy, create_dummy_variables=True)
+
+                train_df, _, _ = select_features(train_df, numeric_columns_with_dummy, categorical_columns_with_dummy, classification_label,
                                                                           all_classifier_parameters, random_state=random_values[i], selection_strategy=feature_selection_strategy)
-                test_with_selected_features = input_defaulter_set_with_dummy_variables.iloc[test][feature_selection_df_from_dummies.columns]
-                result_dictionary = generic_classifier.train_and_evaluate(feature_selection_df_from_dummies.iloc[:, :-1].as_matrix(), feature_selection_df_from_dummies.iloc[:, -1:].as_matrix(), test_with_selected_features.iloc[:, :-1].as_matrix(), test_with_selected_features.iloc[:, -1:].as_matrix())
+                test_df = test_df[train_df.columns]
+
+                number_of_features = len(train_df.columns) - 1
+                avg_features_selected += number_of_features
+
+                result_dictionary = generic_classifier.train_and_evaluate(train_df.iloc[:, :-1].as_matrix(), train_df.iloc[:, -1:].as_matrix().flatten(), test_df.iloc[:, :-1].as_matrix(), test_df.iloc[:, -1:].as_matrix().flatten())
+
+                loop_count += 1
+
+                if number_of_features < min_features_selected:
+                    min_features_selected = number_of_features
+                if number_of_features > max_features_selected:
+                    max_features_selected = number_of_features
 
             test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
 
+            avg_features_selected /= float(loop_count)
+            print("{4} - Average features selected from folds - {0}, Min features selected - {1}, Max features selected - {2}, run - {3}".format(avg_features_selected, min_features_selected,
+                                                                                                                                                 max_features_selected, i, feature_selection_strategy))
         avg_results = test_stats.calculate_average_run_accuracy()
         roc_plot.append((test_stats.roc_list, classifier_description))
         result_recorder.record_results(avg_results, classifier_description, feature_selection_strategy)
@@ -159,19 +183,13 @@ def main():
         if data_set["status"]:
             # Load in data set
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
-
-            numeric_columns = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], [], data_set["classification_label"], data_set["missing_values_strategy"],
-                                                  create_dummy_variables=True).columns[:-1]
-            categorical_columns = apply_preprocessing(input_defaulter_set, [], data_set["categorical_columns"], data_set["classification_label"], data_set["missing_values_strategy"],
-                                                      create_dummy_variables=True).columns[:-1]
-            input_defaulter_set_with_dummy_variables = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"],
-                                                                           data_set["missing_values_strategy"], create_dummy_variables=True)
+            input_defaulter_set = input_defaulter_set[data_set["numeric_columns"] + data_set["categorical_columns"] + data_set["classification_label"]]
+            input_defaulter_set = input_defaulter_set.dropna(axis=0)
+            input_defaulter_set = input_defaulter_set.reset_index(drop=True)
 
             feature_selection_results_after = []
-            feature_selection_results_before = []
 
             result_recorder_after = FeatureSelectionResultRecorder()
-            result_recorder_before = FeatureSelectionResultRecorder()
             cpu_count = get_number_of_processes_to_use()
 
             random_values = []
@@ -191,12 +209,12 @@ def main():
                 roc_plot = manager.list()
 
                 # Execute enabled classifiers
-                Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(random_values, input_defaulter_set_with_dummy_variables, numeric_columns, categorical_columns, data_set["classification_label"],
+                Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(random_values, input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"],
                                                                            data_set["data_set_classifier_parameters"].classifier_parameters,
                                                                            data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"],
                                                                            data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"],
                                                                            feature_selection_strategy, classifier_dict, classifier_description, roc_plot,
-                                                                           feature_selection_result_recorder_after) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
+                                                                           feature_selection_result_recorder_after, data_set["missing_values_strategy"]) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
 
                 feature_selection_result_recorder_after.results = sorted(feature_selection_result_recorder_after.results, key=lambda tup: tup[1])
 

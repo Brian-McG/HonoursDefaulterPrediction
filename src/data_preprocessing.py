@@ -3,6 +3,32 @@ from sklearn import preprocessing
 from sklearn.preprocessing import Imputer
 
 
+def apply_preprocessing_to_train_test_dataset(input_defaulter_set, train_indices, test_indices, numerical_columns, categorical_columns, classification_label, missing_value_strategy, create_dummy_variables=True):
+    for categorical_column in categorical_columns:
+        input_defaulter_set[categorical_column] = input_defaulter_set[categorical_column].astype('category')
+
+    categorical_df_with_dummies = input_defaulter_set[categorical_columns].apply(lambda x: x.cat.codes)
+    if len(categorical_columns) > 0 and create_dummy_variables:
+        categorical_df_with_dummies = pd.get_dummies(input_defaulter_set[categorical_columns])
+
+    numerical_train_df = pd.DataFrame()
+    numerical_test_df = pd.DataFrame()
+    if len(numerical_columns) > 0:
+        numerical_train_df = input_defaulter_set.iloc[train_indices][numerical_columns]
+        numerical_test_df = input_defaulter_set.iloc[test_indices][numerical_columns]
+        scaler = preprocessing.StandardScaler().fit(numerical_train_df)
+        scaled_numerical_train_arr = scaler.transform(numerical_train_df)
+        scaled_numerical_test_arr = scaler.transform(numerical_test_df)
+
+        for i in range(len(numerical_columns)):
+            numerical_train_df[numerical_columns[i]] = scaled_numerical_train_arr.T[i]
+            numerical_test_df[numerical_columns[i]] = scaled_numerical_test_arr.T[i]
+
+    final_train_df = pd.concat([numerical_train_df, categorical_df_with_dummies.iloc[train_indices], input_defaulter_set.iloc[train_indices][classification_label]], axis=1)
+    final_test_df = pd.concat([numerical_test_df, categorical_df_with_dummies.iloc[test_indices], input_defaulter_set.iloc[test_indices][classification_label]], axis=1)
+    return final_train_df, final_test_df
+
+
 def apply_preprocessing(input_defaulter_set, numerical_columns, categorical_columns, classification_label, missing_value_strategy, create_dummy_variables=True):
     if missing_value_strategy == "remove":
         input_defaulter_set = input_defaulter_set[numerical_columns + categorical_columns + classification_label]

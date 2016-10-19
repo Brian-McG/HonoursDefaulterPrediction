@@ -91,14 +91,14 @@ def override_parameters(parameter_results):
     # plot_balancer_results_per_classifier(classifiers, "Average true positive rate")
     # plot_balancer_results_per_classifier(classifiers, "Average true negative rate")
 
-def execute_classifier_run(data_balancer_results, random_values, input_defaulter_set, classifier_arr, classifier_description, roc_plot):
+def execute_classifier_run(data_balancer_results, random_values, input_defaulter_set, numerical_columns, categorical_columns, classification_label, missing_value_strategy, classifier_arr, classifier_description, roc_plot):
     result_arr = []
     for(data_balancer, parameter_dict) in classifier_arr:
         print("=== Executing {0} - {1} ===".format(classifier_description, data_balancer.__name__ if data_balancer is not None else "None"))
         test_stats = RunStatistics()
         for i in range(const.TEST_REPEAT):
             generic_classifier = GenericClassifier(cfr.classifiers[classifier_description]["classifier"], parameter_dict, data_balancer, random_values[i])
-            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set)
+            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set, numerical_columns=numerical_columns, categorical_columns=categorical_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
             test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
 
         avg_results = test_stats.calculate_average_run_accuracy()
@@ -114,10 +114,10 @@ def main(dataset, parameter_results):
         if data_set["data_set_description"] == dataset:
             # Load in data set
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
+            input_defaulter_set = input_defaulter_set[data_set["numeric_columns"] + data_set["categorical_columns"] + data_set["classification_label"]]
+            input_defaulter_set = input_defaulter_set.dropna(axis=0)
+            input_defaulter_set = input_defaulter_set.reset_index(drop=True)
 
-            input_defaulter_set = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["missing_values_strategy"], create_dummy_variables=True)
-
-            manager = Manager()
             result_recorder = DataBalancerResultRecorder()
             cpu_count = get_number_of_processes_to_use()
 
@@ -136,7 +136,7 @@ def main(dataset, parameter_results):
             data_balancer_results = manager.list()
 
             # Execute enabled classifiers
-            Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(data_balancer_results, random_values, input_defaulter_set, classifier_dict, classifier_description, roc_plot) for classifier_description, classifier_dict in classifier_parameters.iteritems())
+            Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(data_balancer_results, random_values, input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["missing_values_strategy"], classifier_dict, classifier_description, roc_plot) for classifier_description, classifier_dict in classifier_parameters.iteritems())
 
             data_balancer_results = sorted(data_balancer_results, key=lambda tup: tup[0])
 

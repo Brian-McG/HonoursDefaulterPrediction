@@ -74,7 +74,7 @@ generic_classifier_parameter_dict[clf.adaboost_description] = adaboost_dict
 
 # Random forest
 random_forest_dict = {"parameters": {"n_estimators": list(range(5, 120, 10)), "criterion": ["gini", "entropy"], "max_features": ["auto", "sqrt", "log2", None],
-                                     "max_depth": [None] + list(range(5, 120, 20)), "oob_score": [True, False], "class_weight": [None, "balanced"]}, "requires_random_state": False}
+                                     "max_depth": [None] + list(range(5, 120, 20)), "class_weight": [None, "balanced"]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.random_forest_description] = random_forest_dict
 
 # K-nearest neighbours

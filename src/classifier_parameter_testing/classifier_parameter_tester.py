@@ -41,7 +41,7 @@ data_balancers = [None, ClusterCentroids, EditedNearestNeighbours, InstanceHardn
                   OneSidedSelection, RandomUnderSampler, TomekLinks, ADASYN, RandomOverSampler, SMOTE, SMOTEENN, SMOTETomek]
 
 
-def execute_loop(classifier_description, classifier_dict, parameter_dict, defaulter_set_arr, results_recorder, z, parameter_grid_len, requires_random_state, data_set_description):
+def execute_loop(classifier_description, classifier_dict, parameter_dict, defaulter_set_arr, results_recorder, z, parameter_grid_len, requires_random_state, data_set_description, numerical_columns, categorical_columns, classification_label, missing_value_strategy):
     if z % 5 == 0:
         print("==== {0} - {1} - {2}% ====".format(data_set_description, classifier_description, format((float(z) / parameter_grid_len) * 100, '.2f')))
 
@@ -52,9 +52,9 @@ def execute_loop(classifier_description, classifier_dict, parameter_dict, defaul
             try:
                 generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer, x)
                 if requires_random_state:
-                    result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr)
+                    result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr, numerical_columns=numerical_columns, categorical_columns=categorical_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
                 else:
-                    result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr)
+                    result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr, numerical_columns=numerical_columns, categorical_columns=categorical_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
                 test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
             except Exception as e:
                 success = False
@@ -72,10 +72,11 @@ if __name__ == "__main__":
         if data_set["status"]:
             # Load in data set
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
+            input_defaulter_set = input_defaulter_set[data_set["numeric_columns"] + data_set["categorical_columns"] + data_set["classification_label"]]
 
-            # Preprocess data set
-            input_defaulter_set = apply_preprocessing(input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"],
-                                                      data_set["missing_values_strategy"])
+            input_defaulter_set = input_defaulter_set.dropna(axis=0)
+            input_defaulter_set = input_defaulter_set.reset_index(drop=True)
+
             try:
                 cpu_count = int(sys.argv[1])
             except IndexError:
@@ -90,7 +91,8 @@ if __name__ == "__main__":
                     parameter_grid = ParameterGrid(parameter_dict["parameters"])
                     Parallel(n_jobs=cpu_count)(
                         delayed(execute_loop)(classifier_description, classifier_dict, parameter_grid[z], input_defaulter_set, result_recorder, z, len(parameter_grid),
-                                              parameter_dict["requires_random_state"], data_set["data_set_description"]) for z in
+                                              parameter_dict["requires_random_state"], data_set["data_set_description"], data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"],
+                                              data_set["missing_values_strategy"]) for z in
                         range(len(parameter_grid)))
 
                     if const.RECORD_RESULTS is True:
