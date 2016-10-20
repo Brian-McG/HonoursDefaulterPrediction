@@ -35,10 +35,10 @@ from config import constants as const
 import visualisation as vis
 import config.classifiers as cfr
 import matplotlib.pyplot as plt
+#LOGISTIC_REGRESSION, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, DECISION_TREE, RANDOM_FOREST
+feature_selection_strategies = [None, ANOVA_CHI2]
 
-feature_selection_strategies = [None, ANOVA_CHI2, LOGISTIC_REGRESSION, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, DECISION_TREE, RANDOM_FOREST]
-
-const.TEST_REPEAT = 3
+const.TEST_REPEAT = 10
 
 
 def select_features(input_defaulter_set, numeric_columns, categorical_columns, classification_label, classifier_parameters, random_state=None, selection_strategy=ANOVA_CHI2):
@@ -68,13 +68,12 @@ def select_features(input_defaulter_set, numeric_columns, categorical_columns, c
 
             indices_usable = []
             indices_dropped = []
-            p_threshold = 0.05
+            p_threshold = 0.1
             for i in range(len(p_vals_numeric[0])):
                 if p_vals_numeric[1][i] < p_threshold:
                     indices_usable.append(i)
                 else:
-                    # TODO: reset back
-                    indices_usable.append(i)
+                    indices_dropped.append(i)
             for i in range(len(p_vals_categorical[0])):
                 if p_vals_categorical[1][i] < p_threshold:
                     indices_usable.append(i)
@@ -150,8 +149,10 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
                                                                  create_dummy_variables=True).columns[:-1]
                 categorical_columns_with_dummy = apply_preprocessing(input_defaulter_set, [], categorical_columns, classification_label, missing_value_strategy,
                                                                      create_dummy_variables=True).columns[:-1]
+
                 train_df, test_df = apply_preprocessing_to_train_test_dataset(input_defaulter_set, train, test, numeric_columns, categorical_columns, classification_label,
                                                                               missing_value_strategy, create_dummy_variables=True)
+
                 grid_scores = None
                 estimator = None
                 if LOGISTIC_REGRESSION == feature_selection_strategy:

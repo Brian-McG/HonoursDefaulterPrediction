@@ -354,15 +354,24 @@
 	\subsubsection{Comparison of data balancing algorithms}
 	We would like to investigate each data balancing technique in more detail so we compare each data balancing technique on each classifier. We use our parameter grid results from section \ref{parameter_tuning} to obtain the optimal parameters for each data balancing algorithm on each classifier. As before, the highest BARR is used to determine these optimal parameters. To ensure repeatable results, 10 runs of stratified 5-fold cross validation is executed and the results averaged. A set of unique randomly selected initialisation keys used for each run and recorded with the results. These are used so that $k$-fold cross validation, data balancing and classification algorithms produce deterministic output.
 	
-	A bar chart is plotted with each classifier against the MARR for the treatment default datasets. As in section \ref{comparision_of_classification_technique}, a scatter plot is presented which compares difference of true positive and false positive from the median of each for each classifier on each data balancing algorithm on each dataset. 
+	A bar chart is plotted with each classifier against the BARR for the treatment default datasets. As in section \ref{comparision_of_classification_technique}, a scatter plot is presented which compares difference of true positive and false positive from the median of each for each classifier on each data balancing algorithm on each dataset. 
 	
 	\subsubsection{Comparison of feature selection algorithms}
 	Feature selection can be used to help remove noisy features that do not contribute to the overall classification \cite{Guyon:2003:IVF:944919.944968}. It can also speed up training times for large datasets \cite{Guyon:2003:IVF:944919.944968}. Aside from the aforementioned benefits, we want to use feature selection to get a better understanding of how the features are being utilised by each classifier. Typically only classifiers that create a model with some linear combination of features can be easily interpreted.
 	
-	A number of feature selection strategies were selected for this experiment: Analysis of variance (ANOVA) F-value with $\chi^2$ tests, logistic regression, linear SVM, Bernoulli naive Bayes, decision tree, random forest. The ANOVA F-test is used on numeric features and $\chi^2$ test on categorical features. The ANOVA F-test tests the null hypothesis that 2 or more groups have the same population mean. The $\chi^2$ test the null hypothesis that features that are independent of its class and therefore not relevant to the classification. We chose a p-value of 0.05 to reject each of the null hypotheses. 
+	A number of feature selection strategies were selected for this experiment: Analysis of variance (ANOVA) F-value with $\chi^2$ tests, logistic regression, linear SVM, Bernoulli naive Bayes, decision tree, random forest. The feature selection is calculated on the training examples to prevent bias in our results \cite{PMID:25988841}.
 	
+	The ANOVA F-test is used on numeric features and $\chi^2$ test on categorical features. The ANOVA F-test tests the null hypothesis that 2 or more groups have the same population mean. The $\chi^2$ test the null hypothesis that features that are independent of its class and therefore not relevant to the classification. We chose a p-value of 0.1 to reject each of the null hypotheses. 
+	
+	We measure our other feature selection techniques in two different ways. In the first approach we use the median feature weight as the threshold and only keep features that are rated more important. We want to identify the technique that can retain the most important features for our different classifiers and will therefore result in the lowest reduction in BARR. In the second approach we apply recursive feature elimination (RFE) in order to identify the optimal number of parameters for the particular technique. RFE removes the least important feature at each iteration until only one feature remains. Good feature selection techniques should be able to reduce the overall features while retaining or even improving the classification. For each feature selection technique the set of features that result in the highest BARR are retained. For some training folds, this could result in no features being removed. 
+	
+	To test the feature selection strategies we record the BARR of each classifier with each feature selection strategy. For the RFE approach the minimum features, maximum features and average features selected is also recorded since each fold of the $k$-fold cross-validation could have a different number of features selected.
 	
 	\subsubsection{An analysis of time to default in the Lima Peru dataset}
+	We want to determine if the time it takes for an individual to default affects their classification ``profile''. We use several default ranges: 0-30 days, 0-60 days, 0-100 days, 0-200 days, 50-100 days, 100-200 days, 200-1000 days, 300-1000 days. The non-defaulters are randomly divided into to two sets. The first set is joined with the defaulters in the range and used as the training set while the other set is joined with the defaulters outside the range and used as the testing set. This process is repeated over 100 runs and the results are then averaged. A set of unique random initialisation keys are generated for each run. This is used to ensure that the split of non-defaulters is the same for each default range and that each data balancer and classifier gets the same initialisation values.
+	
+	If the time to default does not play a large role in the classification then we except to see similar results for each default range. If it does play a large role then we expect to see poor classification results and variability in results between default ranges.
+	
 	
 	\subsection{Evaluation}
 	
@@ -370,13 +379,15 @@
 	\begin{table*}
 		\centering
 		\caption{Data set summary}
-		\label{table:australian_dataset}
+		\label{table:data_sets}
+		\makebox[\linewidth]{
 		\begin{tabular}{c|c|c|c|c} \hline	
 			Data set&Entries&Number of numerical features&Number of categorical features&Data balance ratio (Cured:Default)\\ \hline
 			Lima Peru TB \cite{Lackey:10356751520150601}&1186&0&15&8.65:1 \\
 			German Credit Scoring&1000&7&13&2.33:1 \\
 			Australian Credit Scoring&690&6&8&1.25:1
 		\end{tabular}
+		}
 	\end{table*}
 	
 	\section{Implementation}
