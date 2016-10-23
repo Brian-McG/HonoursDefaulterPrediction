@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 
 from config import constants as const
+from config.constants import TITLE_ROW_WITH_TIME_TO_FIT, TITLE_ROW
 
 
 class ResultRecorder:
@@ -24,16 +25,12 @@ class ResultRecorder:
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
 
             if display_time_to_fit_results:
-                title_row = ["Classifier description", "Matthews correlation coefficient", "Cohen Kappa score", "Average true rate", "Average true positive rate",
-                             "Average true negative rate", "Average false positive rate", "Average false negative rate", "Average time to fit each fold", "initialisation_values"]
-                csv_writer.writerow(title_row)
+                csv_writer.writerow(TITLE_ROW_WITH_TIME_TO_FIT)
                 for result_tuple in self.results:
                     csv_writer.writerow((result_tuple[1], result_tuple[0][0], result_tuple[0][1],
                                          result_tuple[0][2], result_tuple[0][3], result_tuple[0][4], result_tuple[0][5], result_tuple[0][6], result_tuple[0][12], random_values))
             else:
-                title_row = ["Classifier description", "Matthews correlation coefficient", "Cohen Kappa score", "Average true rate", "Average true positive rate",
-                             "Average true negative rate", "Average false positive rate", "Average false negative rate", "initialisation_values"]
-                csv_writer.writerow(title_row)
+                csv_writer.writerow(TITLE_ROW)
                 for result_tuple in self.results:
                     csv_writer.writerow((result_tuple[1], result_tuple[0][0], result_tuple[0][1],
                                          result_tuple[0][2], result_tuple[0][3], result_tuple[0][4], result_tuple[0][5], result_tuple[0][6], random_values))

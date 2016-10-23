@@ -1,6 +1,7 @@
 """Contains all classifier_parameters used (except ANNs)"""
 from imblearn.combine import SMOTEENN
 from imblearn.over_sampling import ADASYN
+from imblearn.over_sampling import RandomOverSampler
 from imblearn.under_sampling import ClusterCentroids
 from imblearn.under_sampling import InstanceHardnessThreshold
 from imblearn.under_sampling import OneSidedSelection
@@ -25,7 +26,7 @@ def append_classifier_details(classifier_data_balancer, classifier_parameters_di
 # Generic classifier_parameters
 # Clustering-Launched Classification
 clustering_launched_classifier_data_balancer = InstanceHardnessThreshold
-clustering_launched_classifier_parameters = {"d": 0.4}
+clustering_launched_classifier_parameters = {"d": 0.3}
 append_classifier_details(clustering_launched_classifier_data_balancer, clustering_launched_classifier_parameters, clfrs.clustering_launched_classifier_description,
                           classifier_parameters)
 
@@ -50,7 +51,7 @@ svm_linear_parameters = {}
 append_classifier_details(svm_linear_data_balancer, svm_linear_parameters, clfrs.svm_linear_description, classifier_parameters)
 
 # Support Vector Machines (with polynomial kernel)
-svm_poly_data_balancer = SMOTEENN
+svm_poly_data_balancer = RandomOverSampler
 svm_poly_parameters = {}
 append_classifier_details(svm_poly_data_balancer, svm_poly_parameters, clfrs.svm_poly_description, classifier_parameters)
 
@@ -65,7 +66,7 @@ decision_tree_parameters = {}
 append_classifier_details(decision_tree_data_balancer, decision_tree_parameters, clfrs.decision_tree_description, classifier_parameters)
 
 # AdaBoost
-adaboost_data_balancer = ADASYN
+adaboost_data_balancer = RandomOverSampler
 adaboost_parameters = {}
 append_classifier_details(adaboost_data_balancer, adaboost_parameters, clfrs.adaboost_description, classifier_parameters)
 
@@ -75,16 +76,16 @@ random_forest_parameters = {}
 append_classifier_details(random_forest_data_balancer, random_forest_parameters, clfrs.random_forest_description, classifier_parameters)
 
 # K-nearest neighbours
-k_nearest_data_balancer = ClusterCentroids
+k_nearest_data_balancer = SMOTEENN
 k_nearest_parameters = {}
 append_classifier_details(k_nearest_data_balancer, k_nearest_parameters, clfrs.k_nearest_description, classifier_parameters)
 
 # Gaussian Naive Bayes
-gaussian_naive_bayes_data_balancer = OneSidedSelection
+gaussian_naive_bayes_data_balancer = ADASYN
 gaussian_naive_bayes_parameters = {}
 append_classifier_details(gaussian_naive_bayes_data_balancer, gaussian_naive_bayes_parameters, clfrs.gaussian_naive_bayes_description, classifier_parameters)
 
 # Bernoulli Naive Bayes
-bernoulli_naive_bayes_data_balancer = OneSidedSelection
+bernoulli_naive_bayes_data_balancer = TomekLinks
 bernoulli_naive_bayes_parameters = {}
 append_classifier_details(bernoulli_naive_bayes_data_balancer, bernoulli_naive_bayes_parameters, clfrs.bernoulli_naive_bayes_description, classifier_parameters)

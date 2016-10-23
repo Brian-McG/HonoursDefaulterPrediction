@@ -222,7 +222,7 @@ def main():
                     result_recorder_after.record_results(avg_results, classifier_description, feature_selection)
 
                 feature_selection_results_after.append((feature_selection_strategy, feature_selection_result_recorder_after.results, feature_selection_strategy))
-            vis.plot_percentage_difference_on_feature_selection(feature_selection_results_after, name_suffix="_after")
+            vis.plot_percentage_difference_graph(feature_selection_results_after, data_set["data_set_description"], name_suffix="_after")
             result_recorder_after.save_results_to_file(random_values, "select_features_after")
 
 

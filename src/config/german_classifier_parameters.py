@@ -83,7 +83,7 @@ k_nearest_parameters = {"weights": "distance", "p": 1, "n_neighbors": 45, "leaf_
 append_classifier_details(k_nearest_data_balancer, k_nearest_parameters, clfrs.k_nearest_description, classifier_parameters)
 
 # Gaussian Naive Bayes
-gaussian_naive_bayes_data_balancer = ADASYN
+gaussian_naive_bayes_data_balancer = NeighbourhoodCleaningRule
 gaussian_naive_bayes_parameters = {}
 append_classifier_details(gaussian_naive_bayes_data_balancer, gaussian_naive_bayes_parameters, clfrs.gaussian_naive_bayes_description, classifier_parameters)
 

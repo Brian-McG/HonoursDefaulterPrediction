@@ -11,12 +11,12 @@ generic_classifier_parameter_dict = {}
 
 # Generic classifiers
 # Clustering-launched classification
-clc_parameter_dict = {"parameters": {"d": [0.4]}, "requires_random_state": True}
+clc_parameter_dict = {"parameters": {"d": [0.25]}, "requires_random_state": True}
 generic_classifier_parameter_dict[clf.clustering_launched_classifier_description] = clc_parameter_dict
 
 # Extreme learning machine
 elm_parameter_dict = {"parameters": {
-    "layers": [[(5, "sigm")]]}, "requires_random_state": False}
+    "layers": [[(20, "sigm")]]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.elm_description] = elm_parameter_dict
 
 # Artificial neural network

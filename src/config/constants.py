@@ -15,3 +15,12 @@ BERNOULLI_NAIVE_BAYES = "Bernoulli Naive Bayes"
 SVM_LINEAR = "SVM (linear)"
 DECISION_TREE = "Decision Tree"
 RANDOM_FOREST = "Random forest"
+
+BASE_METRICS = ["Matthews correlation coefficient", "Cohen Kappa Score", "Balanced Accuracy", "Average true positive rate", "Average true negative rate", "Average false positive rate",
+                "Average false negative rate"]
+TITLE_ROW = ["Classifier description"] + BASE_METRICS + ["initialisation_values"]
+TITLE_ROW_WITH_DEFAULT_TIME_RANGE = ["Default time range"] + TITLE_ROW
+TITLE_ROW_WITH_TIME_TO_FIT = ["Classifier description"] + BASE_METRICS + ["Average time to fit each fold", "initialisation_values"]
+TITLE_ROW_PARAMETER_TESTER = BASE_METRICS + ["Average true positive with cutoff",
+                                             "Average true negative rate with cutoff", "Average false positive rate with cutoff", "Average false negative rate with cutoff",
+                                             "Average unclassified from cutoff"]

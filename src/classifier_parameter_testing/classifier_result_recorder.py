@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 
 from config import constants as const
+from config.constants import TITLE_ROW_PARAMETER_TESTER
 
 
 class ClassifierResultRecorder:
@@ -22,10 +23,7 @@ class ClassifierResultRecorder:
                 file_name = "{0}_classifier_result_recorder_{1}-folds_{2}.csv".format(prepend_name_description, const.NUMBER_OF_FOLDS, current_time)
             output_file = open(os.path.dirname(os.path.realpath(__file__)) + "/../../results/" + file_name, "wb")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
-            title_row = classifier_details + ["Matthews correlation coefficient", "Cohen Kappa score", "Average true rate", "Average true positive rate",
-                                              "Average true negative rate", "Average false positive rate", "Average false negative rate", "Average true positive with cutoff",
-                                              "Average true negative rate with cutoff", "Average false positive rate with cutoff", "Average false negative rate with cutoff",
-                                              "Average unclassified from cutoff"]
+            title_row = classifier_details + TITLE_ROW_PARAMETER_TESTER
             csv_writer.writerow(title_row)
             for result_arr in self.results:
                 csv_writer.writerow(result_arr)

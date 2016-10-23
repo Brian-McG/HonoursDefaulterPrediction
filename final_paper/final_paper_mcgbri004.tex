@@ -145,60 +145,57 @@
 	\section{Introduction}	
 	In 2013 over 210\hspace*{1mm}000 patients defaulted from Tuberculosis (TB) treatment worldwide \cite{world2015TB}. The rate of default in the Americas is the highest at 8\% with Africa at 5\% \cite{world2015TB}. The consequences of defaulting TB treatment include: increased drug resistance, increased health system costs \cite{Lackey:10356751520150601, muture:6660173120110101}, higher risk of mortality, continued risk of transmitting the disease to others \cite{Lackey:10356751520150601} and increased rate of recurrent disease \cite{Jha:10.1371/journal.pone.0008873}. The spread of TB can be reduced if the individuals who have a high risk of defaulting can be predicted. This will also reduce health system costs.
 	
-	In this paper we explore several issues that may arise when attempting to apply classification techniques to predict minority class events such as treatment default. We explore a number of techniques and strategies to improve the overall classification result. Most notably we look at how well these classifiers work out-of-the-box compared when they are tuned by searching a grid of parameters. To address class imbalance, we examine different data balancing techniques which either over-sample the minority class or under-sample the majority class. Furthermore, to see how each classifier responds to having fewer features available, we apply a number of feature selection strategies on each classification technique.
+	In this paper we explore several issues that may arise when attempting to apply classification techniques to predict minority class events such as treatment default. We do a large scale comparison of different classification techniques and explore a number of techniques and strategies to improve the overall classification result. Most notably we look at how well these classifiers work out-of-the-box compared when they are tuned by searching a grid of parameters. To address class imbalance, we examine different data balancing techniques which either over-sample the minority class or under-sample the majority class. Furthermore, to see how each classifier responds to having fewer features available, we apply a number of feature selection strategies on each classification technique.
 	
 	To facilitate the aforementioned experiments, we developed a testing system which allows new classification techniques and data sets to be supported quickly and easily. The testing system is designed to allow near-exact reproducibility of results.
 	
-	The field of credit scoring in the financial space aims to determine if a financial institution should provide credit to an individual. This is a well researched binary classification problem. The selected classification techniques are evaluated against real-world treatment default datasets and financial datasets. The paper will evaluate and compare how the techniques differ across the datasets. If the relative results are similar then future credit scoring research could be applicable to treatment default prediction too.
+	In addition to our treatment default dataset, we include two real-world credit scoring datasets. The field of credit scoring in the financial space aims to determine if a financial institution should provide credit to an individual. This is a well researched binary classification problem. We included these as both problems try to flag high-risk individuals and it will allow us to get a better understanding of how the results compare and generalise.
 	
 	\section{Related work}
-	\subsection{Definition of a defaulter}
-	The definition of a defaulter depends on its context. TB literature typically uses the World Health Organisation (WHO) definition that a defaulter is a person whose treatment has been disrupted for two or more consecutive months \cite{chan:2003prevalence, cherkaoui:19326203, Jha:10.1371/journal.pone.0008873,jittimanee:10.1111/j.1440-172X.2007.00650.x,muture:6660173120110101, world2015TB}.
-	
 	\subsection{Determining predictors of TB default}
 	\label{predictors_of_defaulters_related_work}
-	There have been many studies which focus on determining the factors associated with TB default but few have used machine learning techniques to predict treatment defaulters. Table \ref{table:predictors_of_tb_default} contains an overview of a selection of publications on determining the factors associated with TB default. The majority of techniques use a form of logistic regression ti determine the association. 
+	There have been many studies which focus on determining the factors associated with TB default but few have used classification techniques to predict high-risk patients. Table \ref{table:predictors_of_tb_default} contains an overview of a selection of publications on determining the factors associated with TB default. The majority of techniques use a form of logistic regression to determine the association. 
 	
-	The datasets used by the publications contain different features. Age and gender are common throughout the datasets. History of past default is available for all datasets except for Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037}. Lackey \textit{et al.} \cite{Lackey:10356751520150601} only picked individuals who did not have a history of past default. Jittimanee \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} [28] was the only publication with the feature that did not find it to be significant to the 95\% confidence level. However, it did have an odds ratio of 2.19 and a p-value of 0.12. It can therefore be deduced that a history of past default has a strong correlation to default. Two out of three publications with the alcohol abuse feature available, found it to be significant. Three of the four publications with side effects, as a feature found it was significant. Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037} and Jittimanee \textit{et al.} \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} measured distance and time to treatment site respectively. It can be reasoned that the aforementioned feature's significance will generalise to other datasets since they were found to be significant in the majority of the publications. Other significant features such as illegal drug use, use of herbal medication, daily jobs, history of lung cancer and history of liver disease only appeared once in the datasets. It cannot be discerned if the significance is generalisable or specific to the dataset. The identification of the same features as significant is fairly consistent for the publications that have those features in their dataset. 
+	The datasets used by the publications contain different features. Age and gender are common throughout the datasets. History of past default is available for all datasets except for Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037}. Lackey \textit{et al.} \cite{Lackey:10356751520150601} only picked individuals who did not have a history of past default. Jittimanee \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} was the only publication with the feature that did not find it to be significant to the 95\% confidence level. However, it did have an odds ratio of 2.19 and a p-value of 0.12. It can therefore be deduced that a history of past default has a strong correlation to default. Two out of three publications with the alcohol abuse feature available, found it to be significant. Three of the four publications with side effects as a feature, found it was significant. Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037} and Jittimanee \textit{et al.} \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} measured distance and time to treatment site respectively. It can be reasoned that the aforementioned features will be significant in other datasets since they were found to be significant in the majority of the publications. Other significant features such as illegal drug use, use of herbal medication, daily jobs, history of lung cancer and history of liver disease only appeared once in the datasets. It cannot be discerned if the significance is generalisable or specific to the dataset. The identification of the same features as significant is fairly consistent for the publications that have those features in their dataset. 
 
 	
-%	\begin{table*}
-%		\small
-%		\centering
-%		\caption{Overview of publications on predictors of TB treatment defaulters}
-%		\label{table:predictors_of_tb_default}
-%		\makebox[\linewidth]{
-%			\begin{tabular}{l|c|c|c} \hline
-%				Publication&Sample Size&Key factors identified\textsuperscript{*}&Evaluation\rule{0pt}{3.5mm}\rule[-1mm]{0pt}{0pt}\\ \hline
-%				\parbox[t]{1.5cm}{Chan-Yeung \textit{et al.} \cite{chan:2003prevalence}}
-%				&\parbox[t]{2.6cm}{1768 non-defaulters\\442 defaulters.}
-%				&\parbox[t]{7cm}{History of default, history of lung cancer, liver disease and male patients}
-%				&\parbox[t]{8cm}{Multiple logistic regression is used to determine what factors are associated with default.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-%				\parbox[t]{1.5cm}{Jha \textit{et al.} \cite{Jha:10.1371/journal.pone.0008873}}
-%				&\parbox[t]{2.6cm}{1189 non-defaulters\\1141 defaulters.}
-%				&\parbox[t]{7cm}{Male patients, patients directly-observed treatment at public facilities, previous treatment outside India's Revised National Tuberculosis Control Programme and history of previous default\vspace{1mm}}
-%				&\parbox[t]{8cm}{The chi-square test or Fisher's exact test (if there were less than 10 observations) was used to test the differences between defaulters and non-defaulters. Bivariate analysis was calculated on the features. Multivariate logistic regression using pre-selected features based on previous studies.}\rule{0pt}{3.5mm}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-%				\parbox[t]{1.5cm}{Jittimanee \textit{et al.} \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x}}
-%				&\parbox[t]{2.6cm}{106 non-defaulters\\54 defaulters.}
-%				&\parbox[t]{7cm}{Jobs where one is only paid if one is at work that day, severe medication side-effects and time to travel to clinic.}
-%				&\parbox[t]{8cm}{Patients were interviewed and completed a questionnaire to obtain the information. Hierarchical logistic regression  was carried out to assess the variable's relation to default.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-%				\parbox[t]{1.5cm}{Lackey \textit{et al.} \cite{Lackey:10356751520150601}}
-%				&\parbox[t]{2.6cm}{1106 non-defaulters\\127 defaulters.}
-%				&\parbox[t]{7cm}{Has used illegal drugs, has multidrug-resistant TB, has not been tested for HIV, drinks alcohol at least once a week, underweight or has not completed secondary education.}
-%				&\parbox[t]{8cm}{{Patients were interviewed to obtain the information. Bivariate analysis using Chi-square tests and odds ratios with 95\% confidence intervals. Multivariate logistic regression is used with a backward fitting algorithm to determine if a variable is associated with default.}}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline		
-%				\parbox[t]{1.5cm}{Muture \textit{et al.} \cite{muture:6660173120110101}}
-%				&\parbox[t]{2.6cm}{5659 non-defaulters\\945 defaulters.}
-%				&\parbox[t]{7cm}{Inadequate knowledge on TB, herbal medication use, low income, alcohol abuse, previous default, suffering from HIV and male patients were determined through analysis to be associated with default.}
-%				&\parbox[t]{8cm}{Two-tailed $\chi^2$ tests and Fisher exact tests (if a cell has less than 5 values) to assess categorical information. Odds ratio tests were used to measure association between features with a 95\% confidence interval.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-%				\parbox[t]{1.5cm}{Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037}}
-%				&\parbox[t]{2.6cm}{310 non-defaulters\\81 defaulters.}
-%				&\parbox[t]{7cm}{Distance from home to treatment site, age greater than 25 and the need to use public transport to get to treatment site.}
-%				&\parbox[t]{8cm}{Continuous features were analysed using sample t-test $\chi^2$ tests and hazard ratios with 95\% confidence intervals. The effect of each factor was assessed using Cox regression model with a backwards fitting algorithm.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-%				\noalign{\vskip 4pt}                     
-%				\multicolumn{4}{l}{\textsuperscript{*}\footnotesize{\parbox[t]{\linewidth}{Ordered in descending order of significance  based on odds ratio and hazard ratio at a confidence interval of at least 95\%. }}}\\
-%			\end{tabular}
-%		}
-%	\end{table*} 
+	\begin{table*}
+		\small
+		\centering
+		\caption{Overview of publications on predictors of TB treatment defaulters}
+		\label{table:predictors_of_tb_default}
+		\makebox[\linewidth]{
+			\begin{tabular}{l|c|c|c} \hline
+				Publication&Sample Size&Key factors identified\textsuperscript{*}&Evaluation\rule{0pt}{3.5mm}\rule[-1mm]{0pt}{0pt}\\ \hline
+				\parbox[t]{1.5cm}{Chan-Yeung \textit{et al.} \cite{chan:2003prevalence}}
+				&\parbox[t]{2.6cm}{1768 non-defaulters\\442 defaulters.}
+				&\parbox[t]{7cm}{History of default, history of lung cancer, liver disease and male patients}
+				&\parbox[t]{8cm}{Multiple logistic regression is used to determine what factors are associated with default.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+				\parbox[t]{1.5cm}{Jha \textit{et al.} \cite{Jha:10.1371/journal.pone.0008873}}
+				&\parbox[t]{2.6cm}{1189 non-defaulters\\1141 defaulters.}
+				&\parbox[t]{7cm}{Male patients, patients directly-observed treatment at public facilities, previous treatment outside India's Revised National Tuberculosis Control Programme and history of previous default\vspace{1mm}}
+				&\parbox[t]{8cm}{The chi-square test or Fisher's exact test (if there were less than 10 observations) was used to test the differences between defaulters and non-defaulters. Bivariate analysis was calculated on the features. Multivariate logistic regression using pre-selected features based on previous studies.}\rule{0pt}{3.5mm}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+				\parbox[t]{1.5cm}{Jittimanee \textit{et al.} \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x}}
+				&\parbox[t]{2.6cm}{106 non-defaulters\\54 defaulters.}
+				&\parbox[t]{7cm}{Jobs where one is only paid if one is at work that day, severe medication side-effects and time to travel to clinic.}
+				&\parbox[t]{8cm}{Patients were interviewed and completed a questionnaire to obtain the information. Hierarchical logistic regression  was carried out to assess the variable's relation to default.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+				\parbox[t]{1.5cm}{Lackey \textit{et al.} \cite{Lackey:10356751520150601}}
+				&\parbox[t]{2.6cm}{1106 non-defaulters\\127 defaulters.}
+				&\parbox[t]{7cm}{Has used illegal drugs, has multidrug-resistant TB, has not been tested for HIV, drinks alcohol at least once a week, underweight or has not completed secondary education.}
+				&\parbox[t]{8cm}{{Patients were interviewed to obtain the information. Bivariate analysis using Chi-square tests and odds ratios with 95\% confidence intervals. Multivariate logistic regression is used with a backward fitting algorithm to determine if a variable is associated with default.}}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline		
+				\parbox[t]{1.5cm}{Muture \textit{et al.} \cite{muture:6660173120110101}}
+				&\parbox[t]{2.6cm}{5659 non-defaulters\\945 defaulters.}
+				&\parbox[t]{7cm}{Inadequate knowledge on TB, herbal medication use, low income, alcohol abuse, previous default, suffering from HIV and male patients were determined through analysis to be associated with default.}
+				&\parbox[t]{8cm}{Two-tailed $\chi^2$ tests and Fisher exact tests (if a cell has less than 5 values) to assess categorical information. Odds ratio tests were used to measure association between features with a 95\% confidence interval.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+				\parbox[t]{1.5cm}{Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037}}
+				&\parbox[t]{2.6cm}{310 non-defaulters\\81 defaulters.}
+				&\parbox[t]{7cm}{Distance from home to treatment site, age greater than 25 and the need to use public transport to get to treatment site.}
+				&\parbox[t]{8cm}{Continuous features were analysed using sample t-test $\chi^2$ tests and hazard ratios with 95\% confidence intervals. The effect of each factor was assessed using Cox regression model with a backwards fitting algorithm.}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+				\noalign{\vskip 4pt}                     
+				\multicolumn{4}{l}{\textsuperscript{*}\footnotesize{\parbox[t]{\linewidth}{Ordered in descending order of significance  based on odds ratio and hazard ratio at a confidence interval of at least 95\%. }}}\\
+			\end{tabular}
+		}
+	\end{table*} 
 %	
 %	\subsection{Predicting defaulters in financial institutions}
 %	\begin{table}
@@ -262,6 +259,9 @@
 	
 	\section{Background}
 	This section aims to provide an overview of all the techniques and metrics used in this paper.
+	\subsection{Definition of a defaulter}
+	The definition of a defaulter depends on its context. TB literature typically uses the World Health Organisation (WHO) definition that a defaulter is a person whose treatment has been disrupted for two or more consecutive months \cite{chan:2003prevalence, cherkaoui:19326203, Jha:10.1371/journal.pone.0008873,jittimanee:10.1111/j.1440-172X.2007.00650.x,muture:6660173120110101, world2015TB}.
+	
 	\subsection{Classifiers}
 	This section examines the different classification techniques and outlines how each technique produces its output.
 	\subsubsection{Support Vector Machines}
@@ -335,7 +335,7 @@
 	\subsection{Metrics}
 	The number of true positives (TP), true negatives (TN), false positives (FP) and false negatives (FN) are used to define several metrics which are used to compare the results in this paper. The true positive rate (TPR) or sensitivity defines the proportion of actual positives which are predicted as positive. The TPR is calculated as $\frac{TP}{TP + FN}$. The true negative rate (TNR) or specificity defines the proportion of actual negatives which are predicted as negative. The TNR is calculated as $\frac{TN}{TN + FP}$. 
 	
-	Accuracy is typically a poor measure of quality for imbalanced datasets as classifiers tend to bias towards the majority class \cite{Batista:2004:SBS:1007730.1007735, Chawla:2004:ESI:1007730.1007733}. Several balanced performance metrics are used instead. The balanced accuracy (BACC) provides an equal weighting in TPR and TNR. It is calculated as $\frac{TPR + TNR}{2}$. Matthews correlation coefficient (MCC) also provides a balanced measure of classification quality and is scored between -1 and 1. The MCC is calculated as: $\frac{(TP \times TN) - (FP \times FN)}{\sqrt{(TP + FP)(TP + FN)(TN + FP)(TN + FN)}}$. Informedness is similar to balanced accuracy but ranges between -1 and 1 and is defined as $TPR + TNR - 1$.
+	Accuracy is typically a poor measure of quality for imbalanced datasets as classifiers tend to bias towards the majority class \cite{Batista:2004:SBS:1007730.1007735, Chawla:2004:ESI:1007730.1007733}. Several balanced performance metrics are used instead. The balanced accuracy (BACC) provides an equal weighting in TPR and TNR. It is calculated as $\frac{TPR + TNR}{2}$. Matthews correlation coefficient (MCC) also provides a balanced measure of classification quality and is scored between -1 and 1. The MCC is calculated as: $\frac{(TP \times TN) - (FP \times FN)}{\sqrt{(TP + FP)(TP + FN)(TN + FP)(TN + FN)}}$.
 	
 	
 	\section{Methods}
@@ -382,7 +382,7 @@
 	
 	
 	\subsection{Evaluation}
-	The experiments were run on a set of real-world datasets: one TB default dataset from Lima Peru \cite{Lackey:10356751520150601} and two credit scoring datasets. The TB dataset was obtained from the Dryad digital repository. The two credit scoring datasets (later referred to as the German and Australian dataset) were obtained from the UCI machine learning repository \cite{Lichman:2013}. Table \ref{table:data_sets} provides an overview of the characteristics of the dataset. The Peru TB dataset is highly imbalanced which makes it an ideal dataset to test different balancing algorithms. The German dataset is slightly imbalanced while the Australian dataset is balanced. The Peru data set came with values pre-discretized and therefore only contains categorical features.
+	The experiments were run on a set of real-world datasets: one TB default dataset from Lima Peru \cite{Lackey:10356751520150601} and two credit scoring datasets. The TB dataset was obtained from the Dryad digital repository. The two credit scoring datasets (later referred to as the German and Australian dataset) were obtained from the UCI machine learning repository \cite{Lichman:2013}. Table \ref{table:data_sets} provides an overview of the characteristics of the datasets. The Peru TB dataset is highly imbalanced which makes it an ideal dataset to test different balancing algorithms. The German dataset is slightly imbalanced while the Australian dataset is balanced. The Peru data set came with values pre-discretized and therefore only contains categorical features.
 	\begin{table*}
 		\centering
 		\caption{Data set summary}
@@ -408,9 +408,16 @@
 	
 	After each experiment is completed, the statistics of it will be computed and saved as a CSV file. The relevant graphs will also be generated and saved. These have been used in section \ref{results}.
 	
-	The system has been designed that it can execute the aforementioned experiments for any binary classification problem not just the ones outlined in this paper. With some modifications, it could also be extended to support multi-class classification problems too. The code has been written in a generic manner that reduces the need to replicate code. This allows new experiments to be created with minimal overhead. To improve overall
+	The system has been designed that it can execute the aforementioned experiments for any binary classification problem not just the ones outlined in this paper. With some modifications, it could also be extended to support multi-class classification problems too. The code has been written in a generic manner that reduces the need to replicate code. This allows new experiments to be created with minimal overhead. Each experiment is also multi-threaded to reduce the execution time.
 	
 	\section{Results}
+	\begin{figure*}
+		\centering
+		\includegraphics[height=10.34cm, width=15cm]{Parameter_tuning_approach_results_per_classifier_plot_Lima_TB_Balanced_Accuracy_2016-10-24_01-51-22}
+		\caption{An overview  of an SVM \cite{Li2006772}}
+		\label{fig:res}
+	\end{figure*}
+
 	\label{results}
 	\begin{enumerate}
 		\item Tables with true positive, true negative, false positive and false negative rate for each classifier on each dataset

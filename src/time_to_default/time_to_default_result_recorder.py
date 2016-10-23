@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 
 from config import constants as const
+from config.constants import TITLE_ROW_WITH_DEFAULT_TIME_RANGE
 
 
 class TimeToDefaultResultRecorder:
@@ -22,9 +23,7 @@ class TimeToDefaultResultRecorder:
             file_name = "{0}_data_{1}-folds_{2}.csv".format(data_set_description, const.NUMBER_OF_FOLDS, current_time)
             output_file = open(os.path.dirname(os.path.realpath(__file__)) + "/../../results/" + file_name, "wb")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
-            title_row = ["Default time range", "Classifier description", "Matthews correlation coefficient", "Cohen Kappa score", "Average true rate", "Average true positive rate",
-                         "Average true negative rate", "Average false positive rate", "Average false negative rate", "initialisation_values"]
-            csv_writer.writerow(title_row)
+            csv_writer.writerow(TITLE_ROW_WITH_DEFAULT_TIME_RANGE)
             x = 0
             for result_tuple in self.results:
                 if x == 0:

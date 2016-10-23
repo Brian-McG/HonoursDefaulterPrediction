@@ -1,4 +1,5 @@
 from sklearn.metrics import cohen_kappa_score
+from sklearn.metrics import f1_score
 from sklearn.metrics import matthews_corrcoef
 
 
@@ -19,7 +20,7 @@ class RunStatistics:
 
     def calculate_average_run_accuracy(self):
         overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
-        false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff, matthews_correlation_coefficient, informedness, fit_time = [0] * 13
+        false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff, matthews_correlation_coefficient, cohen_kappa_val, fit_time = [0] * 13
 
         for result_dictionary in self.errors:
             overall_true_rate += result_dictionary["avg_true_rate"]
@@ -33,12 +34,12 @@ class RunStatistics:
             false_negative_rate_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
             unclassified_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
             matthews_correlation_coefficient += matthews_corrcoef(result_dictionary["actual_outcome"], result_dictionary["test_classification"])
-            informedness += result_dictionary["informedness"]
+            cohen_kappa_val += cohen_kappa_score(result_dictionary["actual_outcome"], result_dictionary["test_classification"])
             fit_time += result_dictionary["fit_time"]
 
         avg_run_results = [None] * 13
         avg_run_results[0] = matthews_correlation_coefficient / float(len(self.errors))
-        avg_run_results[1] = informedness / float(len(self.errors))
+        avg_run_results[1] = cohen_kappa_val / float(len(self.errors))
         avg_run_results[2] = overall_true_rate / float(len(self.errors))
         avg_run_results[3] = true_positive_rate / float(len(self.errors))
         avg_run_results[4] = true_negative_rate / float(len(self.errors))

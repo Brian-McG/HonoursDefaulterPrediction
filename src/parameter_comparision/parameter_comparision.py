@@ -49,7 +49,7 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
         print("=== Completed {0} ===".format(classifier_description))
 
 
-def main():
+def main(random_values):
     for data_set in data_sets.data_set_arr:
         if data_set["status"]:
             # Load in data set
@@ -58,19 +58,19 @@ def main():
             input_defaulter_set = input_defaulter_set.dropna(axis=0)
             input_defaulter_set = input_defaulter_set.reset_index(drop=True)
 
-            feature_selection_results_after = []
+            parameter_comparision_results = []
 
             result_recorder_after = ParameterComparisionResultRecorder()
             cpu_count = get_number_of_processes_to_use()
 
-            random_values = []
-            random = Random()
-            for i in range(const.TEST_REPEAT):
-                while True:
-                    random_value = random.randint(const.RANDOM_RANGE[0], const.RANDOM_RANGE[1])
-                    if random_value not in random_values:
-                        random_values.append(random_value)
-                        break
+            if len(random_values) == 0:
+                random = Random()
+                for i in range(const.TEST_REPEAT):
+                    while True:
+                        random_value = random.randint(const.RANDOM_RANGE[0], const.RANDOM_RANGE[1])
+                        if random_value not in random_values:
+                            random_values.append(random_value)
+                            break
 
             parameter_description = ["Default without balancer", "Default with balancer", "Optimal parameters"]
             parameter_sets = [data_set["data_set_data_balancer_parameters"], data_set["data_set_data_balancer_parameters"], data_set["data_set_classifier_parameters"]]
@@ -91,11 +91,14 @@ def main():
                 for (avg_results, classifier_description, feature_selection) in parameter_comparision_result_recorder.results:
                     result_recorder_after.record_results(avg_results, classifier_description, feature_selection)
 
-                feature_selection_results_after.append((parameter_description[parameter_index], parameter_comparision_result_recorder.results, parameter_description[parameter_index]))
-            vis.plot_percentage_difference_on_feature_selection(feature_selection_results_after, name_suffix="_after")
-            result_recorder_after.save_results_to_file(random_values, "select_features_after")
+                parameter_comparision_results.append((parameter_description[parameter_index], parameter_comparision_result_recorder.results, parameter_description[parameter_index]))
+            vis.plot_percentage_difference_graph(parameter_comparision_results, data_set["data_set_description"], x_label="Parameter tuning approach", name_suffix="", difference_from="using default parameters")
+            result_recorder_after.save_results_to_file(random_values, "Parameter tuning")
 
 
 if __name__ == "__main__":
     # Run main
-    main()
+    random_values = []
+    for p in range(1, len(sys.argv)):
+        random_values.append(int(sys.argv[p]))
+    main(random_values)

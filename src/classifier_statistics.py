@@ -111,7 +111,6 @@ class ClassifierStatistics:
         avg_false_negative_rate_probability_cutoff = 0
         unclassified = 0
         avg_fit_time = 0
-        informedness = 0
         classification_arr = np.array([])
         actual_result_arr = np.array([])
         for error_dict in self.results:
@@ -132,7 +131,6 @@ class ClassifierStatistics:
             classification_arr = np.append(classification_arr, error_dict["test_classification"])
             actual_result_arr = np.append(actual_result_arr, error_dict["actual_outcome"])
             avg_fit_time += error_dict["fit_time"]
-            informedness += error_dict["true positive rate"] + error_dict["true negative rate"] - 1
 
         avg_result_dict["avg_true_rate"] = avg_true_rate / float(len(self.results))
         avg_result_dict["avg_true_positive_rate"] = avg_true_positive_rate / float(len(self.results))
@@ -151,6 +149,5 @@ class ClassifierStatistics:
         avg_result_dict["test_classification"] = classification_arr
         avg_result_dict["actual_outcome"] = actual_result_arr
         avg_result_dict["fit_time"] = avg_fit_time
-        avg_result_dict["informedness"] = informedness / float(len(self.results))
 
         return avg_result_dict

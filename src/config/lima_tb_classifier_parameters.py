@@ -80,7 +80,7 @@ k_nearest_parameters = {"weights": "uniform", "p": 1, "n_neighbors": 10, "leaf_s
 append_classifier_details(k_nearest_data_balancer, k_nearest_parameters, clfrs.k_nearest_description, classifier_parameters)
 
 # Gaussian Naive Bayes
-gaussian_naive_bayes_data_balancer = OneSidedSelection
+gaussian_naive_bayes_data_balancer = ADASYN
 gaussian_naive_bayes_parameters = {}
 append_classifier_details(gaussian_naive_bayes_data_balancer, gaussian_naive_bayes_parameters, clfrs.gaussian_naive_bayes_description, classifier_parameters)
 

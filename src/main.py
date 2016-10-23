@@ -70,8 +70,8 @@ def main(random_value_arr):
             for (result_arr, classifier_description) in result_recorder.results:
                 print("\n=== {0} ===".format(classifier_description))
                 print("Matthews correlation coefficient: {0}".format(result_arr[0]))
-                print("Informedness: {0}".format(result_arr[1]))
-                print("Average true rate: {0}".format(result_arr[2]))
+                print("F1 score: {0}".format(result_arr[1]))
+                print("Balanced Accuracy: {0}".format(result_arr[2]))
                 print("Average true positive rate: {0}".format(result_arr[3]))
                 print("Average true negative rate: {0}".format(result_arr[4]))
                 print("Average false positive rate: {0}".format(result_arr[5]))
