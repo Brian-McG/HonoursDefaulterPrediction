@@ -53,8 +53,8 @@ svm_linear_parameters = {"C": 0.53578947368421, "decision_function_shape": "ovr"
 append_classifier_details(svm_linear_data_balancer, svm_linear_parameters, clfrs.svm_linear_description, classifier_parameters)
 
 # Support Vector Machines (with polynomial kernel)
-svm_poly_data_balancer = SMOTEENN
-svm_poly_parameters = {"cache_size": 1000, "gamma": "auto", "kernel": "poly", "degree": 3, "class_weight": "balanced", "probability": True, "max_iter": 10000}
+svm_poly_data_balancer = NeighbourhoodCleaningRule
+svm_poly_parameters = {"cache_size": 1000, "C": 0.01, "coef0": 0, "decision_function_shape": "ovr", "gamma": 0.2223, "kernel": "poly", "degree": 3, "class_weight": "balanced", "probability": True, "max_iter": 10000}
 append_classifier_details(svm_poly_data_balancer, svm_poly_parameters, clfrs.svm_poly_description, classifier_parameters)
 
 # Logistic Regression

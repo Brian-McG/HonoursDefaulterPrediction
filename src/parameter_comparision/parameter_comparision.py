@@ -50,6 +50,8 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
 
 
 def main(random_values):
+    result_arr = []
+    data_set_arr = []
     for data_set in data_sets.data_set_arr:
         if data_set["status"]:
             # Load in data set
@@ -72,7 +74,7 @@ def main(random_values):
                             random_values.append(random_value)
                             break
 
-            parameter_description = ["Default without balancer", "Default with balancer", "Optimal parameters"]
+            parameter_description = ["Default without balancer", "Default with balancer", "Tuned"]
             parameter_sets = [data_set["data_set_data_balancer_parameters"], data_set["data_set_data_balancer_parameters"], data_set["data_set_classifier_parameters"]]
             for parameter_index in range(len(parameter_sets)):
                 manager = Manager()
@@ -92,8 +94,10 @@ def main(random_values):
                     result_recorder_after.record_results(avg_results, classifier_description, feature_selection)
 
                 parameter_comparision_results.append((parameter_description[parameter_index], parameter_comparision_result_recorder.results, parameter_description[parameter_index]))
-            vis.plot_percentage_difference_graph(parameter_comparision_results, data_set["data_set_description"], x_label="Parameter tuning approach", name_suffix="", difference_from="using default parameters")
+            result_arr.append(parameter_comparision_results)
+            data_set_arr.append(data_set["data_set_description"])
             result_recorder_after.save_results_to_file(random_values, "Parameter tuning")
+    vis.plot_percentage_difference_graph(result_arr, data_set_arr, x_label="Parameter tuning approach", name_suffix="", difference_from="using default parameters")
 
 
 if __name__ == "__main__":

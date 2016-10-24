@@ -49,12 +49,12 @@ svm_parameters = {}
 append_classifier_details(svm_rdf_data_balancer, svm_parameters, clfrs.svm_rdf_description, classifier_parameters)
 
 # Support Vector Machines (with linear kernel)
-svm_linear_data_balancer = EditedNearestNeighbours
+svm_linear_data_balancer = RandomOverSampler
 svm_linear_parameters = {}
 append_classifier_details(svm_linear_data_balancer, svm_linear_parameters, clfrs.svm_linear_description, classifier_parameters)
 
 # Support Vector Machines (with polynomial kernel)
-svm_poly_data_balancer = EditedNearestNeighbours
+svm_poly_data_balancer = ClusterCentroids
 svm_poly_parameters = {}
 append_classifier_details(svm_poly_data_balancer, svm_poly_parameters, clfrs.svm_poly_description, classifier_parameters)
 

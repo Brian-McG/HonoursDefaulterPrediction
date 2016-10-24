@@ -46,7 +46,7 @@ svm_parameters = {}
 append_classifier_details(svm_rdf_data_balancer, svm_parameters, clfrs.svm_rdf_description, classifier_parameters)
 
 # Support Vector Machines (with linear kernel)
-svm_linear_data_balancer = ADASYN
+svm_linear_data_balancer = RandomOverSampler
 svm_linear_parameters = {}
 append_classifier_details(svm_linear_data_balancer, svm_linear_parameters, clfrs.svm_linear_description, classifier_parameters)
 

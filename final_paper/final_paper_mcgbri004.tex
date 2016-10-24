@@ -411,10 +411,12 @@
 	The system has been designed that it can execute the aforementioned experiments for any binary classification problem not just the ones outlined in this paper. With some modifications, it could also be extended to support multi-class classification problems too. The code has been written in a generic manner that reduces the need to replicate code. This allows new experiments to be created with minimal overhead. Each experiment is also multi-threaded to reduce the execution time.
 	
 	\section{Results}
+	\subsection{Parameter Tuning}
 	\begin{figure*}
 		\centering
-		\includegraphics[height=10.34cm, width=15cm]{Parameter_tuning_approach_results_per_classifier_plot_Lima_TB_Balanced_Accuracy_2016-10-24_01-51-22}
-		\caption{An overview  of an SVM \cite{Li2006772}}
+		\makebox[\linewidth]{
+		\includegraphics[scale=0.6]{Parameter_tuning_approach_results_per_classifier_plot_['Lima_TB',_'German_credit',_'Australian_credit']_Balanced_Accuracy_2016-10-24_18-55-57}}
+		\caption{Difference in balanced accuracy from using default parameters with different parameter tuning approaches}
 		\label{fig:res}
 	\end{figure*}
 

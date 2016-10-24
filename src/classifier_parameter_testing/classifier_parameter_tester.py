@@ -28,7 +28,7 @@ from sklearn.model_selection import ParameterGrid
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from util import get_number_of_processes_to_use
 from config.constants import DATA_BALANCER_STR
-import config.classifier_tester_parameters as ctp
+import config.classifier_data_balancer_only_tester_parameters as ctp
 import config.classifiers as cfr
 from classifier_result_recorder import ClassifierResultRecorder
 from config import constants as const
@@ -40,7 +40,7 @@ data_balancers = [None, ClusterCentroids, EditedNearestNeighbours, InstanceHardn
                   OneSidedSelection, RandomUnderSampler, TomekLinks, ADASYN, RandomOverSampler, SMOTE, SMOTEENN, SMOTETomek]
 
 
-def execute_loop(classifier_description, classifier_dict, parameter_dict, defaulter_set_arr, results_recorder, z, parameter_grid_len, requires_random_state, data_set_description, numerical_columns, categorical_columns, classification_label, missing_value_strategy):
+def execute_loop(classifier_description, classifier_dict, parameter_dict, sorted_keys, defaulter_set_arr, results_recorder, z, parameter_grid_len, requires_random_state, data_set_description, numerical_columns, categorical_columns, classification_label, missing_value_strategy):
     if z % 5 == 0:
         print("==== {0} - {1} - {2}% ====".format(data_set_description, classifier_description, format((float(z) / parameter_grid_len) * 100, '.2f')))
 
@@ -63,7 +63,7 @@ def execute_loop(classifier_description, classifier_dict, parameter_dict, defaul
         if success:
             avg_results = test_stats.calculate_average_run_accuracy()
             sorted_keys = sorted(parameter_dict)
-            values = [parameter_dict.get(k) if k in parameter_dict else None for k in sorted_keys] + [data_balancer.__name__ if data_balancer is not None else "None"]
+            values = [parameter_dict.get(k) if k in parameter_dict else "None" for k in sorted_keys] + [data_balancer.__name__ if data_balancer is not None else "None"]
             results_recorder.record_results(values + avg_results)
 
 
@@ -89,10 +89,13 @@ if __name__ == "__main__":
 
                     # Execute enabled classifiers
                     parameter_grid = list(ParameterGrid(parameter_dict["parameters"]))
-                    if {} not in parameter_grid:
+                    if {} not in parameter_grid and "SVM" not in classifier_description:
                         parameter_grid.append({})
+                    elif {"kernel": parameter_grid[0]["kernel"], "max_iter": parameter_grid[0]["max_iter"]} not in parameter_grid:
+                        parameter_grid.append({"kernel": parameter_grid[0]["kernel"], "max_iter": parameter_grid[0]["max_iter"]})
+
                     Parallel(n_jobs=cpu_count)(
-                        delayed(execute_loop)(classifier_description, classifier_dict, parameter_grid[z], input_defaulter_set, result_recorder, z, len(parameter_grid),
+                        delayed(execute_loop)(classifier_description, classifier_dict, parameter_grid[z],  sorted(parameter_grid[0]), input_defaulter_set, result_recorder, z, len(parameter_grid),
                                               parameter_dict["requires_random_state"], data_set["data_set_description"], data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"],
                                               data_set["missing_values_strategy"]) for z in
                         range(len(parameter_grid)))
