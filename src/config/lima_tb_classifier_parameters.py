@@ -86,6 +86,6 @@ gaussian_naive_bayes_parameters = {}
 append_classifier_details(gaussian_naive_bayes_data_balancer, gaussian_naive_bayes_parameters, clfrs.gaussian_naive_bayes_description, classifier_parameters)
 
 # Bernoulli Naive Bayes
-bernoulli_naive_bayes_data_balancer = OneSidedSelection
-bernoulli_naive_bayes_parameters = {"alpha": 0.2, "fit_prior": False}
+bernoulli_naive_bayes_data_balancer = ClusterCentroids
+bernoulli_naive_bayes_parameters = {"alpha": 1, "fit_prior": True, "binarize": None}
 append_classifier_details(bernoulli_naive_bayes_data_balancer, bernoulli_naive_bayes_parameters, clfrs.bernoulli_naive_bayes_description, classifier_parameters)

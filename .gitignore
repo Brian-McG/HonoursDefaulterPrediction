@@ -1,6 +1,7 @@
 dependencies/tmp/model*
 dependencies/tmp/testing*
 dependencies/tmp/training*
+dependencies/tmp//prediction_output*
 
 results/*
 !results/.gitkeep

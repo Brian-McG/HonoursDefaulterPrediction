@@ -36,30 +36,21 @@ class GenericClassifier(MLTechnique):
         if self.data_balancer_class is not None:
             self.data_balancer = self.data_balancer_class(random_state=self.data_balancer_state)
 
-        for i in range(const.RETRY_COUNT + 1):
-            try:
-                self.ml_stats.results = []
-                self.ml_stats.roc_list = []
+        self.ml_stats.results = []
+        self.ml_stats.roc_list = []
 
-                kf = StratifiedKFold(n_splits=const.NUMBER_OF_FOLDS, shuffle=True, random_state=self.k_fold_state)
-                index = 0
+        kf = StratifiedKFold(n_splits=const.NUMBER_OF_FOLDS, shuffle=True, random_state=self.k_fold_state)
+        index = 0
 
-                for train, test in kf.split(defaulter_set.iloc[:, :-1].as_matrix(), defaulter_set.iloc[:, -1:].as_matrix().flatten()):
-                    if apply_preprocessing:
-                        train, test = apply_preprocessing_to_train_test_dataset(defaulter_set, train, test, numerical_columns, categorical_columns, classification_label, missing_value_strategy, create_dummy_variables=True)
+        for train, test in kf.split(defaulter_set.iloc[:, :-1].as_matrix(), defaulter_set.iloc[:, -1:].as_matrix().flatten()):
+            if apply_preprocessing:
+                train, test = apply_preprocessing_to_train_test_dataset(defaulter_set, train, test, numerical_columns, categorical_columns, classification_label, missing_value_strategy, create_dummy_variables=True)
 
-                    x_train, y_train = train.iloc[:, :-1].as_matrix(), train.iloc[:, -1:].as_matrix().flatten()
-                    x_test, y_test = test.iloc[:, :-1].as_matrix(), test.iloc[:, -1:].as_matrix().flatten()
+            x_train, y_train = train.iloc[:, :-1].as_matrix(), train.iloc[:, -1:].as_matrix().flatten()
+            x_test, y_test = test.iloc[:, :-1].as_matrix(), test.iloc[:, -1:].as_matrix().flatten()
 
-                    train_and_evaluate_fold(self, x_train, y_train, x_test, y_test, classifier, index, data_balancer=self.data_balancer)
-                    index += 1
-
-                break
-            except subprocess.CalledProcessError as e:
-                if i + 1 > const.RETRY_COUNT:
-                    raise e
-                else:
-                    print("INFO: Repeating classification step - attempt {0} of {1}".format(i + 1, const.RETRY_COUNT))
+            train_and_evaluate_fold(self, x_train, y_train, x_test, y_test, classifier, index, data_balancer=self.data_balancer)
+            index += 1
 
         # Error rates
         avg_accuracy_dict = self.ml_stats.calculate_average_results()

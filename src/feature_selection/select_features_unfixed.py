@@ -35,8 +35,8 @@ from config import constants as const
 import visualisation as vis
 import config.classifiers as cfr
 import matplotlib.pyplot as plt
-#LOGISTIC_REGRESSION, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, DECISION_TREE, RANDOM_FOREST
-feature_selection_strategies = [None, ANOVA_CHI2]
+
+feature_selection_strategies = [None, ANOVA_CHI2, LOGISTIC_REGRESSION, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, DECISION_TREE, RANDOM_FOREST]
 
 const.TEST_REPEAT = 10
 
@@ -82,7 +82,7 @@ def select_features(input_defaulter_set, numeric_columns, categorical_columns, c
             X = X[[X.columns.values[i] for i in range(len(X.columns.values)) if i in indices_usable]]
 
         elif LOGISTIC_REGRESSION == selection_strategy_split:
-            estimator = LogisticRegression(random_state=random_state, **classifier_parameters["Logistic regression"]["classifier_parameters"])
+            estimator = LogisticRegression(random_state=random_state, **classifier_parameters[LOGISTIC_REGRESSION]["classifier_parameters"])
             selector = SelectFromModel(estimator, threshold="0.3*median")
             selector = selector.fit(X.as_matrix(), y.as_matrix().flatten())
             indices_usable = selector.get_support(indices=True)
@@ -224,6 +224,8 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
 
 
 def main():
+    result_arr = []
+    dataset_arr = []
     for data_set in data_sets.data_set_arr:
         if data_set["status"]:
             # Load in data set
@@ -287,8 +289,10 @@ def main():
                     result_recorder_after.record_results(avg_results, classifier_description, feature_selection)
 
                 feature_selection_results_after.append((feature_selection_strategy, feature_selection_result_recorder_after.results, feature_selection_strategy))
-            vis.plot_percentage_difference_graph(feature_selection_results_after, data_set["data_set_description"], name_suffix="_after")
-            result_recorder_after.save_results_to_file(random_values, "select_features_after")
+            result_recorder_after.save_results_to_file(random_values, "select_features_after_{0}".format(data_set["data_set_description"]))
+            result_arr.append(feature_selection_results_after)
+            dataset_arr.append(data_set["data_set_description"])
+    vis.plot_percentage_difference_graph(result_arr, dataset_arr, x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection")
 
 
 if __name__ == "__main__":

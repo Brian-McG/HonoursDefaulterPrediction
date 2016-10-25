@@ -63,7 +63,7 @@ def execute_loop(classifier_description, classifier_dict, parameter_dict, sorted
 
         if success:
             avg_results = test_stats.calculate_average_run_accuracy()
-            values = [parameter_dict.get(k) if k in parameter_dict else "None" for k in sorted_keys] + [data_balancer.__name__ if data_balancer is not None else "None"]
+            values = [parameter_dict.get(k) if k in parameter_dict else "value_left_unset" for k in sorted_keys] + [data_balancer.__name__ if data_balancer is not None else "None"]
             results_recorder.record_results(values + avg_results)
 
 
@@ -94,7 +94,7 @@ if __name__ == "__main__":
                     elif "SVM" in classifier_description and {"kernel": parameter_grid[0]["kernel"], "max_iter": parameter_grid[0]["max_iter"]} not in parameter_grid:
                         parameter_grid.append({"kernel": parameter_grid[0]["kernel"], "max_iter": parameter_grid[0]["max_iter"]})
 
-                    Parallel(n_jobs=cpu_count)(
+                    Parallel(n_jobs=1)(
                         delayed(execute_loop)(classifier_description, classifier_dict, parameter_grid[z],  sorted(parameter_grid[0]), input_defaulter_set, result_recorder, z, len(parameter_grid),
                                               parameter_dict["requires_random_state"], data_set["data_set_description"], data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"],
                                               data_set["missing_values_strategy"]) for z in

@@ -11,7 +11,7 @@ generic_classifier_parameter_dict = {}
 
 # Generic classifiers
 # Clustering-launched classification
-clc_parameter_dict = {"parameters": {"d": [0.2]}, "requires_random_state": True}
+clc_parameter_dict = {"parameters": {"d": [0.2]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.clustering_launched_classifier_description] = clc_parameter_dict
 
 # Extreme learning machine

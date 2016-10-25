@@ -20,11 +20,10 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.tree import DecisionTreeClassifier
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from config.constants import ANOVA_CHI2, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, DECISION_TREE, RANDOM_FOREST
 from config.constants import LOGISTIC_REGRESSION
 from feature_selection.select_features_result_recorder import FeatureSelectionResultRecorder
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from data_preprocessing import apply_preprocessing, apply_preprocessing_to_train_test_dataset
 from generic_classifier import GenericClassifier
 from result_recorder import ResultRecorder
@@ -81,7 +80,7 @@ def select_features(input_defaulter_set, numeric_columns, categorical_columns, c
             X = X[[X.columns.values[i] for i in range(len(X.columns.values)) if i in indices_usable]]
 
         elif LOGISTIC_REGRESSION == selection_strategy_split:
-            estimator = LogisticRegression(random_state=random_state, **classifier_parameters["Logistic regression"]["classifier_parameters"])
+            estimator = LogisticRegression(random_state=random_state, **classifier_parameters[LOGISTIC_REGRESSION]["classifier_parameters"])
             selector = SelectFromModel(estimator, threshold="median")
             selector = selector.fit(X.as_matrix(), y.as_matrix().flatten())
             indices_usable = selector.get_support(indices=True)
