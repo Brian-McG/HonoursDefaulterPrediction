@@ -50,9 +50,9 @@ def execute_loop(classifier_description, classifier_dict, parameter_dict, sorted
         for x in range(const.TEST_REPEAT):
             try:
                 if requires_random_state:
-                    generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer, x)
-                else:
                     generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer, None)
+                else:
+                    generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer, x)
 
                 result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr, numerical_columns=numerical_columns, categorical_columns=categorical_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
                 test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
