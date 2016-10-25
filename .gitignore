@@ -1,3 +1,7 @@
+dependencies/tmp/model*
+dependencies/tmp/testing*
+dependencies/tmp/training*
+
 results/*
 !results/.gitkeep
 .idea

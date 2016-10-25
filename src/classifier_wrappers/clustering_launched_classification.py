@@ -4,6 +4,7 @@ import subprocess
 import sys
 import tempfile
 from datetime import datetime
+import numpy as np
 
 import pandas as pd
 
@@ -43,7 +44,9 @@ class ClusteringLaunchedClassifier:
         test_data = pd.DataFrame(data=x_testing)
 
         # The CLC tool expects an outcome value so it can calculate predictive accuracy. This however, is already calculated in our scripts so we just pass in a dummy value.
-        y_arr = [-1000] * len(x_testing)
+        y_arr = []
+        for i in range(len(x_testing)):
+            y_arr.append(np.random.randint(2))
         test_data.insert(0, 'classification', y_arr)
 
         test_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/../../dependencies/tmp/testing_fold_{0}_{1}".format(os.path.basename(self.training_tmp_handle.name), self.current_time))

@@ -28,13 +28,13 @@ def append_classifier_details(classifier_data_balancer, classifier_parameters_di
 # Generic classifier_parameters
 # Clustering-Launched Classification
 clustering_launched_classifier_data_balancer = InstanceHardnessThreshold
-clustering_launched_classifier_parameters = {"d": 0.635263158}
+clustering_launched_classifier_parameters = {"d": 0.478947368421052}
 append_classifier_details(clustering_launched_classifier_data_balancer, clustering_launched_classifier_parameters, clfrs.clustering_launched_classifier_description,
                           classifier_parameters)
 
 # Extreme learning machines
-elm_data_balancer = NeighbourhoodCleaningRule
-elm_parameters = {"layers": [(50, 'lin')]}
+elm_data_balancer = ADASYN
+elm_parameters = {"layers": [(50, 'lin'), (50, 'lin')]}
 append_classifier_details(elm_data_balancer, elm_parameters, clfrs.elm_description, classifier_parameters)
 
 # Artificial Neural network

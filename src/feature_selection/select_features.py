@@ -179,6 +179,8 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
 
 
 def main():
+    result_arr = []
+    dataset_arr = []
     for data_set in data_sets.data_set_arr:
         if data_set["status"]:
             # Load in data set
@@ -222,8 +224,10 @@ def main():
                     result_recorder_after.record_results(avg_results, classifier_description, feature_selection)
 
                 feature_selection_results_after.append((feature_selection_strategy, feature_selection_result_recorder_after.results, feature_selection_strategy))
-            vis.plot_percentage_difference_graph(feature_selection_results_after, data_set["data_set_description"], name_suffix="_after")
             result_recorder_after.save_results_to_file(random_values, "select_features_after")
+            result_arr.append(feature_selection_results_after)
+            dataset_arr.append(data_set["data_set_description"])
+    vis.plot_percentage_difference_graph(result_arr, dataset_arr, x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection")
 
 
 if __name__ == "__main__":

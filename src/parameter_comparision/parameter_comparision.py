@@ -52,6 +52,14 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
 def main(random_values):
     result_arr = []
     data_set_arr = []
+    if len(random_values) == 0:
+        random = Random()
+        for i in range(const.TEST_REPEAT):
+            while True:
+                random_value = random.randint(const.RANDOM_RANGE[0], const.RANDOM_RANGE[1])
+                if random_value not in random_values:
+                    random_values.append(random_value)
+                    break
     for data_set in data_sets.data_set_arr:
         if data_set["status"]:
             # Load in data set
@@ -65,14 +73,6 @@ def main(random_values):
             result_recorder_after = ParameterComparisionResultRecorder()
             cpu_count = get_number_of_processes_to_use()
 
-            if len(random_values) == 0:
-                random = Random()
-                for i in range(const.TEST_REPEAT):
-                    while True:
-                        random_value = random.randint(const.RANDOM_RANGE[0], const.RANDOM_RANGE[1])
-                        if random_value not in random_values:
-                            random_values.append(random_value)
-                            break
 
             parameter_description = ["Default without balancer", "Default with balancer", "Tuned"]
             parameter_sets = [data_set["data_set_data_balancer_parameters"], data_set["data_set_data_balancer_parameters"], data_set["data_set_classifier_parameters"]]

@@ -28,7 +28,7 @@ from sklearn.model_selection import ParameterGrid
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from util import get_number_of_processes_to_use
 from config.constants import DATA_BALANCER_STR
-import config.classifier_data_balancer_only_tester_parameters as ctp
+import config.classifier_tester_parameters as ctp
 import config.classifiers as cfr
 from classifier_result_recorder import ClassifierResultRecorder
 from config import constants as const
@@ -49,11 +49,12 @@ def execute_loop(classifier_description, classifier_dict, parameter_dict, sorted
         success = True
         for x in range(const.TEST_REPEAT):
             try:
-                generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer, x)
                 if requires_random_state:
-                    result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr, numerical_columns=numerical_columns, categorical_columns=categorical_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
+                    generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer, x)
                 else:
-                    result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr, numerical_columns=numerical_columns, categorical_columns=categorical_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
+                    generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer, None)
+
+                result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr, numerical_columns=numerical_columns, categorical_columns=categorical_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
                 test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
             except Exception as e:
                 success = False
@@ -62,7 +63,6 @@ def execute_loop(classifier_description, classifier_dict, parameter_dict, sorted
 
         if success:
             avg_results = test_stats.calculate_average_run_accuracy()
-            sorted_keys = sorted(parameter_dict)
             values = [parameter_dict.get(k) if k in parameter_dict else "None" for k in sorted_keys] + [data_balancer.__name__ if data_balancer is not None else "None"]
             results_recorder.record_results(values + avg_results)
 
@@ -89,9 +89,9 @@ if __name__ == "__main__":
 
                     # Execute enabled classifiers
                     parameter_grid = list(ParameterGrid(parameter_dict["parameters"]))
-                    if {} not in parameter_grid and "SVM" not in classifier_description:
+                    if {} not in parameter_grid and "SVM" not in classifier_description and "Clustering-Launched Classification" not in classifier_description:
                         parameter_grid.append({})
-                    elif {"kernel": parameter_grid[0]["kernel"], "max_iter": parameter_grid[0]["max_iter"]} not in parameter_grid:
+                    elif "SVM" in classifier_description and {"kernel": parameter_grid[0]["kernel"], "max_iter": parameter_grid[0]["max_iter"]} not in parameter_grid:
                         parameter_grid.append({"kernel": parameter_grid[0]["kernel"], "max_iter": parameter_grid[0]["max_iter"]})
 
                     Parallel(n_jobs=cpu_count)(

@@ -262,7 +262,7 @@
 	\subsection{Definition of a defaulter}
 	The definition of a defaulter depends on its context. TB literature typically uses the World Health Organisation (WHO) definition that a defaulter is a person whose treatment has been disrupted for two or more consecutive months \cite{chan:2003prevalence, cherkaoui:19326203, Jha:10.1371/journal.pone.0008873,jittimanee:10.1111/j.1440-172X.2007.00650.x,muture:6660173120110101, world2015TB}.
 	
-	\subsection{Classifiers}
+	\subsection{Classification techniques}
 	This section examines the different classification techniques and outlines how each technique produces its output.
 	\subsubsection{Support Vector Machines}
 	Support vector machine (SVM) is a machine learning technique that can be used to produce regression or classification functions from a set of training data \cite{Luo20097562}. SVM works by mapping the input vectors into a high-dimensional feature space with the use of a kernel function \cite{Danenas20153194}. The kernel function selected determines the if the mapping is linear or non-linear \cite{Luo20097562}. Linear, polynomial and radial basis function (RBF) are common kernel functions \cite{hsu2003practical}. The polynomial and RBF kernel performs a non-linear mapping into the high-dimensional space \cite{hsu2003practical}. This feature space is then searched to acquire an optimal hyperplane that separates the space with the maximum distance between the two classes \cite{Danenas20153194}. Figure \ref{fig:svm-overview} shows an example of this. Hsu \textit{et al.} \cite{hsu2003practical} recommends the RBF kernel as a reasonable first choice but notes that it is not suitable when there are a large number of features. The linear kernel is recommend when there are a large number of features.
@@ -301,7 +301,7 @@
 	\subsubsection{Clustering-launched classification}
 	Clustering-launched classification (CLC) is a binary classifier. CLC first clusters the data into groups using a diverse hierarchical k-means algorithm \cite{Luo20097562}. The clusters are divided into positive subsets and negative subsets \cite{Luo20097562}. Support vectors are then used to separate the positive and negative subsets for each cluster \cite{Luo20097562}. Redundant or repeated support vectors are removed thereafter \cite{Luo20097562}.
 	
-	\subsection{Data Balancers}
+	\subsection{Data Balancing algorithms}
 	This section examines the different data balancing approaches and their respective algorithms.
 	\subsubsection{Over-sampling}
 	Random over-sampling (ROS) is a technique that randomly replicates examples in the minority class \cite{Batista:2004:SBS:1007730.1007735}. However, this technique can increase the likelihood of over-fitting since exact copies are made from the minority class \cite{Batista:2004:SBS:1007730.1007735}.
@@ -332,18 +332,20 @@
 	
 	SMOTE + ENN works similarly to SMOTE + TL but ENN is more aggressive at removing samples than TL \cite{Batista:2004:SBS:1007730.1007735}.
 	
-	\subsection{Metrics}
+	\subsection{Evaluation metrics}
 	The number of true positives (TP), true negatives (TN), false positives (FP) and false negatives (FN) are used to define several metrics which are used to compare the results in this paper. The true positive rate (TPR) or sensitivity defines the proportion of actual positives which are predicted as positive. The TPR is calculated as $\frac{TP}{TP + FN}$. The true negative rate (TNR) or specificity defines the proportion of actual negatives which are predicted as negative. The TNR is calculated as $\frac{TN}{TN + FP}$. 
 	
 	Accuracy is typically a poor measure of quality for imbalanced datasets as classifiers tend to bias towards the majority class \cite{Batista:2004:SBS:1007730.1007735, Chawla:2004:ESI:1007730.1007733}. Several balanced performance metrics are used instead. The balanced accuracy (BACC) provides an equal weighting in TPR and TNR. It is calculated as $\frac{TPR + TNR}{2}$. Matthews correlation coefficient (MCC) also provides a balanced measure of classification quality and is scored between -1 and 1. The MCC is calculated as: $\frac{(TP \times TN) - (FP \times FN)}{\sqrt{(TP + FP)(TP + FN)(TN + FP)(TN + FN)}}$.
 	
 	
-	\section{Methods}
-	\subsection{Approach}
+	\section{Experimental design and evaluation}
+	A systematic experimental design was developed to ensure repeatable results.
+	\subsection{Experimental Approach}
 	\label{method-approach}
-	We aimed to evaluate a set of statistical and machine learning classification techniques on treatment default data sets and compare it to that applied to other related classification datasets. A variety of classification techniques were chosen to test against: ANN, SVM using a linear, RBF and polynomial kernel, logistic regression, decision tree, AdaBoost, random forest, $k$NN, Gaussian naive Bayes, Bernoulli naive Bayes, ELM and CLC. These were chosen to include a selection of well known techniques, ensemble techniques and newer techniques that have shown promising results in other studies. 
 	
-	Many datasets have substantially fewer defaulters than those cured. However, most classification algorithms expect a 50:50 split between classes. We therefore include an analysis of several data balancing algorithms: CC, ENN, IHS, NM-1, NCR, OSS, RUS, TL, ADASYN, ROS, SMOTE, ensemble of SMOTE + EEN and ensemble of SMOTE + TL. These balancing techniques were chosen to facilitate an evaluation of both over-sampling and under-sampling techniques. Included in the evaluation is techniques that use simple approaches and as others that use sophisticated algorithms.
+	We aim to evaluate a set of statistical and machine learning classification techniques on treatment default data sets and compare it to that applied to other related classification datasets. A variety of classification techniques were chosen to test against: ANN, SVM using a linear, RBF and polynomial kernel, logistic regression, decision tree, AdaBoost, random forest, $k$NN, Gaussian naive Bayes, Bernoulli naive Bayes, ELM and CLC. These were chosen to include a selection of well known techniques, ensemble techniques and newer techniques that have shown promising results in other studies. 
+	
+	There are typically substantially fewer defaulters than those cured. However, most classification algorithms expect a 50:50 split between classes. We therefore include an analysis of several data balancing algorithms: CC, ENN, IHS, NM-1, NCR, OSS, RUS, TL, ADASYN, ROS, SMOTE, ensemble of SMOTE + EEN and ensemble of SMOTE + TL. These balancing techniques were chosen to facilitate an evaluation of both over-sampling and under-sampling techniques. Included in the evaluation is techniques that use simple approaches and as others that use sophisticated algorithms.
 	
 	All the experiments use stratified 5-fold validation to divide a single dataset into multiple training and testing datasets. Stratified $k$-fold divides the dataset into $k$ segments and ensures that each segment contains the same ratio of positive and negative examples as the dataset as a whole. $k$ training and testing sets are created by using one segment as the testing dataset and every other segments as the training data. This is repeated such that every segment is used as testing data. Results for each fold are then averaged before being presented. 5-fold was used instead of 10-fold to ensure that there was a reasonable sample of defaulters per fold.
 	
@@ -351,7 +353,7 @@
 	
 	\subsubsection{Parameter tuning}
 	\label{parameter_tuning}
-	We want to determine how important parameter tuning is for our datasets and its effect on each classifier. We also want to see if just the addition of a data balancing algorithm can improve the classification. We first test each classifier at its default parameters. In the case where a classifier does not have default parameters available, we provide our own reasonable defaults and label those classifiers accordingly. To see the effect of a data balancing algorithm on the classifiers with default parameters, we will use the data balancer that results in the highest BARR. Finally, for each classifier we search a grid of reasonable parameters and select the parameters that yield the highest BARR. The grid includes the parameters of the classifier as well as the different data balancing techniques.
+	As part of the evaluation of the different classification  parameter tuning is for our datasets and its effect on each classifier. We also want to see if just the addition of a data balancing algorithm can improve the classification. We first test each classifier at its default parameters. In the case where a classifier does not have default parameters available, we provide our own reasonable defaults and label those classifiers accordingly. To see the effect of a data balancing algorithm on the classifiers with default parameters, we will use the data balancer that results in the highest BARR. Finally, for each classifier we search a grid of reasonable parameters and select the parameters that yield the highest BARR. The grid includes the parameters of the classifier as well as the different data balancing techniques.
 	
 	Over-fitting the classifiers is a concern when applying the grid search. To prevent the classifiers from over-fitting the parameter grid is kept fairly coarse and three runs of stratified 5-fold cross-validation is executed and the results averaged. To provide fair comparison between parameter sets and to facilitate repeatability, the data balancer, stratified $k$-fold algorithm and classifier itself use fixed initialisation values. These initialisation values differ across each of the three runs. This ensures that each parameter set utilises the same training and testing folds per run but that these folds differ across runs. The initialisation values are saved in the experiment results to facilitate reproducibility. We chose BARR to compare the results between classifiers and scenarios.	
 	
@@ -381,7 +383,7 @@
 	We want to determine if the time it takes for an individual to default affects their classification ``profile''. We use several default ranges: 0-30 days, 0-60 days, 0-100 days, 0-200 days, 50-100 days, 100-200 days, 200-1000 days, 300-1000 days. The non-defaulters are randomly divided into to two sets. The first set is joined with the defaulters in the range and used as the training set while the other set is joined with the defaulters outside the range and used as the testing set. This process is repeated over 100 runs and the results are then averaged. A set of unique random initialisation keys are generated for each run. This is used to ensure that the split of non-defaulters is the same for each default range and that each data balancer and classifier gets the same initialisation values. If the time to default does not play a large role in the classification then we except to see similar results for each default range. If it does play a large role then we expect to see poor classification results and variability in results between default ranges.
 	
 	
-	\subsection{Evaluation}
+	\subsection{Datasets}
 	The experiments were run on a set of real-world datasets: one TB default dataset from Lima Peru \cite{Lackey:10356751520150601} and two credit scoring datasets. The TB dataset was obtained from the Dryad digital repository. The two credit scoring datasets (later referred to as the German and Australian dataset) were obtained from the UCI machine learning repository \cite{Lichman:2013}. Table \ref{table:data_sets} provides an overview of the characteristics of the datasets. The Peru TB dataset is highly imbalanced which makes it an ideal dataset to test different balancing algorithms. The German dataset is slightly imbalanced while the Australian dataset is balanced. The Peru data set came with values pre-discretized and therefore only contains categorical features.
 	\begin{table*}
 		\centering
@@ -397,8 +399,15 @@
 		}
 	\end{table*}
 	
-	\section{Implementation}
-	We developed a system in Python 2.7 that makes it simple to execute the experiments outlined in section \ref{method-approach} against multiple datasets and classifiers. In addition the system has been designed to allow for easy support of additional datasets and classifiers. We support datasets formatted as a comma separated values (CSV) file and allow new binary classification datasets to be supported with the addition of just ten lines in the configuration file. All pre-processing operations such as removal of examples with missing values, creation of dummy variables and scaling of data are executed within the code base.
+	\section{Software development}
+	This section outlines the software development methodology and details of the implementation.
+	\subsection{Development principles and methodology}
+	Throughout this project we strived ensure that our software is highly configurable and modular such that core components can be re-used for each experiment. Our goal was to create a system that could support multiple datasets and classifiers in a generic fashion. We wanted the system to handle the entire experimental process including pre-processing and result visualisation.
+	
+	We followed an iterative development methodology in our software. We used feedback from our weekly meeting to improve our experimental methodology and visualisation of results.
+	
+	\subsection{Implementation details}
+	We developed the system in Python 2.7 since it has widespread library support and facilitates quick development. We support datasets formatted as a comma separated values (CSV) file and allow new binary classification datasets to be supported with the addition of just ten lines in the configuration file. All pre-processing operations such as removal of examples with missing values, creation of dummy variables and scaling of data are executed within the code base.
 	
 	To support a wide variety of techniques, we used several pre-existing libraries for our classification and data balancing techniques. We used scikit-learn \cite{scikit-learn} for most of the classification techniques with the exception of ELM and CLC. Akusok \textit{et al.}'s \cite{7140733} Python ELM toolbox was used for the implementation of the ELM. The CLC implementation was obtained from the original authors \cite{Chen2006} as a compiled C++ executable. By creating a wrapper, we can support classifiers written in different languages or which have a different interface. We used wrappers to provide a scikit-learn interface for the ELM and CLC classifier. In addition, the CLC classifier expects a tab separated values (TSV) file as input and produces the classification model and predictions as a TSV file. The wrapper is used to accommodate this.
 	
@@ -410,12 +419,15 @@
 	
 	The system has been designed that it can execute the aforementioned experiments for any binary classification problem not just the ones outlined in this paper. With some modifications, it could also be extended to support multi-class classification problems too. The code has been written in a generic manner that reduces the need to replicate code. This allows new experiments to be created with minimal overhead. Each experiment is also multi-threaded to reduce the execution time.
 	
-	\section{Results}
+	\section{Results and discussion}
+	This section presents and discusses the results of the experiments outlined in section \ref{method-approach}.
 	\subsection{Parameter Tuning}
+	
+	
 	\begin{figure*}
 		\centering
 		\makebox[\linewidth]{
-		\includegraphics[scale=0.6]{Parameter_tuning_approach_results_per_classifier_plot_['Lima_TB',_'German_credit',_'Australian_credit']_Balanced_Accuracy_2016-10-24_18-55-57}}
+		\includegraphics[scale=0.55]{Parameter_tuning_approach_results_per_classifier_plot_['Lima_TB',_'German_credit',_'Australian_credit']_Balanced_Accuracy_2016-10-24_21-47-19}}
 		\caption{Difference in balanced accuracy from using default parameters with different parameter tuning approaches}
 		\label{fig:res}
 	\end{figure*}

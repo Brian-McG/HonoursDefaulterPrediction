@@ -26,7 +26,12 @@ class ExtremeLearningMachine:
         for layer_tuple in self.layers:
             if layer_tuple[1] != "lin":
                 w = self.random_state.randn(input_len, layer_tuple[0])
+                if layer_tuple[1] not in ("rbf_l1", "rbf_l2", "rbf_linf"):
+                    w *= 3.0 / input_len**0.5  # high dimensionality fix
                 b = self.random_state.randn(layer_tuple[0])
+                if layer_tuple[1] in ("rbf_l2", "rbf_l1", "rbf_linf"):
+                    b = np.abs(b)
+                    b *= input_len
             else:
                 w = None
                 b = None

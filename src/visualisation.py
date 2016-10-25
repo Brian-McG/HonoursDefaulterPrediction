@@ -258,7 +258,7 @@ def plot_kaplan_meier_graph_of_time_to_default(time_to_default, data_set_descrip
 def plot_percentage_difference_graph(results, datasets, name_suffix="", parameter="Balanced Accuracy", x_label="Feature selection approach", difference_from="no feature selection"):
     patterns = (None, "////")
 
-    color = iter(cm.Set1(np.linspace(0, 1, len(results[0][0][1]) + 1)))
+    colors = ["#64B3DE", "#1f78b4", "#B9B914", "#FBAC44", "#bc1659", "#33a02c", "#6ABF20", "#ff7f00", "#6a3d9a", "#5a2add", "#b15928", "#e31a1c", "grey"]
     classifier_arr = []
     for i in range(len(results)):
         classifier_arr.append(list())
@@ -295,7 +295,7 @@ def plot_percentage_difference_graph(results, datasets, name_suffix="", paramete
             label = "Mean classification"
         plt.bar(data_balancers + (i * bar_width), classifier_arr[0][i], bar_width,
                 alpha=opacity,
-                color=color.next(),
+                color=colors[i],
                 hatch=patterns[i % len(patterns)],
                 label=label)
 
@@ -318,7 +318,7 @@ def plot_percentage_difference_graph(results, datasets, name_suffix="", paramete
                 label = "Mean classification"
             plt.bar(data_balancers + (i * bar_width), classifier_arr[z][i], bar_width,
                     alpha=opacity,
-                    color=color.next(),
+                    color=colors[i],
                     hatch=patterns[i % len(patterns)],
                     label=label)
 
@@ -510,7 +510,7 @@ if __name__ == "__main__":
     name_suffix = ""
     patterns = (None, "////")
 
-    color = iter(cm.Set1(np.linspace(0, 1, len(results[0][0][1]) + 1)))
+    colors = ["#64B3DE", "#1f78b4", "#B9B914", "#FBAC44", "#bc1659", "#33a02c", "#6ABF20", "#ff7f00", "#6a3d9a", "#5a2add", "#b15928", "#e31a1c", "grey"]
     classifier_arr = []
     for i in range(len(results)):
         classifier_arr.append(list())
@@ -547,7 +547,7 @@ if __name__ == "__main__":
             label = "Mean classification"
         plt.bar(data_balancers + (i * bar_width), classifier_arr[0][i], bar_width,
                 alpha=opacity,
-                color=color.next(),
+                color=colors[i],
                 hatch=patterns[i % len(patterns)],
                 label=label)
 
@@ -570,7 +570,7 @@ if __name__ == "__main__":
                 label = "Mean classification"
             plt.bar(data_balancers + (i * bar_width), classifier_arr[z][i], bar_width,
                     alpha=opacity,
-                    color=color.next(),
+                    color=colors[i],
                     hatch=patterns[i % len(patterns)],
                     label=label)
 

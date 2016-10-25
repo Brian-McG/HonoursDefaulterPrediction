@@ -1,6 +1,7 @@
 """Contains all classifier_parameters used (except ANNs)"""
 from imblearn.combine import SMOTEENN
 from imblearn.over_sampling import ADASYN
+from imblearn.over_sampling import RandomOverSampler
 from imblearn.under_sampling import ClusterCentroids
 from imblearn.under_sampling import InstanceHardnessThreshold
 from imblearn.under_sampling import OneSidedSelection
@@ -30,8 +31,8 @@ append_classifier_details(clustering_launched_classifier_data_balancer, clusteri
                           classifier_parameters)
 
 # Extreme learning machines
-elm_data_balancer = RandomUnderSampler
-elm_parameters = {"layers": [(20, 'sigm')]}
+elm_data_balancer = RandomOverSampler
+elm_parameters = {"layers": [(5, 'lin'), (50, 'lin')]}
 append_classifier_details(elm_data_balancer, elm_parameters, clfrs.elm_description, classifier_parameters)
 
 # Artificial Neural network
