@@ -3,7 +3,8 @@ from sklearn import preprocessing
 from sklearn.preprocessing import Imputer
 
 
-def apply_preprocessing_to_train_test_dataset(input_defaulter_set, train_indices, test_indices, numerical_columns, categorical_columns, classification_label, missing_value_strategy, create_dummy_variables=True):
+def apply_preprocessing_to_train_test_dataset(input_defaulter_set, train_indices, test_indices, numerical_columns, categorical_columns, classification_label, missing_value_strategy, duplicate_removal_column=None, create_dummy_variables=True):
+
     for categorical_column in categorical_columns:
         input_defaulter_set[categorical_column] = input_defaulter_set[categorical_column].astype('category')
 

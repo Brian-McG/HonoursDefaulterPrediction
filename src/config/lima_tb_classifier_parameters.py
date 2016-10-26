@@ -32,7 +32,7 @@ append_classifier_details(clustering_launched_classifier_data_balancer, clusteri
 
 # Extreme learning machines
 elm_data_balancer = RandomOverSampler
-elm_parameters = {"layers": [(5, 'lin'), (50, 'lin')]}
+elm_parameters = {"layers": [(20, 'rbf_l2')]}
 append_classifier_details(elm_data_balancer, elm_parameters, clfrs.elm_description, classifier_parameters)
 
 # Artificial Neural network

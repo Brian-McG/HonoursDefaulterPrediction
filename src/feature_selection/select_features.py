@@ -37,7 +37,7 @@ import matplotlib.pyplot as plt
 
 feature_selection_strategies = [None, LOGISTIC_REGRESSION, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, RANDOM_FOREST]
 
-const.TEST_REPEAT = 10
+const.TEST_REPEAT = 1
 
 
 def select_features(input_defaulter_set, numeric_columns, categorical_columns, classification_label, classifier_parameters, random_state=None, selection_strategy=ANOVA_CHI2):
@@ -226,7 +226,7 @@ def main():
             result_recorder_after.save_results_to_file(random_values, "select_features_after")
             result_arr.append(feature_selection_results_after)
             dataset_arr.append(data_set["data_set_description"])
-    vis.plot_percentage_difference_graph(result_arr, dataset_arr, x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection")
+    vis.plot_percentage_difference_graph(result_arr, dataset_arr, x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(16, 4), legend_y=-0.46)
 
 
 if __name__ == "__main__":

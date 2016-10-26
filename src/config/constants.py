@@ -8,7 +8,7 @@ CUTOFF_RATE = 0.7
 RETRY_COUNT = 3
 TEST_REPEAT = 3
 DATA_BALANCER_STR = "Data balancer"
-RANDOM_RANGE = (0, sys.maxint)
+RANDOM_RANGE = (0, 4294967294)
 ANOVA_CHI2 = "ANOVA_CHI2"
 LOGISTIC_REGRESSION = "Logistic regression"
 BERNOULLI_NAIVE_BAYES = "Bernoulli Naive Bayes"
@@ -24,3 +24,5 @@ TITLE_ROW_WITH_TIME_TO_FIT = ["Classifier description"] + BASE_METRICS + ["Avera
 TITLE_ROW_PARAMETER_TESTER = BASE_METRICS + ["Average true positive with cutoff",
                                              "Average true negative rate with cutoff", "Average false positive rate with cutoff", "Average false negative rate with cutoff",
                                              "Average unclassified from cutoff"]
+
+TITLE_ROW_BALANCER_RESULT = ["Data balancer"] + TITLE_ROW

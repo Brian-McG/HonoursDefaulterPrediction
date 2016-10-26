@@ -31,8 +31,8 @@ append_classifier_details(clustering_launched_classifier_data_balancer, clusteri
                           classifier_parameters)
 
 # Extreme learning machines
-elm_data_balancer = TomekLinks
-elm_parameters = {"layers": [(5, 'lin'), (50, 'lin')]}
+elm_data_balancer = None
+elm_parameters = {"layers": [(50, 'lin')]}
 append_classifier_details(elm_data_balancer, elm_parameters, clfrs.elm_description, classifier_parameters)
 
 # Artificial Neural network

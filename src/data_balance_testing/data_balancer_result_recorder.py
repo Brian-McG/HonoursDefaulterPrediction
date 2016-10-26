@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 
 from config import constants as const
+from config.constants import TITLE_ROW_BALANCER_RESULT
 
 
 class DataBalancerResultRecorder:
@@ -22,8 +23,7 @@ class DataBalancerResultRecorder:
             file_name = "{0}_data_{1}-folds_{2}.csv".format(data_set_description, const.NUMBER_OF_FOLDS, current_time)
             output_file = open(os.path.dirname(os.path.realpath(__file__)) + "/../../results/" + file_name, "wb")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
-            title_row = ["Data balancer", "Classifier description", "Matthews correlation coefficient", "Cohen Kappa score", "Average true rate", "Average true positive rate",
-                         "Average true negative rate", "Average false positive rate", "Average false negative rate", "initialisation_values"]
+            title_row = TITLE_ROW_BALANCER_RESULT
             csv_writer.writerow(title_row)
             x = 0
             for result_tuple in self.results:

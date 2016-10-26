@@ -49,9 +49,12 @@ def train_and_evaluate_fold(generic_classifier, x_train, y_train, x_test, y_test
 
     fpr, tpr = None, None
     if outcome_decision_values is not None:
-        fpr, tpr, _ = roc_curve(y_test, outcome_decision_values)
-        fpr = fpr.tolist()
-        tpr = tpr.tolist()
+        try:
+            fpr, tpr, _ = roc_curve(y_test, outcome_decision_values)
+            fpr = fpr.tolist()
+            tpr = tpr.tolist()
+        except Exception as e:
+            print(e)
 
     generic_classifier.ml_stats.calculate_and_append_fold_accuracy(test_classification, y_test, tpr, fpr, fit_time, test_probabilities=test_probabilities)
 

@@ -24,7 +24,7 @@ def execute_classifier_run(input_defaulter_set, classifier_parameters, data_bala
         test_stats = RunStatistics()
         for i in range(const.TEST_REPEAT):
             generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer, random_values[i])
-            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set, numerical_columns=numeric_columns, categorical_columns=categorical_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
+            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set.copy(), numerical_columns=numeric_columns, categorical_columns=categorical_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
             test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
 
         avg_results = test_stats.calculate_average_run_accuracy()
@@ -39,11 +39,12 @@ def main(random_value_arr):
         if data_set["status"]:
             # Load in data set
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
-
+            if data_set["duplicate_removal_column"] is not None:
+                input_defaulter_set.drop_duplicates(data_set["duplicate_removal_column"], inplace=True)
             input_defaulter_set = input_defaulter_set[data_set["numeric_columns"] + data_set["categorical_columns"] + data_set["classification_label"]]
 
-            input_defaulter_set = input_defaulter_set.dropna(axis=0)
-            input_defaulter_set = input_defaulter_set.reset_index(drop=True)
+            input_defaulter_set.dropna(axis=0, inplace=True)
+            input_defaulter_set.reset_index(drop=True, inplace=True)
 
             manager = Manager()
             result_recorder = ResultRecorder(result_arr=manager.list())

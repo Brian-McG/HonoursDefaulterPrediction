@@ -55,7 +55,7 @@ def override_parameters(parameter_results):
     data_balancer_arr = {}
     for (classifier_name, classifier_path) in parameter_results:
         data_balancer_arr[classifier_name] = []
-        parameter_results = pd.DataFrame.from_csv(classifier_path, index_col=None, encoding="UTF-8")
+        parameter_results = pd.DataFrame.from_csv(classifier_path, index_col=False, encoding="UTF-8")
         data_balancers = classifier_parameter_tester.data_balancers
         for data_balancer in data_balancers:
             data_balance_df = parameter_results.loc[parameter_results[DATA_BALANCER_STR] == (data_balancer.__name__ if data_balancer is not None else "None")]
@@ -64,32 +64,32 @@ def override_parameters(parameter_results):
                 parameter_headers.append(str(parameter_header))
                 if parameter_header == DATA_BALANCER_STR:
                     break
-            best_parameters = data_balance_df.loc[data_balance_df["Average true rate"].argmax()]
+            if "Average true rate" in data_balance_df:
+                best_parameters = data_balance_df.loc[data_balance_df["Average true rate"].argmax()]
+            elif "Balanced Accuracy" in data_balance_df:
+                best_parameters = data_balance_df.loc[data_balance_df["Balanced Accuracy"].argmax()]
             parameter_dict = {}
             data_balancer = None
             for parameter_header in parameter_headers:
                 if parameter_header != DATA_BALANCER_STR:
                     if type(best_parameters[parameter_header]) == unicode:
-                        try:
-                            parameter_dict[parameter_header] = eval(best_parameters[parameter_header])
-                        except NameError:
-                            parameter_dict[parameter_header] = str(best_parameters[parameter_header])
-                    else:
-                        if np.isnan(best_parameters[parameter_header]):
-                            parameter_dict[parameter_header] = None
+                        if str(best_parameters[parameter_header]) != "value_left_unset":
+                            try:
+                                parameter_dict[parameter_header] = eval(best_parameters[parameter_header])
+                            except NameError:
+                                parameter_dict[parameter_header] = str(best_parameters[parameter_header])
                         else:
-                            parameter_dict[parameter_header] = best_parameters[parameter_header]
-                        if type(best_parameters[parameter_header]) == np.float64 and best_parameters[parameter_header].is_integer():
-                            parameter_dict[parameter_header] = np.int64(best_parameters[parameter_header])
+                            if np.isnan(best_parameters[parameter_header]):
+                                parameter_dict[parameter_header] = None
+                            else:
+                                parameter_dict[parameter_header] = best_parameters[parameter_header]
+                            if type(best_parameters[parameter_header]) == np.float64 and best_parameters[parameter_header].is_integer():
+                                parameter_dict[parameter_header] = np.int64(best_parameters[parameter_header])
                 else:
                     data_balancer = eval(best_parameters[parameter_header])
             data_balancer_arr[classifier_name].append((data_balancer, parameter_dict))
     return data_balancer_arr
 
-
-    # plot_balancer_results_per_classifier(classifiers, "Average true rate")
-    # plot_balancer_results_per_classifier(classifiers, "Average true positive rate")
-    # plot_balancer_results_per_classifier(classifiers, "Average true negative rate")
 
 def execute_classifier_run(data_balancer_results, random_values, input_defaulter_set, numerical_columns, categorical_columns, classification_label, missing_value_strategy, classifier_arr, classifier_description, roc_plot):
     result_arr = []
@@ -108,10 +108,10 @@ def execute_classifier_run(data_balancer_results, random_values, input_defaulter
     data_balancer_results.append((classifier_description, result_arr))
 
 
-def main(dataset, parameter_results):
+def main(classifier_dict):
     data_set_results = []
     for data_set in data_sets.data_set_arr:
-        if data_set["data_set_description"] == dataset:
+        if data_set["status"] and data_set["data_set_description"] in classifier_dict:
             # Load in data set
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
             input_defaulter_set = input_defaulter_set[data_set["numeric_columns"] + data_set["categorical_columns"] + data_set["classification_label"]]
@@ -129,7 +129,7 @@ def main(dataset, parameter_results):
                     if random_value not in random_values:
                         random_values.append(random_value)
                         break
-            classifier_parameters = override_parameters(parameter_results)
+            classifier_parameters = override_parameters(classifier_dict[data_set["data_set_description"]])
             manager = Manager()
 
             roc_plot = manager.list()
@@ -145,18 +145,29 @@ def main(dataset, parameter_results):
                     result_recorder.record_results(result_arr, classifier_name, data_balancer_name)
 
             result_recorder.save_results_to_file(random_values, "data_balancer")
-            plot_balancer_results_per_classifier(data_balancer_results, (0, "Average Matthews correlation coefficient"))
-            plot_balancer_results_per_classifier(data_balancer_results, (2, "Average Balanced classification rate"))
+            plot_balancer_results_per_classifier(data_balancer_results, (2, "Balanced Accuracy"))
             plot_balancer_results_per_classifier(data_balancer_results, (3, "Average true positive rate"))
             plot_balancer_results_per_classifier(data_balancer_results, (4, "Average true negative rate"))
             data_set_results.append((data_set["data_set_description"], data_balancer_results))
-    vis.visualise_dataset_balancer_results(data_set_results)
+            vis.visualise_dataset_balancer_results([(data_set["data_set_description"], data_balancer_results)])
+    #vis.visualise_dataset_balancer_results_multi_dataset(data_set_results)
 if __name__ == "__main__":
     if len(sys.argv) < 3 and len(sys.argv) % 2 == 0:
         print('Expected "cdn_perf.py <parameter_result_label> <parameter_results_path>"')
     else:
+        classifiers = []
         classifier_arr = []
-        data_set = sys.argv[1]
+        data_set_arr = [sys.argv[1]]
         for i in range(2, len(sys.argv), 2):
-            classifier_arr.append((sys.argv[i], sys.argv[i + 1]))
-        main(data_set, classifier_arr)
+            if sys.argv[i] == "next_dataset":
+                data_set_arr.append(sys.argv[i + 1])
+                classifier_arr.append(classifiers)
+                classifiers = []
+                continue
+            classifiers.append((sys.argv[i], sys.argv[i + 1]))
+        classifier_arr.append(classifiers)
+
+        classifier_dict = dict()
+        for i in range(len(data_set_arr)):
+            classifier_dict[data_set_arr[i]] = classifier_arr[i]
+        main(classifier_dict)
