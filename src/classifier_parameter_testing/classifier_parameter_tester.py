@@ -54,7 +54,7 @@ def execute_loop(classifier_description, classifier_dict, parameter_dict, sorted
                 else:
                     generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer, x)
 
-                result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr, numerical_columns=numerical_columns, categorical_columns=categorical_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
+                result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr.copy(), numerical_columns=numerical_columns, categorical_columns=categorical_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
                 test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
             except Exception as e:
                 success = False
@@ -94,7 +94,7 @@ if __name__ == "__main__":
                     elif "SVM" in classifier_description and {"kernel": parameter_grid[0]["kernel"], "max_iter": parameter_grid[0]["max_iter"]} not in parameter_grid:
                         parameter_grid.append({"kernel": parameter_grid[0]["kernel"], "max_iter": parameter_grid[0]["max_iter"]})
 
-                    Parallel(n_jobs=1)(
+                    Parallel(n_jobs=cpu_count)(
                         delayed(execute_loop)(classifier_description, classifier_dict, parameter_grid[z],  sorted(parameter_grid[0]), input_defaulter_set, result_recorder, z, len(parameter_grid),
                                               parameter_dict["requires_random_state"], data_set["data_set_description"], data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"],
                                               data_set["missing_values_strategy"]) for z in

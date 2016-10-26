@@ -390,7 +390,7 @@ def visualise_dataset_classifier_results(dataset_results):
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(1, 1, 1)
     markers = ["s", "o", "^", "*"]
-    colors = ["#64B3DE", "#1f78b4", "#6ABF20", "#FBAC44", "#bc1659", "#B9B914", "#33a02c", "#ff7f00", "#6a3d9a", "black", "#b15928", "#e31a1c"]
+    colors = ["#64B3DE", "#1f78b4", "#B9B914", "#FBAC44", "#bc1659", "#33a02c", "#6ABF20", "#ff7f00", "#6a3d9a", "grey", "#b15928", "#e31a1c", "black"]
 
     # Move left y-axis and bottom x-axis to centre, passing through (0,0)
     ax.spines['left'].set_position('center')
