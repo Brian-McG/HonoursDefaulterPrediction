@@ -335,7 +335,7 @@ def main():
             result_recorder_after.save_results_to_file(random_values, "select_features_after_{0}".format(data_set["data_set_description"]))
             result_arr.append(feature_selection_results_after)
             dataset_arr.append(data_set["data_set_description"])
-    vis.plot_percentage_difference_graph(result_arr, dataset_arr, x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(16, 4.5), legend_y=-0.67)
+    vis.plot_percentage_difference_graph(result_arr, dataset_arr, x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(16, 4.5), legend_y=-0.79, label_rotation=8)
 
 
 if __name__ == "__main__":

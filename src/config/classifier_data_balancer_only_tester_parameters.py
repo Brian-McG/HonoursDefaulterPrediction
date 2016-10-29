@@ -24,7 +24,7 @@ ann_parameter_dict = {"parameters": {}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.ann_description] = ann_parameter_dict
 
 # Support Vector Machines (RBF)
-rbf_svm_parameter_dict = {"parameters": {"kernel": ["rbf"]}, "requires_random_state": False}
+rbf_svm_parameter_dict = {"parameters": {"kernel": ["rbf"], "max_iter": [10000]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.svm_rdf_description] = rbf_svm_parameter_dict
 
 # Support Vector Machines (linear)

@@ -164,66 +164,66 @@
 	The datasets used by the publications contain different features. Age and gender are common throughout the datasets. History of past default is available for all datasets except for Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037}. Lackey \textit{et al.} \cite{Lackey:10356751520150601} only picked individuals who did not have a history of past default. Jittimanee \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} was the only publication with the feature that did not find it to be significant to the 95\% confidence level. However, it did have an odds ratio of 2.19 and a p-value of 0.12. It can therefore be deduced that a history of past default has a strong correlation to default. Two out of three publications with the alcohol abuse feature available, found it to be significant. Three of the four publications with side effects as a feature, found it was significant. Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037} and Jittimanee \textit{et al.} \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} measured distance and time to treatment site respectively. It can be reasoned that the aforementioned features will be significant in other datasets since they were found to be significant in the majority of the publications. Other significant features such as illegal drug use, use of herbal medication, daily jobs, history of lung cancer and history of liver disease only appeared once in the datasets. It cannot be discerned if the significance is generalisable or specific to the dataset. The identification of the same features as significant is fairly consistent for the publications that have those features in their dataset. 
 
 	\subsection{Credit scoring}
+	The credit scoring field aims to predict high risk individuals who should not be provided credit. 
 	
-%	
-%	\subsection{Predicting defaulters in financial institutions}
-%	\begin{table}
-%		\small
-%		\caption{German data set\textsuperscript{\textparagraph}}
-%		\label{table:german_dataset}	
-%		\begin{tabular}{c|c|c|c} \hline		
-%			Publication&Accuracy&\parbox[t]{1.2cm}{\centering Type I\\Error}&\parbox[t]{1.2cm}{\centering Type II\\Error}\rule{0pt}{3mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-%			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2004543}}
-%			&\parbox[t]{2.3cm}{\centering \textbf{79.87\%}\textsuperscript{\textdagger}}
-%			&\parbox[t]{1.1cm}{\centering n/a}
-%			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-%			\parbox[t]{2.3cm}{Li \textit{et al.} \cite{Li2006772}}
-%			&\parbox[t]{2.3cm}{\centering \textbf{84.83\%}}
-%			&\parbox[t]{1.1cm}{\centering 10-20\%\textsuperscript{*}}
-%			&\parbox[t]{1.2cm}{\centering 10-20\%\textsuperscript{*}}\\ \hline
-%			\parbox[t]{2.3cm}{Luo \textit{et al.} \cite{Luo20097562}}
-%			&\parbox[t]{2.3cm}{\centering 77.06\% (MySVM), 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
-%			&\parbox[t]{1.1cm}{\centering n/a}
-%			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-%			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2007847}}
-%			&\parbox[t]{2.3cm}{\centering 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
-%			&\parbox[t]{1.1cm}{\centering n/a}
-%			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-%			\parbox[t]{2.3cm}{Danenas \textit{et al.} \cite{Danenas20153194}}
-%			&\parbox[t]{2.3cm}{\centering \textbf{94.41\%} (Linear SVM), \textbf{92.37\%} (PSO-LinSVM)\textsuperscript{\textdagger}}
-%			&\parbox[t]{1.1cm}{\centering n/a\textsuperscript{\textdaggerdbl}}
-%			&\parbox[t]{1.2cm}{\centering n/a\textsuperscript{\textdaggerdbl}}\rule{0pt}{3.5mm}\rule[-8mm]{0pt}{0pt}		
-%		\end{tabular}		
-%	\end{table}
-%	
-%	\begin{table}
-%		\small
-%		\caption{Australian data set\textsuperscript{\textparagraph}}
-%		\label{table:australian_dataset}	
-%		\begin{tabular}{c|c|c|c} \hline		
-%			Publication&Accuracy&\parbox[t]{1.2cm}{\centering Type I\\Error}&\parbox[t]{1.2cm}{\centering Type II\\Error}\rule{0pt}{3mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-%			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2004543}}
-%			&\parbox[t]{2.3cm}{\centering \textbf{79.87\%}\textsuperscript{\textdagger}}
-%			&\parbox[t]{1.1cm}{\centering n/a}
-%			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-%			\parbox[t]{2.3cm}{Li \textit{et al.} \cite{Li2006772}}
-%			&\parbox[t]{2.3cm}{\centering \textbf{84.83\%}}
-%			&\parbox[t]{1.1cm}{\centering 10-20\%\textsuperscript{*}}
-%			&\parbox[t]{1.2cm}{\centering 10-20\%\textsuperscript{*}}\\ \hline
-%			\parbox[t]{2.3cm}{Luo \textit{et al.} \cite{Luo20097562}}
-%			&\parbox[t]{2.3cm}{\centering 77.06\% (MySVM), 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
-%			&\parbox[t]{1.1cm}{\centering n/a}
-%			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-%			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2007847}}
-%			&\parbox[t]{2.3cm}{\centering 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
-%			&\parbox[t]{1.1cm}{\centering n/a}
-%			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-%			\parbox[t]{2.3cm}{Danenas \textit{et al.} \cite{Danenas20153194}}
-%			&\parbox[t]{2.3cm}{\centering \textbf{94.41\%} (Linear SVM), \textbf{92.37\%} (PSO-LinSVM)\textsuperscript{\textdagger}}
-%			&\parbox[t]{1.1cm}{\centering n/a\textsuperscript{\textdaggerdbl}}
-%			&\parbox[t]{1.2cm}{\centering n/a\textsuperscript{\textdaggerdbl}}\rule{0pt}{3.5mm}\rule[-8mm]{0pt}{0pt}		
-%		\end{tabular}		
-%	\end{table}
+	\subsection{Predicting defaulters in financial institutions}
+	\begin{table}
+		\small
+		\caption{German data set\textsuperscript{\textparagraph}}
+		\label{table:german_dataset}	
+		\begin{tabular}{c|c|c|c} \hline		
+			Publication&Accuracy&\parbox[t]{1.2cm}{\centering Type I\\Error}&\parbox[t]{1.2cm}{\centering Type II\\Error}\rule{0pt}{3mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2004543}}
+			&\parbox[t]{2.3cm}{\centering \textbf{79.87\%}\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a}
+			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Li \textit{et al.} \cite{Li2006772}}
+			&\parbox[t]{2.3cm}{\centering \textbf{84.83\%}}
+			&\parbox[t]{1.1cm}{\centering 10-20\%\textsuperscript{*}}
+			&\parbox[t]{1.2cm}{\centering 10-20\%\textsuperscript{*}}\\ \hline
+			\parbox[t]{2.3cm}{Luo \textit{et al.} \cite{Luo20097562}}
+			&\parbox[t]{2.3cm}{\centering 77.06\% (MySVM), 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a}
+			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2007847}}
+			&\parbox[t]{2.3cm}{\centering 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a}
+			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Danenas \textit{et al.} \cite{Danenas20153194}}
+			&\parbox[t]{2.3cm}{\centering \textbf{94.41\%} (Linear SVM), \textbf{92.37\%} (PSO-LinSVM)\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a\textsuperscript{\textdaggerdbl}}
+			&\parbox[t]{1.2cm}{\centering n/a\textsuperscript{\textdaggerdbl}}\rule{0pt}{3.5mm}\rule[-8mm]{0pt}{0pt}		
+		\end{tabular}		
+	\end{table}
+	
+	\begin{table}
+		\small
+		\caption{Australian data set\textsuperscript{\textparagraph}}
+		\label{table:australian_dataset}	
+		\begin{tabular}{c|c|c|c} \hline		
+			Publication&Accuracy&\parbox[t]{1.2cm}{\centering Type I\\Error}&\parbox[t]{1.2cm}{\centering Type II\\Error}\rule{0pt}{3mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2004543}}
+			&\parbox[t]{2.3cm}{\centering \textbf{79.87\%}\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a}
+			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Li \textit{et al.} \cite{Li2006772}}
+			&\parbox[t]{2.3cm}{\centering \textbf{84.83\%}}
+			&\parbox[t]{1.1cm}{\centering 10-20\%\textsuperscript{*}}
+			&\parbox[t]{1.2cm}{\centering 10-20\%\textsuperscript{*}}\\ \hline
+			\parbox[t]{2.3cm}{Luo \textit{et al.} \cite{Luo20097562}}
+			&\parbox[t]{2.3cm}{\centering 77.06\% (MySVM), 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a}
+			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2007847}}
+			&\parbox[t]{2.3cm}{\centering 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a}
+			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
+			\parbox[t]{2.3cm}{Danenas \textit{et al.} \cite{Danenas20153194}}
+			&\parbox[t]{2.3cm}{\centering \textbf{94.41\%} (Linear SVM), \textbf{92.37\%} (PSO-LinSVM)\textsuperscript{\textdagger}}
+			&\parbox[t]{1.1cm}{\centering n/a\textsuperscript{\textdaggerdbl}}
+			&\parbox[t]{1.2cm}{\centering n/a\textsuperscript{\textdaggerdbl}}\rule{0pt}{3.5mm}\rule[-8mm]{0pt}{0pt}		
+		\end{tabular}		
+	\end{table}
 
 	
 	\section{Background}
