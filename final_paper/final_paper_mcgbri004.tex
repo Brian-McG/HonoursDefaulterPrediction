@@ -80,7 +80,7 @@
 	%\crdata{0-12345-67-8/90/01}  % Allows default copyright data (0-89791-88-6/97/05) to be over-ridden - IF NEED BE.
 	% --- End of Author Metadata ---
 	
-	\title{An Analysis of Classification Techniques for the Prediction of Treatment Defaulters}
+	\title{An Analysis of Classification Techniques for the Prediction of Treatment Defaulters and Health }
 	%
 	% You need the command \numberofauthors to handle the 'placement
 	% and alignment' of the authors beneath the title.
@@ -131,6 +131,7 @@
 	
 	\maketitle
 	\begin{abstract}
+		<TODO>
 	\end{abstract}
 	
 	%
@@ -143,8 +144,10 @@
 	
 	%\keywords{ACM proceedings; \LaTeX; text tagging}
 	
-	\section{Introduction}	
-	In 2013 over 210\hspace*{1mm}000 patients defaulted from Tuberculosis (TB) treatment worldwide \cite{world2015TB}. The rate of default in the Americas is the highest at 8\% with Africa at 5\% \cite{world2015TB}. The consequences of defaulting TB treatment include: increased drug resistance, increased health system costs \cite{Lackey:10356751520150601, muture:6660173120110101}, higher risk of mortality, continued risk of transmitting the disease to others \cite{Lackey:10356751520150601} and increased rate of recurrent disease \cite{Jha:10.1371/journal.pone.0008873}. The spread of TB can be reduced if the individuals who have a high risk of defaulting can be predicted. This will also reduce health system costs.
+	\section{Introduction}
+	Treatment default occurs when a patient's treatment is interrupted for longer than a set duration, typically two months for Tuberculosis (TB) treatment. 
+		
+	In 2013 over 210\hspace*{1mm}000 patients defaulted from TB treatment worldwide \cite{world2015TB}. The rate of default in the Americas is the highest at 8\% with Africa at 5\% \cite{world2015TB}. The consequences of defaulting TB treatment include: increased drug resistance, increased health system costs \cite{Lackey:10356751520150601, muture:6660173120110101}, higher risk of mortality, continued risk of transmitting the disease to others \cite{Lackey:10356751520150601} and increased rate of recurrent disease \cite{Jha:10.1371/journal.pone.0008873}. The spread of TB can be reduced if the individuals who have a high risk of defaulting can be predicted. This will also reduce health system costs.
 	
 	In this paper we explore several issues that may arise when attempting to apply classification techniques to predict minority class events such as treatment default. We do a large scale comparison of different classification techniques and explore a number of techniques and strategies to improve the overall classification result. Most notably we look at how well these classifiers work out-of-the-box compared when they are tuned by searching a grid of parameters. To address class imbalance, we examine different data balancing techniques which either over-sample the minority class or under-sample the majority class. Furthermore, to see how each classifier responds to having fewer features available, we apply a number of feature selection strategies on each classification technique.
 	
@@ -161,7 +164,7 @@
 	The datasets used by the publications contain different features. Age and gender are common throughout the datasets. History of past default is available for all datasets except for Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037}. Lackey \textit{et al.} \cite{Lackey:10356751520150601} only picked individuals who did not have a history of past default. Jittimanee \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} was the only publication with the feature that did not find it to be significant to the 95\% confidence level. However, it did have an odds ratio of 2.19 and a p-value of 0.12. It can therefore be deduced that a history of past default has a strong correlation to default. Two out of three publications with the alcohol abuse feature available, found it to be significant. Three of the four publications with side effects as a feature, found it was significant. Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037} and Jittimanee \textit{et al.} \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} measured distance and time to treatment site respectively. It can be reasoned that the aforementioned features will be significant in other datasets since they were found to be significant in the majority of the publications. Other significant features such as illegal drug use, use of herbal medication, daily jobs, history of lung cancer and history of liver disease only appeared once in the datasets. It cannot be discerned if the significance is generalisable or specific to the dataset. The identification of the same features as significant is fairly consistent for the publications that have those features in their dataset. 
 
 	\subsection{Credit scoring}
-	<TODO>
+	
 %	
 %	\subsection{Predicting defaulters in financial institutions}
 %	\begin{table}
@@ -411,19 +414,19 @@
 
 	\begin{figure*}
 		\centering
-		\vspace*{-1.5cm}\hspace*{-1.9cm}\begin{subfigure}{.5\textwidth}
-			\includegraphics[scale=0.61]{classifier_dataset_plt_2016-10-26_11-46-14}
+		\vspace*{-1.5cm}\hspace*{-1.5cm}\begin{subfigure}{.5\textwidth}
+			\includegraphics[scale=0.61]{classifier_dataset_plt_2016-10-26_18-44-26}
 			\label{fig:res}
 		\end{subfigure}\hspace*{4cm}\vspace*{-0.5cm}%
 		\hspace*{-2cm}\begin{subfigure}{.5\textwidth}
-			\includegraphics[scale=0.61]{classifier_dataset_plt_2016-10-26_11-46-14}
+			\includegraphics[scale=0.61]{classifier_dataset_plt_2016-10-26_18-44-26}
 			\label{fig:res}
 		\end{subfigure}
 		\vspace*{-0.5cm}\hspace*{-3cm}\begin{subfigure}{\textwidth}
 			\includegraphics[scale=0.6]{legend}
 			\label{fig:res}
 		\end{subfigure}
-		\caption{Comparison of classifiers with different data balancing techniques on Lima TB data set (left) and [PLACEHOLDER for DIMAGI attrition] (right)}
+		\caption{Comparison of classifiers with different data balancing techniques on Lima TB data set (left) and [PLACEHOLDER for DIMAGI attrition] (right). SVM and Logistic regression excluded because of minimal variation.}
 	\end{figure*}
 	
 

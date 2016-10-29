@@ -24,7 +24,7 @@ import config.classifiers as cfr
 const.TEST_REPEAT = 10
 
 
-def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, categorical_columns, classification_label, classifier_parameters, data_balancer, parameter_description, classifier_dict, classifier_description, roc_plot, result_recorder, missing_value_strategy, parameter_index):
+def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, categorical_columns, binary_columns, classification_label, classifier_parameters, data_balancer, parameter_description, classifier_dict, classifier_description, roc_plot, result_recorder, missing_value_strategy, parameter_index):
     if classifier_dict["status"]:
         print("=== Executing {0} ===".format(classifier_description))
         test_stats = RunStatistics()
@@ -34,8 +34,9 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
             generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer, random_values[i])
             kf = StratifiedKFold(n_splits=const.NUMBER_OF_FOLDS, shuffle=True, random_state=generic_classifier.k_fold_state)
             result_dictionary = None
-            for train, test in kf.split(input_defaulter_set.iloc[:, :-1], input_defaulter_set.iloc[:, -1:].as_matrix().flatten()):
-                train_df, test_df = apply_preprocessing_to_train_test_dataset(input_defaulter_set, train, test, numeric_columns, categorical_columns, classification_label,
+            defaulter_set_copy = input_defaulter_set.copy()
+            for train, test in kf.split(defaulter_set_copy.iloc[:, :-1], defaulter_set_copy.iloc[:, -1:].as_matrix().flatten()):
+                train_df, test_df = apply_preprocessing_to_train_test_dataset(defaulter_set_copy, train, test, numeric_columns, categorical_columns, binary_columns, classification_label,
                                                                               missing_value_strategy, create_dummy_variables=True)
                 test_df = test_df[train_df.columns]
 
@@ -64,7 +65,7 @@ def main(random_values):
         if data_set["status"]:
             # Load in data set
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
-            input_defaulter_set = input_defaulter_set[data_set["numeric_columns"] + data_set["categorical_columns"] + data_set["classification_label"]]
+            input_defaulter_set = input_defaulter_set[data_set["numeric_columns"] + data_set["categorical_columns"]  + [name for name, _, _ in data_set["binary_columns"]] + data_set["classification_label"]]
             input_defaulter_set = input_defaulter_set.dropna(axis=0)
             input_defaulter_set = input_defaulter_set.reset_index(drop=True)
 
@@ -72,7 +73,6 @@ def main(random_values):
 
             result_recorder_after = ParameterComparisionResultRecorder()
             cpu_count = get_number_of_processes_to_use()
-
 
             parameter_description = ["Default without balancer", "Default with balancer", "Tuned"]
             parameter_sets = [data_set["data_set_data_balancer_parameters"], data_set["data_set_data_balancer_parameters"], data_set["data_set_classifier_parameters"]]
@@ -83,7 +83,7 @@ def main(random_values):
                 roc_plot = manager.list()
 
                 # Execute enabled classifiers
-                Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(random_values, input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"],
+                Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(random_values, input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["binary_columns"], data_set["classification_label"],
                                                                            parameter_sets[parameter_index].classifier_parameters[classifier_description]["classifier_parameters"],
                                                                            parameter_sets[parameter_index].classifier_parameters[classifier_description]["data_balancer"], parameter_description[parameter_index], classifier_dict, classifier_description, roc_plot,
                                                                            parameter_comparision_result_recorder, data_set["missing_values_strategy"], parameter_index) for classifier_description, classifier_dict in cfr.classifiers.iteritems())

@@ -12,8 +12,8 @@ class FeatureSelectionResultRecorder:
         else:
             self.results = result_arr
 
-    def record_results(self, result_dict, classifier_dict, feature_selection_strategy):
-        self.results.append((result_dict, classifier_dict, feature_selection_strategy))
+    def record_results(self, result_dict, classifier_dict, feature_selection_strategy, features_selected, feature_summary=None):
+        self.results.append((result_dict, classifier_dict, feature_selection_strategy, features_selected, feature_summary))
 
     def save_results_to_file(self, random_values, data_set_description):
         """Records results to file. If file_name is None, then a default filename of data_<number of folds>_<timestamp>.csv"""
@@ -23,15 +23,26 @@ class FeatureSelectionResultRecorder:
             output_file = open(os.path.dirname(os.path.realpath(__file__)) + "/../../results/" + file_name, "wb")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
             title_row = ["Feature selection strategy", "Classifier description", "Matthews correlation coefficient", "Cohen Kappa score", "Average true rate", "Average true positive rate",
-                         "Average true negative rate", "Average false positive rate", "Average false negative rate", "initialisation_values"]
+                         "Average true negative rate", "Average false positive rate", "Average false negative rate", "initialisation_values", "features_selected", "feature_summary"]
             csv_writer.writerow(title_row)
             x = 0
+            feature_selection_approach = None
+            feature_summary = None
             for result_tuple in self.results:
                 if x == 0:
                     random_vals = random_values
                 else:
                     random_vals = None
+                if result_tuple[3] == feature_selection_approach:
+                    features = None
+                else:
+                    features = result_tuple[3]
+                if result_tuple[4] == feature_summary:
+                    feature_smmry = None
+                else:
+                    feature_smmry = result_tuple[4]
+                feature_selection_approach = result_tuple[3]
                 csv_writer.writerow((result_tuple[2], result_tuple[1], result_tuple[0][0], result_tuple[0][1],
-                                     result_tuple[0][2], result_tuple[0][3], result_tuple[0][4], result_tuple[0][5], result_tuple[0][6], random_vals))
+                                     result_tuple[0][2], result_tuple[0][3], result_tuple[0][4], result_tuple[0][5], result_tuple[0][6], random_vals, features, feature_smmry))
                 x += 1
             output_file.close()

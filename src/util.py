@@ -14,6 +14,9 @@ def get_number_of_processes_to_use():
 
 
 def bcr_scorer(classifier, X, y):
+    if len(X[0]) < 3:
+        # Prevent using less than 3 features to stop issues with data balancing
+        return -1
     y_pred = classifier.predict(X)
     TP = 0
     TN = 0

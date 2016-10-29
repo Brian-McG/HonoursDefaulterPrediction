@@ -30,7 +30,7 @@ from time_to_default.time_to_default_result_recorder import TimeToDefaultResultR
 
 const.TEST_REPEAT = 10
 
-def execute_classifier_run(time_range, random_values, defaulters_in_range, defaulters_out_of_range, non_defaulters, numeric_columns, categorical_columns, classification_label, missing_values_strategy, classifier_parameters, data_balancer, classifier_dict, classifier_description, roc_plot, result_recorder):
+def execute_classifier_run(time_range, random_values, defaulters_in_range, defaulters_out_of_range, non_defaulters, numeric_columns, categorical_columns, binary_columns, classification_label, missing_values_strategy, classifier_parameters, data_balancer, classifier_dict, classifier_description, roc_plot, result_recorder):
     if classifier_dict["status"]:
         print("=== Executing {0} ===".format(classifier_description))
         test_stats = RunStatistics()
@@ -45,8 +45,8 @@ def execute_classifier_run(time_range, random_values, defaulters_in_range, defau
                 combined = pd.concat([train, test])
 
                 # Preprocess data set
-                train, test = apply_preprocessing_to_train_test_dataset(combined, train_index, test_index, numeric_columns, categorical_columns, classification_label,
-                                                                              missing_values_strategy, create_dummy_variables=True)
+                train, test = apply_preprocessing_to_train_test_dataset(combined, train_index, test_index, numeric_columns, categorical_columns, binary_columns, classification_label,
+                                                                        missing_values_strategy, create_dummy_variables=True)
 
                 X_train = train.iloc[:, :-1].as_matrix()
                 y_train = train.iloc[:, -1:].as_matrix().flatten()
@@ -67,14 +67,14 @@ def main():
         if data_set["status"]:
             # Load in data set
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
-            input_defaulter_set = input_defaulter_set.dropna(axis=0, subset=[data_set["numeric_columns"] + data_set["categorical_columns"] + data_set["classification_label"]])
+            input_defaulter_set = input_defaulter_set.dropna(axis=0, subset=[data_set["numeric_columns"] + data_set["categorical_columns"] + [name for name, _, _ in data_set["binary_columns"]] + data_set["classification_label"]])
             input_defaulter_set = input_defaulter_set.reset_index(drop=True)
 
             time_range_results = []
             time_ranges = [(0, 30), (0, 60), (0, 100), (0, 200), (50, 100), (50, 150), (100, 200), (200, 1000), (300, 1000)]
 
             non_defaulters = input_defaulter_set[np.isnan(input_defaulter_set["Time to Default (Days)"])]
-            non_defaulters = non_defaulters[data_set["numeric_columns"] + data_set["categorical_columns"] + data_set["classification_label"]]
+            non_defaulters = non_defaulters[data_set["numeric_columns"] + data_set["categorical_columns"] + [name for name, _, _ in data_set["binary_columns"]] + data_set["classification_label"]]
 
             random_values = []
             random = Random()
@@ -92,9 +92,9 @@ def main():
             for time_range in time_ranges:
                 print("Time range {0} - {1}".format(time_range[0], time_range[1]))
                 defaulters_in_range = input_defaulter_set[(input_defaulter_set["Time to Default (Days)"] >= time_range[0]) & (input_defaulter_set["Time to Default (Days)"] <= time_range[1])]
-                defaulters_in_range = defaulters_in_range[data_set["numeric_columns"] + data_set["categorical_columns"] + data_set["classification_label"]]
+                defaulters_in_range = defaulters_in_range[data_set["numeric_columns"] + data_set["categorical_columns"] + [name for name, _, _ in data_set["binary_columns"]] + data_set["classification_label"]]
                 defaulters_out_of_range = input_defaulter_set[(input_defaulter_set["Time to Default (Days)"] < time_range[0]) | (input_defaulter_set["Time to Default (Days)"] > time_range[1])]
-                defaulters_out_of_range = defaulters_out_of_range[data_set["numeric_columns"] + data_set["categorical_columns"] + data_set["classification_label"]]
+                defaulters_out_of_range = defaulters_out_of_range[data_set["numeric_columns"] + data_set["categorical_columns"] + [name for name, _, _ in data_set["binary_columns"]] + data_set["classification_label"]]
                 print("defaulters_in_range", len(defaulters_in_range))
                 print("defaulters_out_of_range", len(defaulters_out_of_range))
 
@@ -102,7 +102,7 @@ def main():
                 run_results = TimeToDefaultResultRecorder(result_arr=manager.list())
 
                 # Execute enabled classifiers
-                Parallel(n_jobs=1)(delayed(execute_classifier_run)(time_range, random_values, defaulters_in_range, defaulters_out_of_range, non_defaulters, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["missing_values_strategy"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], classifier_dict, classifier_description, roc_plot, run_results) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
+                Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(time_range, random_values, defaulters_in_range, defaulters_out_of_range, non_defaulters, data_set["numeric_columns"], data_set["categorical_columns"], data_set["binary_columns"], data_set["classification_label"], data_set["missing_values_strategy"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], classifier_dict, classifier_description, roc_plot, run_results) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
 
                 result_recorder.results = sorted(result_recorder.results, key=lambda tup: tup[1])
                 time_range_results.append(("{0} - {1}".format(time_range[0], time_range[1]), run_results.results))

@@ -18,13 +18,13 @@ from run_statistics import RunStatistics
 from util import get_number_of_processes_to_use
 
 
-def execute_classifier_run(input_defaulter_set, classifier_parameters, data_balancer, random_values, classifier_dict, classifier_description, roc_plot, result_recorder, numeric_columns, categorical_columns, classification_label, missing_value_strategy):
+def execute_classifier_run(input_defaulter_set, classifier_parameters, data_balancer, random_values, classifier_dict, classifier_description, roc_plot, result_recorder, numeric_columns, categorical_columns, binary_columns, classification_label, missing_value_strategy):
     if classifier_dict["status"]:
         print("=== Executing {0} ===".format(classifier_description))
         test_stats = RunStatistics()
         for i in range(const.TEST_REPEAT):
             generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer, random_values[i])
-            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set.copy(), numerical_columns=numeric_columns, categorical_columns=categorical_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
+            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set.copy(), numerical_columns=numeric_columns, categorical_columns=categorical_columns, binary_columns=binary_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
             test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
 
         avg_results = test_stats.calculate_average_run_accuracy()
@@ -41,7 +41,7 @@ def main(random_value_arr):
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
             if data_set["duplicate_removal_column"] is not None:
                 input_defaulter_set.drop_duplicates(data_set["duplicate_removal_column"], inplace=True)
-            input_defaulter_set = input_defaulter_set[data_set["numeric_columns"] + data_set["categorical_columns"] + data_set["classification_label"]]
+            input_defaulter_set = input_defaulter_set[data_set["numeric_columns"] + data_set["categorical_columns"] + [name for name, _, _ in data_set["binary_columns"]] + data_set["classification_label"]]
 
             input_defaulter_set.dropna(axis=0, inplace=True)
             input_defaulter_set.reset_index(drop=True, inplace=True)
@@ -64,14 +64,14 @@ def main(random_value_arr):
 
             cpu_count = get_number_of_processes_to_use()
             # Execute enabled classifiers
-            Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(input_defaulter_set, data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], random_value_arr, classifier_dict, classifier_description, roc_plot, result_recorder, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["missing_values_strategy"]) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
+            Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(input_defaulter_set, data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], random_value_arr, classifier_dict, classifier_description, roc_plot, result_recorder, data_set["numeric_columns"], data_set["categorical_columns"], data_set["binary_columns"], data_set["classification_label"], data_set["missing_values_strategy"]) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
 
             roc_plot = sorted(roc_plot, key=lambda tup: tup[1])
             result_recorder.results = sorted(result_recorder.results, key=lambda tup: tup[1])
             for (result_arr, classifier_description) in result_recorder.results:
                 print("\n=== {0} ===".format(classifier_description))
                 print("Matthews correlation coefficient: {0}".format(result_arr[0]))
-                print("F1 score: {0}".format(result_arr[1]))
+                print("Cohen Kappa Score: {0}".format(result_arr[1]))
                 print("Balanced Accuracy: {0}".format(result_arr[2]))
                 print("Average true positive rate: {0}".format(result_arr[3]))
                 print("Average true negative rate: {0}".format(result_arr[4]))
