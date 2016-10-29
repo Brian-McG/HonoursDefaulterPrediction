@@ -78,7 +78,7 @@ random_forest_dict = {"parameters": {"n_estimators": list(range(5, 120, 10)), "c
 generic_classifier_parameter_dict[clf.random_forest_description] = random_forest_dict
 
 # K-nearest neighbours
-k_nearest_dict = {"parameters": {"n_neighbors": list(range(5, 120, 10)), "weights": ["uniform", "distance"], "algorithm": ["ball_tree", "kd_tree", "brute", "auto"],
+k_nearest_dict = {"parameters": {"n_neighbors": list(range(5, 120, 10)), "weights": ["uniform", "distance"], "algorithm": ["auto"],
                                  "leaf_size": list(range(20, 50, 5)), "p": list(range(1, 5))}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.k_nearest_description] = k_nearest_dict
 
