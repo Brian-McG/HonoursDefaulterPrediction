@@ -26,7 +26,7 @@ def append_classifier_details(classifier_data_balancer, classifier_parameters_di
 # Generic classifier_parameters
 # Clustering-Launched Classification
 clustering_launched_classifier_data_balancer = InstanceHardnessThreshold
-clustering_launched_classifier_parameters = {"d": 0.270526315789473}
+clustering_launched_classifier_parameters = {"d": 0.1}
 append_classifier_details(clustering_launched_classifier_data_balancer, clustering_launched_classifier_parameters, clfrs.clustering_launched_classifier_description,
                           classifier_parameters)
 
@@ -42,17 +42,17 @@ append_classifier_details(ann_data_balancer, ann_parameters, clfrs.ann_descripti
 
 # Support Vector Machines (with RDF kernel)
 svm_rdf_data_balancer = RandomUnderSampler
-svm_parameters = {"cache_size": 1000, "gamma": "auto", "C": 7.896842105, "kernel": "rbf", "class_weight": "balanced", "decision_function_shape": "ovr", "probability": True, "max_iter": 100000}
+svm_parameters = {"cache_size": 1000, "gamma": "auto", "C": 7.896842105, "kernel": "rbf", "class_weight": "balanced", "decision_function_shape": "ovr", "probability": True}
 append_classifier_details(svm_rdf_data_balancer, svm_parameters, clfrs.svm_rdf_description, classifier_parameters)
 
 # Support Vector Machines (with linear kernel)
 svm_linear_data_balancer = ADASYN
-svm_linear_parameters = {"C": 7.371053, "decision_function_shape": "ovr", "cache_size": 1000, "kernel": "linear", "probability": True, "class_weight": None, "max_iter": 100000}
+svm_linear_parameters = {"C": 7.371053, "decision_function_shape": "ovr", "cache_size": 1000, "kernel": "linear", "probability": True, "class_weight": None}
 append_classifier_details(svm_linear_data_balancer, svm_linear_parameters, clfrs.svm_linear_description, classifier_parameters)
 
 # Support Vector Machines (with polynomial kernel)
-svm_poly_data_balancer = None
-svm_poly_parameters = {"cache_size": 1000, "decision_function_shape": "ovr", "C": 1.11888888888888, "gamma": "auto", "kernel": "poly", "degree": 4, "class_weight": "balanced", "probability": True, "max_iter": 100000}
+svm_poly_data_balancer = RandomUnderSampler
+svm_poly_parameters = {"cache_size": 1000, "decision_function_shape": "ovr", "C": 1.11888888888888, "gamma": 0.1112, "kernel": "poly", "degree": 3, "class_weight": None, "probability": True}
 append_classifier_details(svm_poly_data_balancer, svm_poly_parameters, clfrs.svm_poly_description, classifier_parameters)
 
 # Logistic Regression

@@ -28,10 +28,10 @@ class ResultRecorder:
                 csv_writer.writerow(TITLE_ROW_WITH_TIME_TO_FIT)
                 for result_tuple in self.results:
                     csv_writer.writerow((result_tuple[1], result_tuple[0][0], result_tuple[0][1],
-                                         result_tuple[0][2], result_tuple[0][3], result_tuple[0][4], result_tuple[0][5], result_tuple[0][6], result_tuple[0][12], random_values))
+                                         result_tuple[0][2], result_tuple[0][3], result_tuple[0][4], result_tuple[0][5], result_tuple[0][6], result_tuple[0][13], result_tuple[0][12], random_values))
             else:
                 csv_writer.writerow(TITLE_ROW)
                 for result_tuple in self.results:
                     csv_writer.writerow((result_tuple[1], result_tuple[0][0], result_tuple[0][1],
-                                         result_tuple[0][2], result_tuple[0][3], result_tuple[0][4], result_tuple[0][5], result_tuple[0][6], random_values))
+                                         result_tuple[0][2], result_tuple[0][3], result_tuple[0][4], result_tuple[0][5], result_tuple[0][6], result_tuple[0][13], random_values))
             output_file.close()

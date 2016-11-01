@@ -6,6 +6,8 @@ from random import Random
 
 from joblib import Parallel
 from joblib import delayed
+from sklearn.linear_model import Perceptron
+from sklearn.tree import ExtraTreeClassifier
 
 from config import data_sets
 from data_balance_testing.data_balancer_result_recorder import DataBalancerResultRecorder
@@ -49,7 +51,7 @@ import config.constants as const
 import config.classifiers as cfr
 import visualisation as vis
 
-const.TEST_REPEAT = 1
+const.TEST_REPEAT = 3
 
 def override_parameters(parameter_results):
     data_balancer_arr = {}
@@ -78,27 +80,27 @@ def override_parameters(parameter_results):
                                 parameter_dict[parameter_header] = eval(best_parameters[parameter_header])
                             except NameError:
                                 parameter_dict[parameter_header] = str(best_parameters[parameter_header])
+                    else:
+                        if np.isnan(best_parameters[parameter_header]):
+                            parameter_dict[parameter_header] = None
                         else:
-                            if np.isnan(best_parameters[parameter_header]):
-                                parameter_dict[parameter_header] = None
-                            else:
-                                parameter_dict[parameter_header] = best_parameters[parameter_header]
-                            if type(best_parameters[parameter_header]) == np.float64 and best_parameters[parameter_header].is_integer():
-                                parameter_dict[parameter_header] = np.int64(best_parameters[parameter_header])
+                            parameter_dict[parameter_header] = best_parameters[parameter_header]
+                        if type(best_parameters[parameter_header]) == np.float64 and best_parameters[parameter_header].is_integer():
+                            parameter_dict[parameter_header] = np.int64(best_parameters[parameter_header])
                 else:
                     data_balancer = eval(best_parameters[parameter_header])
             data_balancer_arr[classifier_name].append((data_balancer, parameter_dict))
     return data_balancer_arr
 
 
-def execute_classifier_run(data_balancer_results, random_values, input_defaulter_set, numerical_columns, categorical_columns, classification_label, missing_value_strategy, classifier_arr, classifier_description, roc_plot):
+def execute_classifier_run(data_balancer_results, random_values, input_defaulter_set, numerical_columns, categorical_columns, binary_columns, classification_label, missing_value_strategy, classifier_arr, classifier_description, roc_plot):
     result_arr = []
     for(data_balancer, parameter_dict) in classifier_arr:
         print("=== Executing {0} - {1} ===".format(classifier_description, data_balancer.__name__ if data_balancer is not None else "None"))
         test_stats = RunStatistics()
         for i in range(const.TEST_REPEAT):
             generic_classifier = GenericClassifier(cfr.classifiers[classifier_description]["classifier"], parameter_dict, data_balancer, random_values[i])
-            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set, numerical_columns=numerical_columns, categorical_columns=categorical_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
+            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set.copy(), numerical_columns=numerical_columns, categorical_columns=categorical_columns, binary_columns=binary_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
             test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
 
         avg_results = test_stats.calculate_average_run_accuracy()
@@ -114,7 +116,7 @@ def main(classifier_dict):
         if data_set["status"] and data_set["data_set_description"] in classifier_dict:
             # Load in data set
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
-            input_defaulter_set = input_defaulter_set[data_set["numeric_columns"] + data_set["categorical_columns"] + data_set["classification_label"]]
+            input_defaulter_set = input_defaulter_set[data_set["numeric_columns"] + data_set["categorical_columns"] + [name for name, _, _ in data_set["binary_columns"]] + data_set["classification_label"]]
             input_defaulter_set = input_defaulter_set.dropna(axis=0)
             input_defaulter_set = input_defaulter_set.reset_index(drop=True)
 
@@ -136,7 +138,7 @@ def main(classifier_dict):
             data_balancer_results = manager.list()
 
             # Execute enabled classifiers
-            Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(data_balancer_results, random_values, input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["classification_label"], data_set["missing_values_strategy"], classifier_dict, classifier_description, roc_plot) for classifier_description, classifier_dict in classifier_parameters.iteritems())
+            Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(data_balancer_results, random_values, input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["binary_columns"], data_set["classification_label"], data_set["missing_values_strategy"], classifier_dict, classifier_description, roc_plot) for classifier_description, classifier_dict in classifier_parameters.iteritems())
 
             data_balancer_results = sorted(data_balancer_results, key=lambda tup: tup[0])
 
@@ -150,7 +152,7 @@ def main(classifier_dict):
             plot_balancer_results_per_classifier(data_balancer_results, (4, "Average true negative rate"))
             data_set_results.append((data_set["data_set_description"], data_balancer_results))
             vis.visualise_dataset_balancer_results([(data_set["data_set_description"], data_balancer_results)])
-    #vis.visualise_dataset_balancer_results_multi_dataset(data_set_results)
+    vis.visualise_dataset_balancer_results_multi_dataset(data_set_results)
 if __name__ == "__main__":
     if len(sys.argv) < 3 and len(sys.argv) % 2 == 0:
         print('Expected "cdn_perf.py <parameter_result_label> <parameter_results_path>"')

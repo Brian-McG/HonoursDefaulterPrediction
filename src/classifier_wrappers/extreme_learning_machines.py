@@ -8,7 +8,7 @@ class ExtremeLearningMachine:
     def __init__(self, layers=None, random_state=None):
         self.layers = layers
         if layers is None:
-            self.layers = [(20, "sigm"), (3, "rbf_l2")]
+            self.layers = [(20, 'sigm')]
 
         if random_state is None:
             self.random_state = np.random.RandomState()

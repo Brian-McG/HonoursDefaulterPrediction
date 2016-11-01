@@ -157,85 +157,15 @@
 	
 	In addition to our TB default dataset and attrition dataset, we include two real-world credit scoring datasets. The field of credit scoring in the financial space aims to determine if a financial institution should provide credit to an individual. This is a well researched binary classification problem. We included these as all the problems try to flag high-risk individuals and it will allow us to get a better understanding of how the results compare and generalise.
 	
-	\section{Related work}
-	There have been relatively few studies that apply classification techniques to directly predict defaulters of treatment and CHW attrition. The work that has been done for TB default focuses on determining the individual features associated with treatment default. To get an understanding of the work we want to do, we evaluated the credit scoring field as it is a similar binary classification problem and has been well researched. 
-	\subsection{Determining predictors of TB default}
-	\label{predictors_of_defaulters_related_work}
-	There have been many studies which focus on determining the factors associated with TB default. We evaluated a selection of these publications \cite{chan:2003prevalence, Jha:10.1371/journal.pone.0008873, jittimanee:10.1111/j.1440-172X.2007.00650.x, Lackey:10356751520150601, muture:6660173120110101, Shargie:10.1371/journal.pmed.0040037}. The majority of techniques use a form of logistic regression to determine the association. 
-	
-	The datasets used by the publications contain different features. Age and gender are common throughout the datasets. History of past default is available for all datasets except for Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037}. Lackey \textit{et al.} \cite{Lackey:10356751520150601} only picked individuals who did not have a history of past default. Jittimanee \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} was the only publication with the feature that did not find it to be significant to the 95\% confidence level. However, it did have an odds ratio of 2.19 and a p-value of 0.12. It can therefore be deduced that a history of past default has a strong correlation to default. Two out of three publications with the alcohol abuse feature available, found it to be significant. Three of the four publications with side effects as a feature, found it was significant. Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037} and Jittimanee \textit{et al.} \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} measured distance and time to treatment site respectively. It can be reasoned that the aforementioned features will be significant in other datasets since they were found to be significant in the majority of the publications. Other significant features such as illegal drug use, use of herbal medication, daily jobs, history of lung cancer and history of liver disease only appeared once in the datasets. It cannot be discerned if the significance is generalisable or specific to the dataset. The identification of the same features as significant is fairly consistent for the publications that have those features in their dataset. 
-
-	\subsection{Credit scoring}
-	The credit scoring field aims to predict high risk individuals who should not be provided credit. This field has been well researched in the last 20 years. We reviewed a selection of these papers to gain insight on classifier performance as well examine their experimental methodology. Lessmanna \textit{et al.} \cite{lessmanna2013benchmarking} compared a 
-	
-	\begin{table}
-		\small
-		\caption{German data set\textsuperscript{\textparagraph}}
-		\label{table:german_dataset}	
-		\begin{tabular}{c|c|c|c} \hline		
-			Publication&Accuracy&\parbox[t]{1.2cm}{\centering Type I\\Error}&\parbox[t]{1.2cm}{\centering Type II\\Error}\rule{0pt}{3mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2004543}}
-			&\parbox[t]{2.3cm}{\centering \textbf{79.87\%}\textsuperscript{\textdagger}}
-			&\parbox[t]{1.1cm}{\centering n/a}
-			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-			\parbox[t]{2.3cm}{Li \textit{et al.} \cite{Li2006772}}
-			&\parbox[t]{2.3cm}{\centering \textbf{84.83\%}}
-			&\parbox[t]{1.1cm}{\centering 10-20\%\textsuperscript{*}}
-			&\parbox[t]{1.2cm}{\centering 10-20\%\textsuperscript{*}}\\ \hline
-			\parbox[t]{2.3cm}{Luo \textit{et al.} \cite{Luo20097562}}
-			&\parbox[t]{2.3cm}{\centering 77.06\% (MySVM), 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
-			&\parbox[t]{1.1cm}{\centering n/a}
-			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2007847}}
-			&\parbox[t]{2.3cm}{\centering 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
-			&\parbox[t]{1.1cm}{\centering n/a}
-			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-			\parbox[t]{2.3cm}{Danenas \textit{et al.} \cite{Danenas20153194}}
-			&\parbox[t]{2.3cm}{\centering \textbf{94.41\%} (Linear SVM), \textbf{92.37\%} (PSO-LinSVM)\textsuperscript{\textdagger}}
-			&\parbox[t]{1.1cm}{\centering n/a\textsuperscript{\textdaggerdbl}}
-			&\parbox[t]{1.2cm}{\centering n/a\textsuperscript{\textdaggerdbl}}\rule{0pt}{3.5mm}\rule[-8mm]{0pt}{0pt}		
-		\end{tabular}		
-	\end{table}
-	
-	\begin{table}
-		\small
-		\caption{Australian data set\textsuperscript{\textparagraph}}
-		\label{table:australian_dataset}	
-		\begin{tabular}{c|c|c|c} \hline		
-			Publication&Accuracy&\parbox[t]{1.2cm}{\centering Type I\\Error}&\parbox[t]{1.2cm}{\centering Type II\\Error}\rule{0pt}{3mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2004543}}
-			&\parbox[t]{2.3cm}{\centering \textbf{79.87\%}\textsuperscript{\textdagger}}
-			&\parbox[t]{1.1cm}{\centering n/a}
-			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-			\parbox[t]{2.3cm}{Li \textit{et al.} \cite{Li2006772}}
-			&\parbox[t]{2.3cm}{\centering \textbf{84.83\%}}
-			&\parbox[t]{1.1cm}{\centering 10-20\%\textsuperscript{*}}
-			&\parbox[t]{1.2cm}{\centering 10-20\%\textsuperscript{*}}\\ \hline
-			\parbox[t]{2.3cm}{Luo \textit{et al.} \cite{Luo20097562}}
-			&\parbox[t]{2.3cm}{\centering 77.06\% (MySVM), 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
-			&\parbox[t]{1.1cm}{\centering n/a}
-			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-			\parbox[t]{2.3cm}{Huang \textit{et al.} \cite{Huang2007847}}
-			&\parbox[t]{2.3cm}{\centering 82.41\% (SVM-GA)\textsuperscript{\textdagger}}
-			&\parbox[t]{1.1cm}{\centering n/a}
-			&\parbox[t]{1.2cm}{\centering n/a}\rule{0pt}{3.5mm}\rule[-0mm]{0pt}{0pt}\\ \hline
-			\parbox[t]{2.3cm}{Danenas \textit{et al.} \cite{Danenas20153194}}
-			&\parbox[t]{2.3cm}{\centering \textbf{94.41\%} (Linear SVM), \textbf{92.37\%} (PSO-LinSVM)\textsuperscript{\textdagger}}
-			&\parbox[t]{1.1cm}{\centering n/a\textsuperscript{\textdaggerdbl}}
-			&\parbox[t]{1.2cm}{\centering n/a\textsuperscript{\textdaggerdbl}}\rule{0pt}{3.5mm}\rule[-8mm]{0pt}{0pt}		
-		\end{tabular}		
-	\end{table}
-
-	
 	\section{Background}
 	This section aims to provide an overview of all the techniques and metrics used in this paper.
 	\subsection{Definition of a defaulter}
 	The definition of a defaulter depends on its context. TB literature typically uses the World Health Organisation (WHO) definition that a defaulter is a person whose treatment has been disrupted for two or more consecutive months \cite{chan:2003prevalence, cherkaoui:19326203, Jha:10.1371/journal.pone.0008873,jittimanee:10.1111/j.1440-172X.2007.00650.x,muture:6660173120110101, world2015TB}.
 	
 	\subsection{Classification techniques}
-	This section examines the different classification techniques and outlines how each technique produces its output.
+	We selected a variety of classification techniques to benchmark. We include a selection of well known techniques, ensemble techniques and newer techniques that have shown promising results in other studies. Our choices are based partly on our review of classification techniques used in the credit scoring field in Section \ref{credit-scoring-review}.
 	\subsubsection{Support Vector Machines}
-	Support vector machine (SVM) is a machine learning technique that can be used to produce regression or classification functions from a set of training data \cite{Luo20097562}. SVM works by mapping the input vectors into a high-dimensional feature space with the use of a kernel function \cite{Danenas20153194}. The kernel function selected determines the if the mapping is linear or non-linear \cite{Luo20097562}. Linear, polynomial and radial basis function (RBF) are common kernel functions \cite{hsu2003practical}. The polynomial and RBF kernel performs a non-linear mapping into the high-dimensional space \cite{hsu2003practical}. This feature space is then searched to acquire an optimal hyperplane that separates the space with the maximum distance between the two classes \cite{Danenas20153194}. Figure \ref{fig:svm-overview} shows an example of this. Hsu \textit{et al.} \cite{hsu2003practical} recommends the RBF kernel as a reasonable first choice but notes that it is not suitable when there are a large number of features. The linear kernel is recommend when there are a large number of features.
+	Support Vector Machines (SVM) is a machine learning technique that can be used to produce regression or classification functions from a set of training data \cite{Luo20097562}. SVM works by mapping the input vectors into a high-dimensional feature space with the use of a kernel function \cite{Danenas20153194}. The kernel function selected determines the if the mapping is linear or non-linear \cite{Luo20097562}. Linear, polynomial and radial basis function (RBF) are common kernel functions \cite{hsu2003practical}. The polynomial and RBF kernel performs a non-linear mapping into the high-dimensional space \cite{hsu2003practical}. This feature space is then searched to acquire an optimal hyperplane that separates the space with the maximum distance between the two classes \cite{Danenas20153194}. Figure \ref{fig:svm-overview} shows an example of this. Hsu \textit{et al.} \cite{hsu2003practical} recommends the RBF kernel as a reasonable first choice but notes that it is not suitable when there are a large number of features. The linear kernel is recommend when there are a large number of features.
 	
 	\begin{figure}
 		\centering
@@ -245,34 +175,34 @@
 	\end{figure}
 	
 	\subsubsection{Artificial Neural Network}
-	An artificial neural network (ANN) is based on the functionality of the human brain \cite{Wang2003}. Neurons in the brain are interconnected and process information in parallel \cite{Wang2003}. A typical ANN is comprised of an input layer, $k$ number of hidden layers and an output layer. The neurons in each layer are connected to the neurons in the next layer. A numeric weight is defined between each pair of connected neurons. An activation function defines if a neuron will fire \cite{Wang2003}. The activation function bounds the value of a neuron to a specific range to limit the effect of divergent neurons \cite{Wang2003}. By using an activation function, a non-linear combination of weights can be generated \cite{Wang2003}. It has been proven that an ANN is able to approximate any continuous function if has at least one hidden node and an activation function that is both bounded to some range and non-constant \cite{Hornik1991251}.
+	Artificial Neural Network (ANN) is based on the functionality of the human brain \cite{Wang2003}. Neurons in the brain are interconnected and process information in parallel \cite{Wang2003}. A typical ANN is comprised of an input layer, $k$ number of hidden layers and an output layer. The neurons in each layer are connected to the neurons in the next layer. A numeric weight is defined between each pair of connected neurons. An activation function defines if a neuron will fire \cite{Wang2003}. The activation function bounds the value of a neuron to a specific range to limit the effect of divergent neurons \cite{Wang2003}. By using an activation function, a non-linear combination of weights can be generated \cite{Wang2003}. It has been proven that an ANN is able to approximate any continuous function if has at least one hidden node and an activation function that is both bounded to some range and non-constant \cite{Hornik1991251}.
 	
-	Extreme learning machines (ELM) is an alternative approach to the conventional back-propagated ANN. Huang \textit{el al.} \cite{Huang2006489} proved that the input and hidden layer weights can be randomly assigned if the activation function in the hidden layer is infinitely differentiable. By randomly assigning these weights, the weights for the output nodes can be determined analytically \cite{Huang2006489}. This allows ELMs to be trained orders of magnitude faster than a back-propagated ANN \cite{6035797, Huang2006489}. ELMs have been shown to provide better results than SVMs and ANNs on a variety of classification and regression tasks \cite{6035797, Huang2006489}.
+	ELM is an alternative approach to the conventional back-propagated ANN. Huang \textit{el al.} \cite{Huang2006489} proved that the input and hidden layer weights can be randomly assigned if the activation function in the hidden layer is infinitely differentiable. By randomly assigning these weights, the weights for the output nodes can be determined analytically \cite{Huang2006489}. This allows ELMs to be trained orders of magnitude faster than a back-propagated ANN \cite{6035797, Huang2006489}. ELMs have been shown to provide better results than SVMs and ANNs on a variety of classification and regression tasks \cite{6035797, Huang2006489}.
 	
 	\subsubsection{Logistic Regression}
-	Logistic regression is a technique that models the chance of an outcome based on the input features \cite{doi:10.11613/BM.2014.003}. Since chance is a ratio, the logarithm of the chance is modelled instead \cite{doi:10.11613/BM.2014.003}:
+	Logistic regression (LR) is a technique that models the chance of an outcome based on the input features \cite{doi:10.11613/BM.2014.003}. Since chance is a ratio, the logarithm of the chance is modelled instead \cite{doi:10.11613/BM.2014.003}:
 	log$(\frac{p}{1 - p}) = \beta_0 + \beta_1 x_1 + ... + \beta_m x_m$. $p$ represents the probability of an event (likelihood to default for example). $\beta_0$ represents the value of the criterion when the predictor is equal to 0. $\beta_1, ..., \beta_m$ are the regression coefficients associated with the $x_1, ..., x_m$ input features. The probability of an event can then be calculated as $p$ = $\frac{1}{1 + e^{-(\beta_0 + \beta_1 x_1 + ... + \beta_m x_m)}}$. A detailed overview of logistic regression can be found in \cite{Mood01022010} and \cite{doi:10.11613/BM.2014.003}.
 	
 	\subsubsection{$k$-Nearest Neighbours}
 	The $k$-Nearest Neighbours ($k$NN) algorithm determines the output classification by examining the $k$ nearest training examples in the feature space \cite{6313426}. An input is classified by the majority vote of its neighbours.
 	
 	\subsubsection{Ensembles}
-	An ensemble classifier is one which typically makes use of the aggregation of multiple classifiers. A single decision tree can be used for classification by branching on conjunctions of features and having the leaves represent the output class. A decision tree allows for easy interpretation of the generated model, however, typically provides relatively poor classification accuracy \cite{doi:10.1021/ci034160g}. 
+	An ensemble classifier is one which typically makes use of the aggregation of multiple classifiers. A single decision tree (DT) can be used for classification by branching on conjunctions of features and having the leaves represent the output class. A decision tree allows for easy interpretation of the generated model, however, typically provides relatively poor classification accuracy \cite{doi:10.1021/ci034160g}. 
 	
-	Random forest is a technique that fits a number of decision trees on random samples with replacement of the dataset. For each tree, $n$ features are randomly selected and the tree is grown \cite{WIDM:WIDM1072}. Samples that were not selected for training the tree is called out-of-bag data \cite{WIDM:WIDM1072}. It is used to test the error rate of the forest \cite{WIDM:WIDM1072, doi:10.1021/ci034160g}. The output classification is decided by the majority vote of each tree \cite{WIDM:WIDM1072}.
+	Random forest (RF) is a technique that fits a number of decision trees on random samples with replacement of the dataset. For each tree, $n$ features are randomly selected and the tree is grown \cite{WIDM:WIDM1072}. Samples that were not selected for training the tree is called out-of-bag data \cite{WIDM:WIDM1072}. It is used to test the error rate of the forest \cite{WIDM:WIDM1072, doi:10.1021/ci034160g}. The output classification is decided by the majority vote of each tree \cite{WIDM:WIDM1072}.
 	
 	Freund and Schapire's \cite{FREUND1997119} AdaBoost uses a weighted sum of multiple classifiers in order to determine the output. A classifier is constructed in an iterative fashion. At each iteration a pool of classifiers are considered and one classifier is added to the committee of classifiers. Input which is still misclassified is assigned a higher weight at each iteration \cite{Bergstra2006, rojas2009adaboost}. The aim is that the process will select a classifier which helps the still misclassified inputs. The chosen classifier is assigned a weight which determines its power in the overall classification \cite{Bergstra2006, rojas2009adaboost}. The sign of the function: $C(x) = \sum_{i=1}^{m} \alpha_i k_i$ is used to determine the final classification with $\alpha_i$ denoting the weight of each classifier $k_i$ \cite{Bergstra2006}. 
 	
 	\subsubsection{Naive Bayes}
-	Naive Bayes makes an assumption that each input feature is independent of each other \cite{Lewis1998, rish2001empirical}. This allows multiple features be uncoupled from one another which simplifies the algorithm. Naive Bayes uses conditional probability to classify new inputs \cite{Lewis1998}. Using Bayes theorem, the following equation is derived: $p(C_i|\textbf{x}) = \frac{p(C_i) \times p(x_1|C_i) \times...\times p(x_n|C_i)}{p(\textbf{x})}$ with input $\textbf{x} = (x_1,...,x_n)$ and class label $C_i$ \cite{Lewis1998, rish2001empirical}. Since $p(\textit{x})$ is identical for each class, it is typically ignored \cite{rish2001empirical}. To classify an input, the probabilities for each class are calculated using the aforementioned equation and the output is the class with the highest probability \cite{Lewis1998}.
+	Naive Bayes (NB) makes an assumption that each input feature is independent of each other \cite{Lewis1998, rish2001empirical}. This allows multiple features be uncoupled from one another which simplifies the algorithm. Naive Bayes uses conditional probability to classify new inputs \cite{Lewis1998}. Using Bayes theorem, the following equation is derived: $p(C_i|\textbf{x}) = \frac{p(C_i) \times p(x_1|C_i) \times...\times p(x_n|C_i)}{p(\textbf{x})}$ with input $\textbf{x} = (x_1,...,x_n)$ and class label $C_i$ \cite{Lewis1998, rish2001empirical}. Since $p(\textit{x})$ is identical for each class, it is typically ignored \cite{rish2001empirical}. To classify an input, the probabilities for each class are calculated using the aforementioned equation and the output is the class with the highest probability \cite{Lewis1998}.
 	
 	The event model of Naive Bayes classification describes the assumed distribution of features. The Gaussian event model assumes that $p(x_i|C_i)$ follows a Gaussian distribution \cite{John:1995:ECD:2074158.2074196}. This allows support of continuous $x_i$ values \cite{John:1995:ECD:2074158.2074196}. The multivariate Bernoulli event model assumes that features are independent boolean values \cite{mccallum1998comparison}.
 	
 	\subsubsection{Clustering-launched classification}
-	Clustering-launched classification (CLC) is a binary classifier. CLC first clusters the data into groups using a diverse hierarchical k-means algorithm \cite{Luo20097562}. The clusters are divided into positive subsets and negative subsets \cite{Luo20097562}. Support vectors are then used to separate the positive and negative subsets for each cluster \cite{Luo20097562}. Redundant or repeated support vectors are removed thereafter \cite{Luo20097562}.
+	CLC is a binary classifier. CLC first clusters the data into groups using a diverse hierarchical k-means algorithm \cite{Luo20097562}. The clusters are divided into positive subsets and negative subsets \cite{Luo20097562}. Support vectors are then used to separate the positive and negative subsets for each cluster \cite{Luo20097562}. Redundant or repeated support vectors are removed thereafter \cite{Luo20097562}.
 	
 	\subsection{Data Balancing algorithms}
-	This section examines the different data balancing approaches and their respective algorithms.
+	This section examines the different data balancing approaches and their respective algorithms. Our problem space often has an imbalanced number of examples for each class. Most classifiers expect an equal number of samples per class else will bias heavily towards the majority class. we include an analysis of several data balancing algorithms to ensure our classifiers are able to detect both the positive and negative class as best as possible. We chose our balancing techniques to facilitate an evaluation of both over-sampling and under-sampling techniques. Included in the evaluation is techniques that use simple approaches and as others that use sophisticated algorithms.
 	\subsubsection{Over-sampling}
 	Random over-sampling (ROS) is a technique that randomly replicates examples in the minority class \cite{Batista:2004:SBS:1007730.1007735}. However, this technique can increase the likelihood of over-fitting since exact copies are made from the minority class \cite{Batista:2004:SBS:1007730.1007735}.
 	
@@ -305,19 +235,31 @@
 	\subsection{Evaluation metrics}
 	The number of true positives (TP), true negatives (TN), false positives (FP) and false negatives (FN) are used to define several metrics which are used to compare the results in this paper. The true positive rate (TPR) or sensitivity defines the proportion of actual positives which are predicted as positive. The TPR is calculated as $\frac{TP}{TP + FN}$. The true negative rate (TNR) or specificity defines the proportion of actual negatives which are predicted as negative. The TNR is calculated as $\frac{TN}{TN + FP}$. 
 	
-	Accuracy is typically a poor measure of quality for imbalanced datasets as classifiers tend to bias towards the majority class \cite{Batista:2004:SBS:1007730.1007735, Chawla:2004:ESI:1007730.1007733}. Several balanced performance metrics are used instead. The balanced accuracy (BACC) provides an equal weighting in TPR and TNR. It is calculated as $\frac{TPR + TNR}{2}$. Matthews correlation coefficient (MCC) also provides a balanced measure of classification quality and is scored between -1 and 1. The MCC is calculated as: $\frac{(TP \times TN) - (FP \times FN)}{\sqrt{(TP + FP)(TP + FN)(TN + FP)(TN + FN)}}$.
+	Accuracy is typically a poor measure of quality for imbalanced datasets as classifiers tend to bias towards the majority class \cite{Batista:2004:SBS:1007730.1007735, Chawla:2004:ESI:1007730.1007733}. Several balanced performance metrics are used instead. The balanced accuracy (BACC) provides an equal weighting in TPR and TNR. It is calculated as $\frac{TPR + TNR}{2}$. Matthews correlation coefficient (MCC) also provides a balanced measure of classification quality and is scored between -1 and 1. The MCC is calculated as: $\frac{(TP \times TN) - (FP \times FN)}{\sqrt{(TP + FP)(TP + FN)(TN + FP)(TN + FN)}}$. The Brier score (BS) measure the accuracy of probabilistic predictions in a range of 0 to 1 where a lower score is better \cite{steyerberg2010assessing}. The BS is calculated as: $\frac{1}{N}\sum_{t=1}^{N}(f_t - o_t)^2$ where N is the number of predictions made, $f_t$ is the probability of the positive class being true and $o_t$ is the actual outcome.
 	
+	\section{Related work}
+	There have been relatively few studies that apply classification techniques to directly predict defaulters of treatment and CHW attrition. The work that has been done for TB default focuses on determining the individual features associated with treatment default. To get an understanding of the work we want to do, we evaluated the credit scoring field as it is a similar binary classification problem and has been well researched. 
+	\subsection{Determining predictors of TB default}
+	\label{predictors_of_defaulters_related_work}
+	There have been many studies which focus on determining the factors associated with TB default. We evaluated a selection of these publications \cite{chan:2003prevalence, Jha:10.1371/journal.pone.0008873, jittimanee:10.1111/j.1440-172X.2007.00650.x, Lackey:10356751520150601, muture:6660173120110101, Shargie:10.1371/journal.pmed.0040037}. The majority of techniques use a form of logistic regression to determine the association. 
+	
+	The datasets used by the publications contain different features. Age and gender are common throughout the datasets. History of past default is available for all datasets except for Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037}. Lackey \textit{et al.} \cite{Lackey:10356751520150601} only picked individuals who did not have a history of past default. Jittimanee \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} was the only publication with the feature that did not find it to be significant to the 95\% confidence level. However, it did have an odds ratio of 2.19 and a p-value of 0.12. It can therefore be deduced that a history of past default has a strong correlation to default. Two out of three publications with the alcohol abuse feature available, found it to be significant. Three of the four publications with side effects as a feature, found it was significant. Shargie \textit{et al.} \cite{Shargie:10.1371/journal.pmed.0040037} and Jittimanee \textit{et al.} \cite{jittimanee:10.1111/j.1440-172X.2007.00650.x} measured distance and time to treatment site respectively. It can be reasoned that the aforementioned features will be significant in other datasets since they were found to be significant in the majority of the publications. Other significant features such as illegal drug use, use of herbal medication, daily jobs, history of lung cancer and history of liver disease only appeared once in the datasets. It cannot be discerned if the significance is generalisable or specific to the dataset. The identification of the same features as significant is fairly consistent for the publications that have those features in their dataset. 
+	
+	\subsection{Credit scoring}
+	\label{credit-scoring-review}
+	The credit scoring field aims to predict high risk individuals who should not be provided credit. This field has been well researched in the last 20 years. We reviewed a selection of these papers to gain insight on classifier performance as well examine their experimental methodology. Lessmanna \textit{et al.} \cite{lessmanna2013benchmarking} conducted a large scale review of credit scoring papers in the last 10 years. Lessmanna \textit{et al.} \cite{lessmanna2013benchmarking} also conducted an independent evaluation of traditional and novel classification techniques on 5 different credit scoring techniques. Lessmanna \textit{et al.} \cite{lessmanna2013benchmarking} found that ensemble techniques performed better than individual classifiers with random forest achieving the best results averaged over all the datasets. ANN, logistic regression and SVM with RBF kernel provided the best results for individual classifiers with ANN beating logistic regression and SVM \cite{lessmanna2013benchmarking}. This result contradicts several earlier studies which found SVMs to outperform ANNs \cite{Danenas20153194, Huang2007847, Huang2004543, Li2006772}. 
+	
+	Several other papers have also found ensamble techniques to be better than a single classifier \cite{Hsieh2010534, Nanni20093028, Twala20103326, Wang2011223}. Tsai \textit{et al.} \cite{Tsai20082639} was the only paper that we reviewed that found that a stand-alone ANN performed better than an ensemble of classifiers.
+	
+	Of the credit scoring papers we reviewed \cite{Abdou2016, Angelini2008733, Bekhet201420, Danenas20153194, Desai199624, Hsieh2010534, Huang2004543, Huang2007847, Lee2002245, Li2006772, Luo20097562, Malhotra200383, Nanni20093028, Tsai20082639, Twala20103326, Wang2011223} all provide measures of the correctness of the classifier such as accuracy, true positive rate and false positive rate. However, only a few \cite{Desai199624, Huang2004543, Malhotra200383, Wang2011223} conduct statistical tests to determine if there is a significant difference between results. Lessmanna \textit{et al.} also recommends using the Brier test to measure the accuracy of the probability estimates produced by the classifiers. None of the evaluated papers in Lessmanna \textit{et al.}'s review or our own review used such a test.
 	
 	\section{Experimental design and evaluation}
 	A systematic experimental design was developed to ensure repeatable results.
 	\subsection{Experimental Approach}
 	\label{method-approach}
+	We divide our investigation into 5 complementary experiments. The first experiment focus on determining the importance of data balancing and parameter tuning for each classifier. The second experiment transitions into benchmarking each classifier and producing recommendations on which are suitable choices. The third experiment focuses on the 
 	
-	We aim to evaluate a set of statistical and machine learning classification techniques on treatment default data sets and compare it to that applied to other related classification datasets. A variety of classification techniques were chosen to test against: ANN, SVM using a linear, RBF and polynomial kernel, logistic regression, decision tree, AdaBoost, random forest, $k$NN, Gaussian naive Bayes, Bernoulli naive Bayes, ELM and CLC. These were chosen to include a selection of well known techniques, ensemble techniques and newer techniques that have shown promising results in other studies. 
-	
-	There are typically substantially fewer defaulters than those cured. However, most classification algorithms expect a 50:50 split between classes. We therefore include an analysis of several data balancing algorithms: CC, ENN, IHS, NM-1, NCR, OSS, RUS, TL, ADASYN, ROS, SMOTE, ensemble of SMOTE + EEN and ensemble of SMOTE + TL. These balancing techniques were chosen to facilitate an evaluation of both over-sampling and under-sampling techniques. Included in the evaluation is techniques that use simple approaches and as others that use sophisticated algorithms.
-	
-	All the experiments use stratified 5-fold validation to divide a single dataset into multiple training and testing datasets. Stratified $k$-fold divides the dataset into $k$ segments and ensures that each segment contains the same ratio of positive and negative examples as the dataset as a whole. $k$ training and testing sets are created by using one segment as the testing dataset and every other segments as the training data. This is repeated such that every segment is used as testing data. Results for each fold are then averaged before being presented. 5-fold was used instead of 10-fold to ensure that there was a reasonable sample of defaulters per fold.
+	All our experiments use stratified $n\times$5-fold validation to divide a single dataset into multiple training and testing datasets. Stratified $k$-fold divides the dataset into $k$ segments and ensures that each segment contains the same ratio of positive and negative examples as the dataset as a whole. $k$ training and testing sets are created by using one segment as the testing dataset and every other segments as the training data. This is repeated such that every segment is used as testing data. We then repeat the stratified 5-fold validation $n$ times to obtain robustness in results. The results for each fold and $n$ runs are then averaged before being presented. 5-fold was used instead of 10-fold to ensure that there was a reasonable sample of defaulters per fold.
 	
 	All data is first pre-processed before it is used for each experiment. The median, mean or most frequent value are common approaches to fill in  missing values for examples. Another approach is to remove examples that contain missing values. We opted to remove examples with missing data to prevent it  causing bias in our classification. Most classification techniques are not equipped to handle categorical data. To address this issue, we use ``one-hot encoding" to encode a feature with $n$ categories into $n$ separate binary features corresponding to each category. The feature that corresponds with the categorical value is set to 1 while the other $n-1$ features are set to 0. We standardise all numeric features to ensure that it has zero mean and unit variance since most classifiers expect features to have a normal distribution. For each fold, the mean and standard deviation are derived from the training set and then used to standardise both the training and testing set. 
 	
@@ -329,14 +271,14 @@
 	
 	\subsubsection{Comparison of classification techniques}
 	\label{comparision_of_classification_technique}
-	This experiment focuses on comparing each optimised classifier in detail. The same testing procedure is used as outlined in section \ref{parameter_tuning} except in this experiment we record several additional metrics to compare the classification techniques in detail: TPR, TNR, BARR, MCC, informedness and time to fit each training fold. In addition, a receiver operating characteristic (ROC) curve is also plotted as an additional means of comparing the classification techniques and to indicate what TPR can be achieved for an acceptable false positive rate (FPR). To determine how the results generalise against the other classification datasets, a final scatter plot is presented which compares difference of TPR and FPR from the median of each for every classifier on every dataset.
+	This experiment focuses on comparing each optimised classifier in detail. The same testing procedure is used as outlined in Section \ref{parameter_tuning} except in this experiment we record several additional metrics to compare the classification techniques in detail: TPR, TNR, BARR, MCC, informedness and time to fit each training fold. In addition, a receiver operating characteristic (ROC) curve is also plotted as an additional means of comparing the classification techniques and to indicate what TPR can be achieved for an acceptable false positive rate (FPR). To determine how the results generalise against the other classification datasets, a final scatter plot is presented which compares difference of TPR and FPR from the median of each for every classifier on every dataset.
 	
 	The recorded metrics will allow us to determine which classifier is best suited for our treatment default datasets but also allow us to see if the results generalise to the credit default datasets and to reason over why we see those results.
 	
 	\subsubsection{Comparison of data balancing algorithms}
-	We would like to investigate each data balancing technique against each classifier. We use our parameter grid results from section \ref{parameter_tuning} to obtain the optimal parameters for each classifier on every data balancing algorithm. As before, the highest BARR is used to determine these optimal parameters. To ensure repeatable results, 10 runs of stratified 5-fold cross validation is executed and the results averaged. A set of unique randomly selected initialisation keys used for each run and recorded with the results. These are used so that $k$-fold cross validation, data balancing and classification algorithms produce deterministic output.
+	We would like to investigate each data balancing technique against each classifier. We use our parameter grid results from Section \ref{parameter_tuning} to obtain the optimal parameters for each classifier on every data balancing algorithm. As before, the highest BARR is used to determine these optimal parameters. To ensure repeatable results, 10 runs of stratified 5-fold cross validation is executed and the results averaged. A set of unique randomly selected initialisation keys used for each run and recorded with the results. These are used so that $k$-fold cross validation, data balancing and classification algorithms produce deterministic output.
 	
-	A bar chart is plotted with each classifier against the BARR for the treatment default datasets. As in section \ref{comparision_of_classification_technique}, a scatter plot is presented which compares difference of true positive and false positive from the median of each for each classifier on each data balancing algorithm on each dataset. 
+	A bar chart is plotted with each classifier against the BARR for the treatment default datasets. As in Section \ref{comparision_of_classification_technique}, a scatter plot is presented which compares difference of true positive and false positive from the median of each for each classifier on each data balancing algorithm on each dataset. 
 	
 	\subsubsection{Comparison of feature selection algorithms}
 	Feature selection can be used to help remove noisy features that do not contribute to the overall classification \cite{Guyon:2003:IVF:944919.944968}. It can also speed up training times for large datasets \cite{Guyon:2003:IVF:944919.944968}. Aside from the aforementioned benefits, we want to use feature selection to get a better understanding of how the features are being utilised by each classifier. Typically only classifiers that create a model with some linear combination of features can be easily interpreted.
@@ -352,19 +294,20 @@
 	\subsubsection{An analysis of time to default in the Lima Peru dataset}
 	We want to determine if the time it takes for an individual to default affects their classification ``profile''. We use several default ranges: 0-30 days, 0-60 days, 0-100 days, 0-200 days, 50-100 days, 100-200 days, 200-1000 days, 300-1000 days. The non-defaulters are randomly divided into to two sets. The first set is joined with the defaulters in the range and used as the training set while the other set is joined with the defaulters outside the range and used as the testing set. This process is repeated over 100 runs and the results are then averaged. A set of unique random initialisation keys are generated for each run. This is used to ensure that the split of non-defaulters is the same for each default range and that each data balancer and classifier gets the same initialisation values. If the time to default does not play a large role in the classification then we except to see similar results for each default range. If it does play a large role then we expect to see poor classification results and variability in results between default ranges.
 	
-	
 	\subsection{Datasets}
-	The experiments were run on a set of real-world datasets: one TB default dataset from Lima Peru \cite{Lackey:10356751520150601} and two credit scoring datasets. The TB dataset was obtained from the Dryad digital repository. The two credit scoring datasets (later referred to as the German and Australian dataset) were obtained from the UCI machine learning repository \cite{Lichman:2013}. Table \ref{table:data_sets} provides an overview of the characteristics of the datasets. The Peru TB dataset is highly imbalanced which makes it an ideal dataset to test different balancing algorithms. The German dataset is slightly imbalanced while the Australian dataset is balanced. The Peru data set came with values pre-discretized and therefore only contains categorical features.
+	The experiments were run on a set of real-world datasets: one TB default dataset from Lima Peru \cite{Lackey:10356751520150601}, one CHW attrition dataset from India and two credit scoring datasets. The TB dataset was obtained from the Dryad digital repository. The CHW attrition dataset was obtained from Dimagi. The two credit scoring datasets (later referred to as the German and Australian dataset) were obtained from the UCI machine learning repository \cite{Lichman:2013}. Table \ref{table:data_sets} provides an overview of the characteristics of the datasets. The Peru TB datasets is highly imbalanced which makes it ideal to test different balancing algorithms. The German dataset and India attrition is slightly imbalanced while the Australian dataset is balanced. The Peru data set came with values pre-discretized and therefore only contains categorical features. The India attrition dataset contains 90 days of CHW evaluation measures as well as the project and sector which the CHW is part of. The classification label is whether the CHW is still present at the end of the second quarter.
 	\begin{table*}
 		\centering
+		\small
 		\caption{Data set summary}
 		\label{table:data_sets}
 		\makebox[\linewidth]{
-		\begin{tabular}{c|c|c|c|c} \hline	
-			Data set&Entries&Number of numerical features&Number of categorical features&Data balance ratio (Cured:Default)\\ \hline
-			Lima Peru TB \cite{Lackey:10356751520150601}&1186&0&15&8.65:1 \\
-			German Credit Scoring&1000&7&13&2.33:1 \\
-			Australian Credit Scoring&690&6&8&1.25:1
+		\begin{tabular}{c|c|p{3cm}|p{3cm}|p{3cm}|c} \hline	
+			Data set&Entries&\centering Number of numerical features&\centering Number of categorical features&\centering Number of binary features&Data balance ratio (Negative:Positive) \\ \hline
+			Lima Peru TB \cite{Lackey:10356751520150601}&1186&\centering 0&\centering 6&\centering 8&8.65:1 \\
+			India Attrition&4801&\centering 90&\centering 2&\centering 0&1.9:1 \\
+			German Credit Scoring&1000&\centering 7&\centering 11&\centering 2&2.33:1 \\
+			Australian Credit Scoring&690&\centering 6&\centering 5&\centering 3&1.25:1
 		\end{tabular}
 		}
 	\end{table*}
@@ -388,22 +331,109 @@
 	
 	Every dataset can use its own configuration file which contains the parameters to use for each classifier as well as which data balancing algorithm to use alongside each classifier. Classifiers and datasets can be easily enabled or disabled as desired. We have already provided a reasonable search space in our parameter tuning algorithm. However, it is simple to modify or add a new parameter tuning configuration file if a more fine-grained search is required.
 	
-	After each experiment is completed, the statistics of it will be computed and saved as a CSV file. The relevant graphs will also be generated and saved. These have been used in section \ref{results}.
+	After each experiment is completed, the statistics of it will be computed and saved as a CSV file. The relevant graphs will also be generated and saved. These have been used in Section \ref{results}.
 	
 	The system has been designed that it can execute the aforementioned experiments for any binary classification problem not just the ones outlined in this paper. With some modifications, it could also be extended to support multi-class classification problems too. The code has been written in a generic manner that reduces the need to replicate code. This allows new experiments to be created with minimal overhead. Each experiment is also multi-threaded to reduce the execution time.
 	
 	\section{Results and discussion}
-	This section presents and discusses the results of the experiments outlined in section \ref{method-approach}.
+	\label{results}
+	This section presents and discusses the results of the experiments outlined in Section \ref{method-approach}.
 	\subsection{Parameter Tuning}
-	
+	The results of the parameter tuning experiment are summarised in Figure \ref{fig:parameter_tuning}. For all the datasets, there is a net gain in balanced accuracy from using a data balancer. The Australian credit dataset which is balanced only sees very minor improvements. Gaussian naive Bayes is the only classifier which sees a large improvement for the Australia dataset. This is likely because the IHT balancer which was used with it was able to remove samples which are noisy for building the classifier model. 
 	
 	\begin{figure*}
 		\centering
 		\makebox[\linewidth]{
-		\includegraphics[scale=0.55]{Parameter_tuning_approach_results_per_classifier_plot_['Lima_TB',_'German_credit',_'Australian_credit']_Balanced_Accuracy_2016-10-24_21-47-19}}
+			\includegraphics[scale=0.6]{Parameter_tuning_approach_results_per_classifier_plot_['Lima_TB',_'India_CHW_attrition',_'German_credit',_'Australian_credit']_Balanced_Accuracy_2016-10-30_18-02-09}}
 		\caption{Difference in balanced accuracy from using default parameters with different parameter tuning approaches}
-		\label{fig:res}
+		\label{fig:parameter_tuning}
 	\end{figure*}
+	
+	We see the largest improvement in BARR on the Lima TB dataset, incorporating a data balancing technique greatly improves the BACC for all but one classifier. The exception is Bernoulli naive Bayes where there is no difference in BACC for each dataset. We could not find any literature to explain why no difference was seen and non of the parameters that were searched affected the classification greatly.
+	%TODO: Try find out why Bernoulli naive Bayes isn't different
+	
+	Note that ELM did not have default parameters so we set the default ELM to have one hidden layer with 20 neurons using the sigmoid activation function. We chose this as it provides a reasonable first attempt for the ELM architecture and would likely not over-fit any of our datasets. Per chance, this architecture provided the best classification results for the Lima TB dataset when searching the parameter space. There is therefore no difference between the ELM results using default with balancer or tuned on the Lima TB dataset.
+	
+	The CLC classifier was excluded as the classifier would crash when applied to the Lima TB dataset without any data balancing technique.
+	
+	Across all of our datasets on average we see marginal improvements from tuning our classifiers. Typically the improvement is less than 0.05 from using the default parameters with a data balancer. On the Lima TB dataset the ANN sees an improvement of 0.1 with the tuned parameters over just using the default with a data balancer. On the other datasets we see large improvements for the ELM when tuned. Given that the architecture of a multi-layered perception such as an ANN or ELM  While the SVM with RBF and linear kernel see similar results between default with balancer and tuned, the SVM with polynomial kernel sees a large improvement on the credit scoring datasets when tuned.
+	
+	
+	A classifier that has minor differences between default with balancer and tuned BARR across each dataset is preferred. It shows that the classifier will always produce the best results it can without the user having to manually identify the optimal parameters for each dataset or subset of a dataset that is used to answer a particular research question. Logistic regression, AdaBoost, Random forest, Bernoulli Naive Bayes and SVM with RBF and linear kernel showed similar results between default with balancer and tuned across all our datasets. If these classifiers show promising classification results compared to the other classifiers then they will be recommended. We investigate that in Section \ref{classifier-results}.
+
+	\subsection{Classifier results}
+	\label{classifier-results}
+	Table \ref{table-lima-tb-results} and \ref{table-india-attrition-results} contain the results for each classifier on the Lima TB and India attrition datasets respectively. Figure \ref{fig:classifier_comparision} compares the difference in TPR and FPR from the median TPR and FPR calculated for each dataset. Classifiers that consistently produce better than average results should be in the upper right quadrant. Classifiers in the upper left and lower right can produce better than average results if the improvement in either TPR or TNR exceeds that of the reduction in TNR or TPR. For all our datasets ANN's and LR produce high quality classification. LR has two benefits over an ANN, it produces a white-box model that can be interpreted to understand the classification process \cite{Dreiseitl2002352} and its training time is orders of magnitude faster than an ANN.
+	
+	The ANN produces the best results for the India attrition dataset. As the ANN can produce non-linear model it should be able to produce results better than those that are limited to a linear model. However, for our datasets we did not see a significant gain in using an ANN. It is possible that our datasets are too small and contain too few features to truly utilise the ANN to its full potential. 
+	
+	Bernoulli NB produced impressive results for the India attrition dataset and showed better than median results for each of our datasets. Bernoulli NB has the added benefit that it scales well with data size and number of features. The performance of Bernoulli NB is unexpected as it is designed to operate on binary features. For each dataset we already convert categorical features to multiple binary features as part of the one-hot encoding. However, Bernoulli NB has to apply binarizing on numerical features to transform them to binary features which could result in the loss of important information. Since our numerical features are scaled to that of a normal distribution, a binarization threshold of 0 is optimal where input greater than 0 becomes 1 and input lower becomes 0. On our attrition dataset which has 3840 entries per fold and 270 features, once pre-processing is completed, is able to fit the 5 folds in 0.1 seconds. This is the fastest of all the classifiers for the particular dataset. In addition it showed the most stable results in our parameter tuning experiment indicating that minimal tuning is required. Bernoulli NB is therefore well suited for rapid experimentation and prototyping of ideas because of its speedy training and solid classification performance.
+
+	Our ELM results showed results on par with SVM and ANN on the two credit scoring datasets matching that of Huang \textit{et al.} \cite{6035797, Huang2006489}. However, on our TB and attrition dataset the ELM fell short of the ANN but obtained similar results to that of the SVM. The ELM does deliver on its claim that it can learn significantly faster than an ANN. It is 14 times faster on the attrition dataset, 64 times faster on the TB dataset, 189 times faster on the German credit dataset and 802 times faster on the credit scoring dataset.
+	
+	We were unable to replicate Luo \textit{et al.}'s \cite{Luo20097562} results for the CLC on the credit scoring datasets. We were only able to achieve a BARR of 0.6158 and 0.6833 on the German and Australian dataset respectively where Luo \textit{et al.} achieved an accuracy of 0.8480 and 0.8652. Since the Australian dataset is balanced, BARR is the same as accuracy. On the Lima TB dataset and India attrition dataset we were unable to achieve results better than random with the CLC classifier. Luo \textit{et al.}'s accuracy of 0.8480 is far higher than that seen in the other credit scoring literature that utilises the German credit scoring dataset. The literature typically obtains an accuracy of 0.77 for the dataset \cite{Huang2007847, Nanni20093028, Tsai20082639, Wang2011223}. We tried a variety of different formatting for our datasets to ensure that we had it formatted correctly for the CLC classifier. We tested different values for the classification labels, different placement of the label either as the first column or last column in the dataset and the dataset formatted as either CSV or TSV. Our testing indicated that the classification label should be the first column and that it should be -1 for negative and 1 for positive and formatted as a TSV file. Based on our observations, we would not recommend the use of CLC for future classification tasks.	
+	
+	\begin{table}
+		\centering
+		\small
+		\caption{Lima TB metrics for each classifier}
+		\label{table-lima-tb-results}	
+		\hspace*{-1.5em}
+		\scalebox{0.9}{	
+		\begin{tabular}{l|c|c|c|c|c|c} \hline		
+			Classifier&BARR\textsuperscript{*}&MCC&BS&TPR&TNR&\parbox[t]{1.1cm}{\centering Time to fit (s)}\\ \hline 
+			LR			&\textbf{0.7040 (0.0396)}	&\textbf{0.2936}&0.4626	&0.6312				&0.7768			&0.0281\\ 
+			ANN			&0.7028 (0.0399)			&0.2916			&0.4584	&0.6304				&0.7753			&1.6017\\  
+			AdaBoost	&0.7013 (0.0346)			&0.2785			&\textbf{0.2596}	&\textbf{0.6655}	&0.7372			&0.4018\\ 
+			Bernoulli NB&0.6994 (0.0424)			&0.2849			&0.6297	&0.6297				&0.7692			&0.0032\\ 
+			SVM (linear)&0.6961 (0.0405)			&0.2890			&0.5983	&0.5983				&0.7939			&4.8913\\ 
+			RF			&0.6960 (0.0462)			&0.2801			&0.3840	&0.6251				&0.7668			&0.2126\\ 
+			SVM (RDF)	&0.6938 (0.0468)			&0.2789			&0.3886	&0.6141				&0.7734			&0.0565\\ 
+			SVM (poly)	&0.6907 (0.0445)			&0.3002			&0.3847	&0.5476				&\textbf{0.8338}			&0.0390\\ 
+			ELM			&0.6895 (0.0445)			&0.2700			&0.4354	&0.6149				&0.7641			&0.0229\\ 
+			Gaussian NB	&0.6820 (0.0678)			&0.2495			&0.6301	&0.6856				&0.6785			&0.0055\\ 
+			DT			&0.6737 (0.0475)			&0.2487			&0.4078	&0.5976				&0.7498			&0.0027\\ 
+			$k$NN		&0.6584 (0.0418)			&0.2223			&0.3426	&0.5738				&0.7430			&\textbf{0.0011}\\ 
+			CLC			&0.5377 (0.0715)			&0.0501			&n/a	&0.5577				&0.5177			&0.2731\\                  
+			\multicolumn{5}{l}{\textsuperscript{*}\footnotesize{\parbox[t]{7.9cm}{Standard deviation in brackets}}}  		
+		\end{tabular}}
+	\end{table}
+	
+	\begin{table}
+		\centering
+		\small
+		\caption{India attrition metrics for each classifier}
+		\label{table-india-attrition-results}	
+		\hspace*{-1.5em}
+		\scalebox{0.9}{	
+		\begin{tabular}{l|c|c|c|c|c|c} \hline		
+			Classifier&BARR\textsuperscript{*}&MCC&BS&TPR&TNR&\parbox[t]{1.1cm}{\centering Time to fit (s)}\\ \hline 
+			ANN			&\textbf{0.8193 (0.0131)}	&\textbf{0.6130}			&0.6670&0.8248			&0.8138			&21.8284\\ 
+			Bernoulli NB&0.8172 (0.0143)			&0.5981			&0.6505			&0.8787			&0.7557			&\textbf{0.1017}\\  
+			RF			&0.8104 (0.0120)			&0.6087			&0.6314			&0.7725			&0.8483			&9.4406\\ 
+			Gaussian NB	&0.8036 (0.0210)			&0.5797			&0.7982			&0.8184			&0.7887&0.1210\\ 
+			AdaBoost	&0.8034 (0.0140)			&0.5991			&0.4013			&0.7526			&\textbf{0.8541}		&32.8689\\ 
+			LR			&0.8027 (0.0121)			&0.5694			&0.5573			&0.8735			&0.7319			&2.4085\\ 
+			SVM (linear)&0.7965 (0.0123)			&0.5618			&0.5519			&0.8300			&0.7630			&207.0612\\ 
+			DT			&0.7744 (0.0141)			&0.5309			&0.7418			&0.7478			&0.8010			&1.4646\\ 
+			SVM (RBF)	&0.7713 (0.0127)			&0.5099			&0.5242			&0.8399			&0.7027			&30.5330\\ 
+			ELM			&0.7690 (0.0140)			&0.5120			&0.5318			&0.7790			&0.7590			&1.4762\\ 
+			$k$NN		&0.7636 (0.0144)			&0.5127			&0.6198			&0.7239			&0.8034			&0.3272\\ 
+			SVM (poly)	&0.5251 (0.0058)			&0.1111			&\textbf{0.2658}&\textbf{0.9865}&0.0637			&39.4515\\ 
+			CLC			&0.5109 (0.0168)			&0.0228			&n/a			&0.5315			&0.4904			&11.1501\\                  
+			\multicolumn{5}{l}{\textsuperscript{*}\footnotesize{\parbox[t]{7.9cm}{Standard deviation in brackets}}}  		
+		\end{tabular}}
+	\end{table}
+	
+	\begin{figure}
+		\hspace*{1.2em}
+		\centering
+		\makebox[\linewidth]{
+			\includegraphics[scale=0.53]{classifier_dataset_plt_2016-10-31_23-10-25}}
+		\caption{Difference from median TPR and TNR on each dataset for every classifier}
+		\label{fig:classifier_comparision}
+	\end{figure}
+	
 
 	\begin{figure*}
 		\centering
@@ -430,16 +460,6 @@
 		\caption{Comparison of classifiers with different data balancing techniques on Lima TB data set (left) and [PLACEHOLDER for DIMAGI attrition] (right). SVM and Logistic regression excluded because of minimal variation.}
 	\end{figure*}
 	
-
-	\label{results}
-	\begin{enumerate}
-		\item Tables with true positive, true negative, false positive and false negative rate for each classifier on each dataset
-		\item ROC curves which can be used to determine true positive for an acceptable amount of false positives for each classification technique on each dataset
-		\item Graphs which outline difference in accuracy of each data balancing technique for each dataset
-		\item Discussion on best classification technique
-		\item Discussion on data balancing results
-		\item Outline similarities and differences in results between the two TB datasets and between TB and financial datasets and determine if they are similar enough that results for the German and Australian credit scoring datasets could be used for the two TB datasets.
-	\end{enumerate}
 	
 	\section{Conclusions and Future Work}
 	\begin{enumerate}

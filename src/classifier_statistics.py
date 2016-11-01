@@ -53,6 +53,15 @@ class ClassifierStatistics:
         fold_result_dict["false positives"] = false_positive_count
         fold_result_dict["false negatives"] = false_negative_count
         fold_result_dict["test_classification"] = test_classification
+        test_probability_arr = []
+        for value in test_probabilities:
+            val = value[:-1][0]
+            if val < 0 and val != -1:
+                val = 0
+            elif val > 1:
+                val = 1
+            test_probability_arr.append(val)
+        fold_result_dict["test_probabilities"] = test_probability_arr
         fold_result_dict["actual_outcome"] = actual_outcome
 
         # Probabilities
@@ -113,6 +122,7 @@ class ClassifierStatistics:
         avg_fit_time = 0
         classification_arr = np.array([])
         actual_result_arr = np.array([])
+        classification_probabilities_arr = np.array([])
         balanced_accuracy_arr = []
         for error_dict in self.results:
             balanced_accuracy = (error_dict["true positive rate"] + error_dict["true negative rate"]) / 2
@@ -132,6 +142,7 @@ class ClassifierStatistics:
             unclassified += error_dict["unclassified with probability cutoff"]
             classification_arr = np.append(classification_arr, error_dict["test_classification"])
             actual_result_arr = np.append(actual_result_arr, error_dict["actual_outcome"])
+            classification_probabilities_arr = np.append(classification_probabilities_arr, error_dict["test_probabilities"])
             avg_fit_time += error_dict["fit_time"]
             balanced_accuracy_arr.append(balanced_accuracy)
 
@@ -150,6 +161,7 @@ class ClassifierStatistics:
         avg_result_dict["avg_false_negative_rate_with_prob_cutoff"] = avg_false_negative_rate_probability_cutoff / float(len(self.results))
         avg_result_dict["avg_unclassified_with_prob_cutoff"] = unclassified / float(len(self.results))
         avg_result_dict["test_classification"] = classification_arr
+        avg_result_dict["test_probabilities"] = classification_probabilities_arr
         avg_result_dict["actual_outcome"] = actual_result_arr
         avg_result_dict["fit_time"] = avg_fit_time
         avg_result_dict["balanced_accuracy_arr"] = balanced_accuracy_arr

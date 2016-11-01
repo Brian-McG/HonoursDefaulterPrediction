@@ -44,50 +44,50 @@ append_classifier_details(ann_data_balancer, ann_parameters, clfrs.ann_descripti
 
 # Support Vector Machines (with RDF kernel)
 svm_rdf_data_balancer = SMOTETomek
-svm_parameters = {}
+svm_parameters = {"kernel": "rbf"}
 append_classifier_details(svm_rdf_data_balancer, svm_parameters, clfrs.svm_rdf_description, classifier_parameters)
 
 # Support Vector Machines (with linear kernel)
 svm_linear_data_balancer = SMOTE
-svm_linear_parameters = {}
+svm_linear_parameters = {"kernel": "linear"}
 append_classifier_details(svm_linear_data_balancer, svm_linear_parameters, clfrs.svm_linear_description, classifier_parameters)
 
 # Support Vector Machines (with polynomial kernel)
-svm_poly_data_balancer = RandomOverSampler
-svm_poly_parameters = {}
+svm_poly_data_balancer = InstanceHardnessThreshold
+svm_poly_parameters = {"kernel": "poly"}
 append_classifier_details(svm_poly_data_balancer, svm_poly_parameters, clfrs.svm_poly_description, classifier_parameters)
 
 # Logistic Regression
-logistic_regression_data_balancer = ADASYN
+logistic_regression_data_balancer = SMOTE
 logistic_regression_parameters = {}
 append_classifier_details(logistic_regression_data_balancer, logistic_regression_parameters, clfrs.logistic_regression_description, classifier_parameters)
 
 # Decision Tree
-decision_tree_data_balancer = RandomUnderSampler
+decision_tree_data_balancer = ADASYN
 decision_tree_parameters = {}
 append_classifier_details(decision_tree_data_balancer, decision_tree_parameters, clfrs.decision_tree_description, classifier_parameters)
 
 # AdaBoost
-adaboost_data_balancer = RandomOverSampler
+adaboost_data_balancer = SMOTE
 adaboost_parameters = {}
 append_classifier_details(adaboost_data_balancer, adaboost_parameters, clfrs.adaboost_description, classifier_parameters)
 
 # Random forest
-random_forest_data_balancer = RandomUnderSampler
+random_forest_data_balancer = ADASYN
 random_forest_parameters = {}
 append_classifier_details(random_forest_data_balancer, random_forest_parameters, clfrs.random_forest_description, classifier_parameters)
 
 # K-nearest neighbours
-k_nearest_data_balancer = SMOTEENN
+k_nearest_data_balancer = TomekLinks
 k_nearest_parameters = {}
 append_classifier_details(k_nearest_data_balancer, k_nearest_parameters, clfrs.k_nearest_description, classifier_parameters)
 
 # Gaussian Naive Bayes
-gaussian_naive_bayes_data_balancer = ADASYN
+gaussian_naive_bayes_data_balancer = SMOTEENN
 gaussian_naive_bayes_parameters = {}
 append_classifier_details(gaussian_naive_bayes_data_balancer, gaussian_naive_bayes_parameters, clfrs.gaussian_naive_bayes_description, classifier_parameters)
 
 # Bernoulli Naive Bayes
-bernoulli_naive_bayes_data_balancer = TomekLinks
+bernoulli_naive_bayes_data_balancer = ADASYN
 bernoulli_naive_bayes_parameters = {}
 append_classifier_details(bernoulli_naive_bayes_data_balancer, bernoulli_naive_bayes_parameters, clfrs.bernoulli_naive_bayes_description, classifier_parameters)

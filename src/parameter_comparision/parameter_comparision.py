@@ -21,7 +21,7 @@ from config import constants as const
 import visualisation as vis
 import config.classifiers as cfr
 
-const.TEST_REPEAT = 10
+const.TEST_REPEAT = 3
 
 
 def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, categorical_columns, binary_columns, classification_label, classifier_parameters, data_balancer, parameter_description, classifier_dict, classifier_description, roc_plot, result_recorder, missing_value_strategy, parameter_index):
@@ -97,7 +97,7 @@ def main(random_values):
             result_arr.append(parameter_comparision_results)
             data_set_arr.append(data_set["data_set_description"])
             result_recorder_after.save_results_to_file(random_values, "Parameter tuning")
-    vis.plot_percentage_difference_graph(result_arr, data_set_arr, x_label="Parameter tuning approach", name_suffix="", difference_from="using default parameters")
+    vis.plot_percentage_difference_graph(result_arr, data_set_arr, x_label="Parameter tuning approach", name_suffix="", difference_from="using default parameters", figsize=(16, 5), legend_y=-0.62, label_rotation=0, y_label_pos=-0.3)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,6 @@
 import math
+
+from sklearn.metrics import brier_score_loss
 from sklearn.metrics import cohen_kappa_score
 from sklearn.metrics import f1_score
 from sklearn.metrics import matthews_corrcoef
@@ -21,7 +23,7 @@ class RunStatistics:
 
     def calculate_average_run_accuracy(self):
         overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
-        false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff, matthews_correlation_coefficient, cohen_kappa_val, fit_time = [0] * 13
+        false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff, matthews_correlation_coefficient, brier_score, fit_time = [0] * 13
         balanced_accuracy_arr = []
 
         for result_dictionary in self.errors:
@@ -36,13 +38,16 @@ class RunStatistics:
             false_negative_rate_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
             unclassified_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
             matthews_correlation_coefficient += matthews_corrcoef(result_dictionary["actual_outcome"], result_dictionary["test_classification"])
-            cohen_kappa_val += cohen_kappa_score(result_dictionary["actual_outcome"], result_dictionary["test_classification"])
             fit_time += result_dictionary["fit_time"]
             balanced_accuracy_arr += result_dictionary["balanced_accuracy_arr"]
+            if -1 not in result_dictionary["test_probabilities"]:
+                brier_score += brier_score_loss(result_dictionary["actual_outcome"], result_dictionary["test_probabilities"])
+            else:
+                brier_score += -1
 
         avg_run_results = [None] * 14
         avg_run_results[0] = matthews_correlation_coefficient / float(len(self.errors))
-        avg_run_results[1] = cohen_kappa_val / float(len(self.errors))
+        avg_run_results[1] = brier_score / float(len(self.errors))
         avg_run_results[2] = overall_true_rate / float(len(self.errors))
         avg_run_results[3] = true_positive_rate / float(len(self.errors))
         avg_run_results[4] = true_negative_rate / float(len(self.errors))

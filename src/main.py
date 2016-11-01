@@ -17,6 +17,7 @@ from result_recorder import ResultRecorder
 from run_statistics import RunStatistics
 from util import get_number_of_processes_to_use
 
+const.TEST_REPEAT = 10
 
 def execute_classifier_run(input_defaulter_set, classifier_parameters, data_balancer, random_values, classifier_dict, classifier_description, roc_plot, result_recorder, numeric_columns, categorical_columns, binary_columns, classification_label, missing_value_strategy):
     if classifier_dict["status"]:
@@ -63,6 +64,7 @@ def main(random_value_arr):
                 raise RuntimeError("Random value does not match length of test repeat {0} != {1}".format(len(random_value_arr), const.TEST_REPEAT))
 
             cpu_count = get_number_of_processes_to_use()
+            cpu_count = 1
             # Execute enabled classifiers
             Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(input_defaulter_set, data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], random_value_arr, classifier_dict, classifier_description, roc_plot, result_recorder, data_set["numeric_columns"], data_set["categorical_columns"], data_set["binary_columns"], data_set["classification_label"], data_set["missing_values_strategy"]) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
 
@@ -71,7 +73,7 @@ def main(random_value_arr):
             for (result_arr, classifier_description) in result_recorder.results:
                 print("\n=== {0} ===".format(classifier_description))
                 print("Matthews correlation coefficient: {0}".format(result_arr[0]))
-                print("Cohen Kappa Score: {0}".format(result_arr[1]))
+                print("Brier Score: {0}".format(result_arr[1]))
                 print("Balanced Accuracy: {0}".format(result_arr[2]))
                 print("Average true positive rate: {0}".format(result_arr[3]))
                 print("Average true negative rate: {0}".format(result_arr[4]))
