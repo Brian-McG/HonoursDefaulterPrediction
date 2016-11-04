@@ -16,7 +16,7 @@ SVM_LINEAR = "SVM (linear)"
 DECISION_TREE = "Decision Tree"
 RANDOM_FOREST = "Random forest"
 
-BASE_METRICS = ["Matthews correlation coefficient", "Brier Score", "Balanced Accuracy", "Average true positive rate", "Average true negative rate", "Average false positive rate",
+BASE_METRICS = ["Matthews correlation coefficient", "Brier Score", "Balanced Accuracy", "AUC Score", "Average true positive rate", "Average true negative rate", "Average false positive rate",
                 "Average false negative rate"]
 TITLE_ROW = ["Classifier description"] + BASE_METRICS + ["Standard Deviation of BACC", "initialisation_values", ]
 TITLE_ROW_WITH_DEFAULT_TIME_RANGE = ["Default time range"] + TITLE_ROW

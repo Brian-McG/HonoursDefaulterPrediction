@@ -236,8 +236,8 @@ def main():
 
                 feature_selection_result_recorder_after.results = sorted(feature_selection_result_recorder_after.results, key=lambda tup: tup[1])
 
-                for (avg_results, classifier_description, feature_selection, features_selected_dict) in feature_selection_result_recorder_after.results:
-                    result_recorder_after.record_results(avg_results, classifier_description, feature_selection, features_selected_dict)
+                for (avg_results, classifier_description, feature_selection, features_selected_dict, feature_summary) in feature_selection_result_recorder_after.results:
+                    result_recorder_after.record_results(avg_results, classifier_description, feature_selection, features_selected_dict, feature_summary=feature_summary)
 
                 feature_selection_results_after.append((feature_selection_strategy, feature_selection_result_recorder_after.results, feature_selection_strategy))
             result_recorder_after.save_results_to_file(random_values, "select_features_after")

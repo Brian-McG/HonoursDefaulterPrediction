@@ -1,4 +1,7 @@
 import numpy as np
+from sklearn.metrics import brier_score_loss
+from sklearn.metrics import matthews_corrcoef
+from sklearn.metrics import roc_auc_score
 
 from config import constants as const
 
@@ -55,7 +58,7 @@ class ClassifierStatistics:
         fold_result_dict["test_classification"] = test_classification
         test_probability_arr = []
         for value in test_probabilities:
-            val = value[:-1][0]
+            val = value[-1:][0]
             if val < 0 and val != -1:
                 val = 0
             elif val > 1:
@@ -120,12 +123,29 @@ class ClassifierStatistics:
         avg_false_negative_rate_probability_cutoff = 0
         unclassified = 0
         avg_fit_time = 0
-        classification_arr = np.array([])
-        actual_result_arr = np.array([])
-        classification_probabilities_arr = np.array([])
+        classification_arr = []
+        actual_result_arr = []
+        classification_probabilities_arr = []
         balanced_accuracy_arr = []
+        auc_arr = []
+        brier_score_arr = []
+        fit_time_arr = []
+        mcc_arr = []
+
+        avg_mcc = 0
+        avg_auc = 0
+        avg_brier_score = 0
+        avg_fit_time = 0
+
         for error_dict in self.results:
             balanced_accuracy = (error_dict["true positive rate"] + error_dict["true negative rate"]) / 2
+            mcc = matthews_corrcoef(error_dict["actual_outcome"], error_dict["test_classification"])
+            auc = roc_auc_score(error_dict["actual_outcome"], error_dict["test_probabilities"])
+
+            brier_score = -999
+            if -1 not in error_dict["test_probabilities"]:
+                brier_score = brier_score_loss(error_dict["actual_outcome"], error_dict["test_probabilities"])
+
             avg_true_rate += balanced_accuracy
             avg_true_positive_rate += error_dict["true positive rate"]
             avg_true_negative_rate += error_dict["true negative rate"]
@@ -140,11 +160,19 @@ class ClassifierStatistics:
             avg_false_positive_rate_probability_cutoff += error_dict["false positive rate with probability cutoff"]
             avg_false_negative_rate_probability_cutoff += error_dict["false negative rate with probability cutoff"]
             unclassified += error_dict["unclassified with probability cutoff"]
-            classification_arr = np.append(classification_arr, error_dict["test_classification"])
-            actual_result_arr = np.append(actual_result_arr, error_dict["actual_outcome"])
-            classification_probabilities_arr = np.append(classification_probabilities_arr, error_dict["test_probabilities"])
+            classification_arr.append(error_dict["test_classification"])
+            actual_result_arr.append(error_dict["actual_outcome"])
+            classification_probabilities_arr.append(error_dict["test_probabilities"])
             avg_fit_time += error_dict["fit_time"]
+            avg_mcc += mcc
+            avg_auc += auc
+            avg_brier_score += brier_score
+
             balanced_accuracy_arr.append(balanced_accuracy)
+            auc_arr.append(auc)
+            brier_score_arr.append(brier_score)
+            mcc_arr.append(mcc)
+            fit_time_arr.append(error_dict["fit_time"])
 
         avg_result_dict["avg_true_rate"] = avg_true_rate / float(len(self.results))
         avg_result_dict["avg_true_positive_rate"] = avg_true_positive_rate / float(len(self.results))
@@ -164,6 +192,14 @@ class ClassifierStatistics:
         avg_result_dict["test_probabilities"] = classification_probabilities_arr
         avg_result_dict["actual_outcome"] = actual_result_arr
         avg_result_dict["fit_time"] = avg_fit_time
+        avg_result_dict["avg_auc"] = avg_auc / float(len(self.results))
+        avg_result_dict["avg_brier_score"] = avg_brier_score / float(len(self.results))
+        avg_result_dict["avg_mcc"] = avg_mcc / float(len(self.results))
+
         avg_result_dict["balanced_accuracy_arr"] = balanced_accuracy_arr
+        avg_result_dict["auc_arr"] = auc_arr
+        avg_result_dict["brier_score_arr"] = brier_score_arr
+        avg_result_dict["fit_time_arr"] = fit_time_arr
+        avg_result_dict["mcc_arr"] = mcc_arr
 
         return avg_result_dict

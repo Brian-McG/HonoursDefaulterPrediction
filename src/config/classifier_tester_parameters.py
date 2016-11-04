@@ -50,20 +50,20 @@ linear_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_func
 generic_classifier_parameter_dict[clf.svm_linear_description] = linear_svm_parameter_dict
 
 # Support Vector Machines (poly)
-poly_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_function_shape": ["ovr"], "kernel": ["poly"], "C": np.linspace(0.01, 5, 10).tolist() + [1],
-                                          "gamma": ["auto"] + np.linspace(0.0001, 1, 10).tolist(), 'class_weight': [None, 'balanced'], 'degree': [2, 3, 4],
+poly_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_function_shape": ["ovr"], "kernel": ["poly"], "C": np.linspace(0.01, 2, 5).tolist() + [1],
+                                          "gamma": ["auto"] + np.linspace(0.01, 1, 5).tolist(), 'class_weight': [None, 'balanced'], 'degree': [2, 3, 4],
                                           'coef0': [0, 5, 10], "max_iter": [10000]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.svm_poly_description] = poly_svm_parameter_dict
 
 # Logistic regression
-logistic_regression_dict = {"parameters": {"C": np.linspace(0.01, 10, 20).tolist(), "fit_intercept": [True, False], "intercept_scaling": np.linspace(0.01, 10, 20).tolist(),
-                                           "class_weight": [None, "balanced"], "solver": ["newton-cg", "lbfgs", "liblinear", "sag"]}, "requires_random_state": False}
+logistic_regression_dict = {"parameters": {"C": [1] + np.linspace(0.01, 3, 5).tolist(), "fit_intercept": [True, False], "intercept_scaling": [1] + np.linspace(0.01, 10, 10).tolist(),
+                                           "class_weight": [None, "balanced"], "solver": ["liblinear", "sag"]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.logistic_regression_description] = logistic_regression_dict
 
 # Decision tree
 decision_tree_dict = {"parameters": {"criterion": ["gini", "entropy"], "splitter": ["best", "random"], "max_features": ["auto", "sqrt", "log2"], "class_weight": [None, "balanced"],
-                                     "max_depth": ([None] + list(range(3, 9))), "min_samples_split": list(range(1, 4)), "min_samples_leaf": list(range(1, 3)),
-                                     "max_leaf_nodes": [None] + list(range(5, 10))}, "requires_random_state": False}
+                                     "max_depth": ([None] + list(range(3, 9, 2))), "min_samples_split": list(range(1, 4)), "min_samples_leaf": list(range(1, 3)),
+                                     "max_leaf_nodes": [None] + list(range(5, 10, 3))}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.decision_tree_description] = decision_tree_dict
 
 # AdaBoost

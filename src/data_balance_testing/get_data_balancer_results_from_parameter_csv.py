@@ -51,7 +51,7 @@ import config.constants as const
 import config.classifiers as cfr
 import visualisation as vis
 
-const.TEST_REPEAT = 3
+const.TEST_REPEAT = 10
 
 def override_parameters(parameter_results):
     data_balancer_arr = {}

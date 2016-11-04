@@ -1,9 +1,13 @@
 """Primary script used to execute the defaulter prediction"""
+import os
+from time import sleep
 
 import pandas as pd
 from multiprocessing import Manager
 
 import sys
+
+import subprocess
 from joblib import Parallel
 from joblib import delayed
 from random import Random
@@ -64,7 +68,7 @@ def main(random_value_arr):
                 raise RuntimeError("Random value does not match length of test repeat {0} != {1}".format(len(random_value_arr), const.TEST_REPEAT))
 
             cpu_count = get_number_of_processes_to_use()
-            cpu_count = 1
+            #cpu_count = 1
             # Execute enabled classifiers
             Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(input_defaulter_set, data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], random_value_arr, classifier_dict, classifier_description, roc_plot, result_recorder, data_set["numeric_columns"], data_set["categorical_columns"], data_set["binary_columns"], data_set["classification_label"], data_set["missing_values_strategy"]) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
 
@@ -89,6 +93,13 @@ def main(random_value_arr):
                     result_recorder.save_results_to_file(random_value_arr, data_set["data_set_description"], display_time_to_fit_results=False)
 
     vis.visualise_dataset_classifier_results(data_set_arr)
+    metrics, file_paths = ResultRecorder.save_results_for_multi_dataset(data_set_arr)
+    script_path = "\"" + os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/external_signifigance_testing/signifigance_testing.R") + "\""
+
+    for i in range(len(metrics)):
+        input_arr = ["Rscript", script_path, "\"" + os.path.abspath(file_paths[i]) + "\"", "\"" + metrics[i] + "\""]
+        print(" ".join(input_arr))
+        subprocess.check_call(input_arr, shell=True)
 
 
 if __name__ == "__main__":

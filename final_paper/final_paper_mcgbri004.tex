@@ -44,13 +44,87 @@
 % ===============================================================
 %
 % For tracking purposes - this is V2.0 - May 2012
-
 \documentclass{sig-alternate-05-2015}
 \usepackage{booktabs}
 \usepackage{subcaption}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{tabularx}
 
 
 \begin{document}
+	\begingroup
+	\onecolumn
+	\setlength{\unitlength}{1cm}
+	\center
+	\large
+	
+	\begin{picture}(12.0, 2)
+	\put(0.1, 0){\includegraphics[draft=false,height=1.5cm]{uctlogo}}
+	\put(10.7, 0.1){\includegraphics[draft=false,height=1.3cm]{cslogo}}
+	\end{picture}
+	\\
+	\vspace{0.3cm}
+	\textsc{ \Large
+		Department of Computer Science
+	}
+	
+	\vspace{1cm}
+	
+	\textsc{ \huge
+		Computer Science Honours \\
+		Final Paper \\
+		2016 \\
+	}
+	
+	\vspace{1cm}
+	
+	\renewcommand{\arraystretch}{2}
+	\begin{tabularx}{0.8\textwidth}{l@{\hspace{1cm}}X}
+		Title: &
+		An Analysis of Classification Techniques for the Prediction of Tuberculosis Defaulters and Community Health Worker Attrition \\
+		Author: &
+		Brian Mc George \\
+		Project abbreviation: &
+		\textsc{ML4CHW} \\
+		Supervisor: &
+		Dr Brian DeRenzi
+	\end{tabularx}
+	
+	\vspace{3cm}
+	
+	\renewcommand{\arraystretch}{1.25}
+	\begin{tabular}{|l|c|c|c|}
+		\hline
+		\textbf{Category} & \textbf{Min} & \textbf{Max} & \textbf{Chosen} \\ \hline \hline
+		Requirement Analysis and Design & 0 & 20 &
+		 \\ \hline
+		Theoretical Analysis & 0 & 25 &
+		 \\ \hline
+		Experiment Design and Execution & 0 & 20 &
+		17 \\ \hline
+		System Development and Implementation & 0 & 15 &
+		10 \\ \hline
+		Results, Findings and Conclusion & 10 & 20 &
+		18 \\ \hline
+		Aim Formulation and Background Work & 10 & 15 &
+		15 \\ \hline
+		Quality of Paper Writing and Presentation & \multicolumn{2}{c|}{10} &
+		10 \\ \hline
+		Quality of Deliverables & \multicolumn{2}{c|}{10} &
+		10 \\ \hline
+		Overall General Project Evaluation & 0 & 10 &
+		\\ \hline
+		\hline
+		\multicolumn{3}{|l|}{\textbf{Total marks}} & 80 \\ \hline
+	\end{tabular}
+	
+	\endgroup
+	\thispagestyle{empty}
+	\newpage
+	\setcounter{page}{1}
+	
 	
 	% Copyright
 	\setcopyright{acmcopyright}
@@ -131,7 +205,7 @@
 	
 	\maketitle
 	\begin{abstract}
-		<TODO>
+		As the use of electronic data capturing for community health projects becomes more widespread the availability of this type of data for research use is becoming more prevalent. In this paper we outline various issues that may arise when attempting to apply classification techniques to predict minority class events and apply several strategies to counteract them. We focus on the prediction of Tuberculosis defaulters and the attrition of community health workers. We compare 13 classification techniques, 13 data balancing techniques and 6 feature selection techniques to assess what combination produces the best classification results. We find that the use of a data balancing techniques greatly improves balanced accuracy on imbalanced datasets. We recommend the use of Logistic regression, Artificial neural networks and Bernoulli Naive Bayes based on their performance with the metrics we measured. Adaptive synthetic sampling is recommended as an over-sampler and edited nearest neighbours as an under-sampler. Random forest is recommended for identifying the most relevant features as well as being able to remove noisy features that do not add to the classification.
 	\end{abstract}
 	
 	%
@@ -145,7 +219,7 @@
 	%\keywords{ACM proceedings; \LaTeX; text tagging}
 	
 	\section{Introduction}
-	Classification techniques can be used to flag individuals who have a high probability of certain events occurring. In this paper we use outline various issues that may arise when attempting to apply classification techniques to predict minority class events and apply several strategies to counteract them. We focus on the prediction of Tuberculosis (TB) defaulters and the attrition of community health workers (CHW).
+	Classification techniques can be used to flag individuals who have a high probability of certain events occurring. In this paper we outline various issues that may arise when attempting to apply classification techniques to predict minority class events and apply several strategies to counteract them. We focus on the prediction of Tuberculosis (TB) defaulters and the attrition of community health workers (CHW).
 		
 	A patient is considered to have defaulted if their treatment is interrupted for longer than a set duration, typically two months for TB treatment. In 2013 over 210\hspace*{1mm}000 patients defaulted from TB treatment worldwide \cite{world2015TB}. The rate of default in the Americas is the highest at 8\% with Africa at 5\% \cite{world2015TB}. The consequences of defaulting TB treatment include: increased drug resistance, increased health system costs \cite{Lackey:10356751520150601, muture:6660173120110101}, higher risk of mortality, continued risk of transmitting the disease to others \cite{Lackey:10356751520150601} and increased rate of recurrent disease \cite{Jha:10.1371/journal.pone.0008873}. The spread of TB can be reduced if the individuals who have a high risk of defaulting can be predicted. This will also reduce health system costs.
 	
@@ -287,7 +361,7 @@
 	
 	The ANOVA F-test is used on numeric features and $\chi^2$ test on categorical features. The ANOVA F-test tests the null hypothesis that 2 or more groups have the same population mean. The $\chi^2$ test the null hypothesis that features that are independent of its class and therefore not relevant to the classification. We chose a p-value of 0.1 to reject each of the null hypotheses. 
 	
-	We measure our other feature selection techniques in two different ways. In the first approach we use the median feature weight as the threshold and only keep features that are rated more important. We want to identify the technique that can retain the most important features for our different classifiers and will therefore result in the lowest reduction in BARR. In the second approach we apply recursive feature elimination (RFE) in order to identify the optimal number of parameters for the particular technique. RFE removes the least important feature at each iteration until only one feature remains. Good feature selection techniques should be able to reduce the overall features while retaining or even improving the classification. For each feature selection technique the set of features that result in the highest BARR are retained. For some training folds, this could result in no features being removed. 
+	We measure our other feature selection techniques in two different ways. In the first approach we only retain the 15 most important features. We want to identify the technique that can retain the most important features for our different classifiers and will therefore result in the lowest reduction in BARR. In the second approach we apply recursive feature elimination (RFE) in order to identify the optimal number of parameters for the particular technique. RFE removes the least important feature at each iteration until only one feature remains. Good feature selection techniques should be able to reduce the overall features while retaining or even improving the classification. For each feature selection technique the set of features that result in the highest BARR are retained. For some training folds, this could result in no features being removed. 
 	
 	To test the feature selection strategies we record the BARR of each classifier with each feature selection strategy. For the RFE approach the minimum features, maximum features and average features selected is also recorded since each fold of the $k$-fold cross-validation could have a different number of features selected.
 	
@@ -364,8 +438,8 @@
 	\subsection{Classifier results}
 	\label{classifier-results}
 	Table \ref{table-lima-tb-results} and \ref{table-india-attrition-results} contain the results for each classifier on the Lima TB and India attrition datasets respectively. Figure \ref{fig:classifier_comparision} compares the difference in TPR and FPR from the median TPR and FPR calculated for each dataset. Classifiers that consistently produce better than average results should be in the upper right quadrant. Classifiers in the upper left and lower right can produce better than average results if the improvement in either TPR or TNR exceeds that of the reduction in TNR or TPR. For all our datasets ANN's and LR produce high quality classification. LR has two benefits over an ANN, it produces a white-box model that can be interpreted to understand the classification process \cite{Dreiseitl2002352} and its training time is orders of magnitude faster than an ANN.
-	
-	The ANN produces the best results for the India attrition dataset. As the ANN can produce non-linear model it should be able to produce results better than those that are limited to a linear model. However, for our datasets we did not see a significant gain in using an ANN. It is possible that our datasets are too small and contain too few features to truly utilise the ANN to its full potential. 
+	 
+	The ANN produces the best results for the India attrition dataset. As the ANN can produce a non-linear model it should be able to produce results better than those that are limited to a linear model. However, for our datasets we did not see a significant gain in using an ANN. It is possible that our datasets are too small and contain too few features to truly utilise the ANN to its full potential. 
 	
 	Bernoulli NB produced impressive results for the India attrition dataset and showed better than median results for each of our datasets. Bernoulli NB has the added benefit that it scales well with data size and number of features. The performance of Bernoulli NB is unexpected as it is designed to operate on binary features. For each dataset we already convert categorical features to multiple binary features as part of the one-hot encoding. However, Bernoulli NB has to apply binarizing on numerical features to transform them to binary features which could result in the loss of important information. Since our numerical features are scaled to that of a normal distribution, a binarization threshold of 0 is optimal where input greater than 0 becomes 1 and input lower becomes 0. On our attrition dataset which has 3840 entries per fold and 270 features, once pre-processing is completed, is able to fit the 5 folds in 0.1 seconds. This is the fastest of all the classifiers for the particular dataset. In addition it showed the most stable results in our parameter tuning experiment indicating that minimal tuning is required. Bernoulli NB is therefore well suited for rapid experimentation and prototyping of ideas because of its speedy training and solid classification performance.
 
@@ -378,7 +452,7 @@
 		\small
 		\caption{Lima TB metrics for each classifier}
 		\label{table-lima-tb-results}	
-		\hspace*{-1.5em}
+		\hspace*{-6em}
 		\scalebox{0.9}{	
 		\begin{tabular}{l|c|c|c|c|c|c} \hline		
 			Classifier&BARR\textsuperscript{*}&MCC&BS&TPR&TNR&\parbox[t]{1.1cm}{\centering Time to fit (s)}\\ \hline 
@@ -404,7 +478,7 @@
 		\small
 		\caption{India attrition metrics for each classifier}
 		\label{table-india-attrition-results}	
-		\hspace*{-1.5em}
+		\hspace*{-5em}
 		\scalebox{0.9}{	
 		\begin{tabular}{l|c|c|c|c|c|c} \hline		
 			Classifier&BARR\textsuperscript{*}&MCC&BS&TPR&TNR&\parbox[t]{1.1cm}{\centering Time to fit (s)}\\ \hline 
@@ -426,46 +500,84 @@
 	\end{table}
 	
 	\begin{figure}
-		\hspace*{1.2em}
+		\hspace*{2em}
 		\centering
 		\makebox[\linewidth]{
-			\includegraphics[scale=0.53]{classifier_dataset_plt_2016-10-31_23-10-25}}
+			\includegraphics[scale=0.52]{classifier_dataset_plt_2016-10-31_23-10-25}}
 		\caption{Difference from median TPR and TNR on each dataset for every classifier}
 		\label{fig:classifier_comparision}
 	\end{figure}
 	
-
+	\subsection{Data Balancing}
+	Our results from our data balancing experiments are summarised in Figure \ref{fig:classifier_vs_balancer} and Figure \ref{fig:balancing_per_dataset}. Figure \ref{fig:classifier_vs_balancer} examines each classifier against each data balancer for the Lima TB and India attrition datasets. Some techniques such as SVM, LR, decision tree and RF have the ability to conduct internal class balancing. Unfortunately, this is not available for all classifiers and is implementation specific. The tuned SVM and LR make use of the internal class balancing and showed little variation between different balancing algorithms. They have therefore been excluded from our graphs. Figure \ref{fig:classifier_vs_balancer} suggests that there is no clear winner among the data balancers. In Figure \ref{fig:classifier_vs_balancer} we average the each balancer over the classifiers. ADASYN improves TNR for a minor reduction in TPR for the Lima TB dataset while EEN is able to improve the TPR for a minor reduction in TNR for the two credit scoring datasets.
+	
+	Unlike our classifiers, there is no clear-cut recommendations on which data balancers to use. For our credit scoring datasets, under-sampling techniques such as EEN and NCR produced the best results. For our Lima TB and India attrition dataset, oversampling techniques such as ADASYN produced the best results. SMOTETomek also performed well on the India attrition dataset.
+	
+	Our observations suggest that over-sampling techniques are best suited to datasets that have a higher imbalance ratio where under-sampling techniques are better suited to datasets that have a lower imbalance ratio. We suggest using one of ADASYN, SMOTETomek, EEN or NCR.
+	
 	\begin{figure*}
-		\centering
-		\makebox[\linewidth]{
-			\includegraphics[scale=0.62]{Feature_selection_approach_results_per_classifier_plot_['Lima_TB',_'German_Credit',_'Australian_Credit']_Balanced_Accuracy_2016-10-26_15-56-32}}
-		\caption{Difference in balanced accuracy from using no feature selection with different feature selection approachs for each classifier}
-		\label{fig:res}
-	\end{figure*}
-
-	\begin{figure*}
+		
 		\centering
 		\vspace*{-1.5cm}\hspace*{-1.5cm}\begin{subfigure}{.5\textwidth}
-			\includegraphics[scale=0.61]{classifier_dataset_plt_2016-10-26_18-44-26}
-			\label{fig:res}
+			\includegraphics[scale=0.61]{classifier_dataset_plt_2016-11-01_10-20-21}
 		\end{subfigure}\hspace*{4cm}\vspace*{-0.5cm}%
 		\hspace*{-2cm}\begin{subfigure}{.5\textwidth}
-			\includegraphics[scale=0.61]{classifier_dataset_plt_2016-10-26_18-44-26}
-			\label{fig:res}
+			\includegraphics[scale=0.61]{classifier_dataset_plt_2016-11-01_12-15-14}
 		\end{subfigure}
 		\vspace*{-0.5cm}\hspace*{-3cm}\begin{subfigure}{\textwidth}
 			\includegraphics[scale=0.6]{legend}
-			\label{fig:res}
-		\end{subfigure}
-		\caption{Comparison of classifiers with different data balancing techniques on Lima TB data set (left) and [PLACEHOLDER for DIMAGI attrition] (right). SVM and Logistic regression excluded because of minimal variation.}
+		\end{subfigure}	
+		\caption{Comparison of classifiers with different data balancing techniques on Lima TB dataset (left) and India attrition dataset (right). SVM and Logistic regression excluded because of minimal variation.}
+		\label{fig:classifier_vs_balancer}
+	\end{figure*}
+
+	\begin{figure*}
+		\hspace*{1.2em}
+		\centering
+		\makebox[\linewidth]{
+			\includegraphics[scale=0.53]{classifier_dataset_plt_2016-11-01_11-59-30}}
+		\caption{Difference from median TPR and TNR on each dataset for every balancing technique}
+		\label{fig:balancing_per_dataset}
 	\end{figure*}
 	
+	\subsection{Feature selection}
+	Our feature selection experiment is divided into two sub-goals, identifying the most important predictors and removing un-important features. As the majority of studies outlined in Section \ref{predictors_of_defaulters_related_work} use logistic regression to identify important predictors, we wanted to determine if this is indeed the best classification algorithm to make use of. We set each of our feature selection approaches to select the top 15 features from the training set and then created and tested a model only using the selected features. We reason that a feature selection approach that results in the lowest reduction in BARR will have selected the best features. Figure \ref{fig:feature_selection_limit_15} contains the results. Across our datasets RF was able to identify the most important features. Decision tree also produced competitive results.
+	
+	Our second goal was to use feature selection to remove unnecessary features while maintaining overall BARR. Bernoulli Naive Bayes only removed a small subset of features from each dataset. SVM (linear) and RF were both able to reduce the number of features substantially while maintaining overall BARR. However, SVM (linear) reduced the number of features less that that of RF. On the India Attrition dataset the number of features were reduced from 272 to 204.8 and 191 on average for each training fold using SVM (linear) and RF respectively.
+	
+	We recommend the use of RF for both identifying the most important predictors and removing un-important features.
+	
+	\begin{figure*}
+		\centering
+		\makebox[\linewidth]{
+			\includegraphics[scale=0.62]{Feature_selection_approach_results_per_classifier_plot_after_['Lima_TB',_'India_CHW_attrition',_'German_credit',_'Australian_credit']_Balanced_Accuracy_2016-11-01_13-03-02}}
+		\caption{Difference in balanced accuracy from using no feature selection with different feature selection approach forced to select 15 features for each classifier}
+		\label{fig:feature_selection_limit_15}
+	\end{figure*}
+	
+	\begin{figure*}
+		\centering
+		\makebox[\linewidth]{
+			\includegraphics[scale=0.62]{Feature_selection_approach_results_per_classifier_plot_after_['Lima_TB',_'India_CHW_attrition',_'German_credit',_'Australian_credit']_Balanced_Accuracy_2016-11-01_14-18-06}}
+		\caption{Difference in balanced accuracy from using no feature selection with different feature selection approachs allowed to use any number of features}
+		\label{fig:feature_selection_unlimited}
+	\end{figure*}
+	
+	\subsection{Analysis of time to default on Lima TB dataset}
+	The only default range that showed a large variation in BARR from that of the others was training using the 300+ default range. Using this range resulted in a low TPR when applied to the testing test which contains the other half of non-defaulters and defaulters outside this default range. The result would suggest that a defaulter's ``profile'' is similar regardless of the time they actually default.	
 	
 	\section{Conclusions and Future Work}
-	\begin{enumerate}
-		\item Likely something along the lines of utilising more temporal based data so that classification is not just done at registration but also at each check-up for example. Future work may also be the testing of more classification techniques as well as datasets from other parts of the world.
-	\end{enumerate}
+	While our comparison of classifiers, data balancers and features selection strategies is extensive we are limited by the datasets that were available to us for this study. The number of samples in our datasets are small compared to what is available in a production environment which limits our ability to see how our results scale to much larger datasets.
 	
+	Future work therefore includes the use of datasets which are orders of magnitude larger and the incorporation of temporal data such as information from each check-up for the prediction of TB default which could then be used to improve the predictions Our TB default data only contained information available at registration.
+	
+	The use of a data balancing techniques greatly improved BARR for our imbalanced datasets. Parameter tuning only resulted in marginal improvements for most classifiers. The ANN on the TB dataset and ELM on the other datasets saw the greatest improvement in BARR from parameter tuning.
+	
+	LR, ANN and Bernoulli NB showed are recommended choices of classifiers for several reasons. Bernoulli NB shows above median performance and it can be trained incredibly fast which allows for scaling to large datasets and can facilitate rapid testing and improvement of one's experimental design even if the dataset is very large. LR produced the highest BARR and MCC in the Lima TB and German credit dataset. It also showed extremely competitive performance in the other two datasets. LR produces a white-box model which allows for easier interpretation of how the classification is calculated. ANN produced highly competitive results in all our datasets and achieved the highest BARR and MCC in the India attrition dataset. ELMs could be considered instead of ANNs if a non-linear model is required but training time is of importance too.
+	
+	There was no one stand-out data balancing algorithm. However, ADASYN was best on the Lima TB dataset and edited nearest neighbours on the two credit scoring datasets.
+		
+	Most of papers in Section \ref{predictors_of_defaulters_related_work} used LR to determine the predictors associated with TB default. Our results suggest that RF is better at identifying important predictors. Random forest also showed the best performance when RFE was applied. It was able to both reduce the number of features while retaining similar BARR and in some cases was able to improve the BARR too.
 	%
 	% The following two commands are all you need in the
 	% initial runs of your .tex file to

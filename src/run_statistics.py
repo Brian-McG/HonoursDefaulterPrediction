@@ -23,8 +23,12 @@ class RunStatistics:
 
     def calculate_average_run_accuracy(self):
         overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
-        false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff, matthews_correlation_coefficient, brier_score, fit_time = [0] * 13
+        false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff, matthews_correlation_coefficient, brier_score, auc_score, fit_time = [0] * 14
         balanced_accuracy_arr = []
+        auc_arr = []
+        brier_score_arr = []
+        fit_time_arr = []
+        mcc_arr = []
 
         for result_dictionary in self.errors:
             overall_true_rate += result_dictionary["avg_true_rate"]
@@ -37,15 +41,17 @@ class RunStatistics:
             false_positive_rate_cutoff += result_dictionary["avg_false_positive_rate_with_prob_cutoff"]
             false_negative_rate_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
             unclassified_cutoff += result_dictionary["avg_false_negative_rate_with_prob_cutoff"]
-            matthews_correlation_coefficient += matthews_corrcoef(result_dictionary["actual_outcome"], result_dictionary["test_classification"])
-            fit_time += result_dictionary["fit_time"]
+            matthews_correlation_coefficient += result_dictionary["avg_mcc"]
+            auc_score += result_dictionary["avg_auc"]
+            brier_score += result_dictionary["avg_brier_score"]
             balanced_accuracy_arr += result_dictionary["balanced_accuracy_arr"]
-            if -1 not in result_dictionary["test_probabilities"]:
-                brier_score += brier_score_loss(result_dictionary["actual_outcome"], result_dictionary["test_probabilities"])
-            else:
-                brier_score += -1
+            auc_arr += result_dictionary["auc_arr"]
+            brier_score_arr += result_dictionary["brier_score_arr"]
+            fit_time_arr += result_dictionary["fit_time_arr"]
+            mcc_arr += result_dictionary["mcc_arr"]
 
-        avg_run_results = [None] * 14
+
+        avg_run_results = [None] * 20
         avg_run_results[0] = matthews_correlation_coefficient / float(len(self.errors))
         avg_run_results[1] = brier_score / float(len(self.errors))
         avg_run_results[2] = overall_true_rate / float(len(self.errors))
@@ -59,6 +65,12 @@ class RunStatistics:
         avg_run_results[10] = false_negative_rate_cutoff / float(len(self.errors))
         avg_run_results[11] = unclassified_cutoff / float(len(self.errors))
         avg_run_results[12] = fit_time / float(len(self.errors))
+        avg_run_results[14] = balanced_accuracy_arr
+        avg_run_results[15] = auc_score / float(len(self.errors))
+        avg_run_results[16] = auc_arr
+        avg_run_results[17] = brier_score_arr
+        avg_run_results[18] = fit_time_arr
+        avg_run_results[19] = mcc_arr
 
         avg_balanced_acc = 0
         for balanced_accuracy in balanced_accuracy_arr:

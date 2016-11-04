@@ -50,12 +50,12 @@ append_classifier_details(svm_rdf_data_balancer, svm_parameters, clfrs.svm_rdf_d
 
 # Support Vector Machines (with linear kernel)
 svm_linear_data_balancer = SMOTE
-svm_linear_parameters = {"C": 2.11315789473684, "decision_function_shape": "ovr", "cache_size": 1000, "kernel": "linear", "probability": True, "class_weight": None}
+svm_linear_parameters = {"C": 2.11315789473684, "decision_function_shape": "ovr", "cache_size": 1000, "kernel": "linear", "class_weight": None}
 append_classifier_details(svm_linear_data_balancer, svm_linear_parameters, clfrs.svm_linear_description, classifier_parameters)
 
 # Support Vector Machines (with polynomial kernel)
 svm_poly_data_balancer = RandomUnderSampler
-svm_poly_parameters = {"kernel": "poly", "probability": True}
+svm_poly_parameters = {"kernel": "poly"}
 append_classifier_details(svm_poly_data_balancer, svm_poly_parameters, clfrs.svm_poly_description, classifier_parameters)
 
 # Logistic Regression

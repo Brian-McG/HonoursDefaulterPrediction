@@ -71,7 +71,7 @@ def main():
             input_defaulter_set = input_defaulter_set.reset_index(drop=True)
 
             time_range_results = []
-            time_ranges = [(0, 30), (0, 60), (0, 100), (0, 200), (50, 100), (50, 150), (100, 200), (200, 1000), (300, 1000)]
+            time_ranges = [(0, 30), (0, 60), (0, 100), (0, 200), (0, 300), (50, 150), (100, 200), (200, 1000), (300, 1000)]
 
             non_defaulters = input_defaulter_set[np.isnan(input_defaulter_set["Time to Default (Days)"])]
             non_defaulters = non_defaulters[data_set["numeric_columns"] + data_set["categorical_columns"] + [name for name, _, _ in data_set["binary_columns"]] + data_set["classification_label"]]
