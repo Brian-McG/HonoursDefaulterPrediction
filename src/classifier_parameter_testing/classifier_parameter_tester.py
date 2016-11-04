@@ -28,7 +28,7 @@ from sklearn.model_selection import ParameterGrid
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from util import get_number_of_processes_to_use
 from config.constants import DATA_BALANCER_STR
-import config.classifier_data_balancer_only_tester_parameters as ctp
+import config.classifier_tester_parameters as ctp
 import config.classifiers as cfr
 from classifier_result_recorder import ClassifierResultRecorder
 from config import constants as const
