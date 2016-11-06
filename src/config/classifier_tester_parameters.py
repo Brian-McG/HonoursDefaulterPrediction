@@ -60,9 +60,9 @@ logistic_regression_dict = {"parameters": {"C": [1] + np.linspace(0.01, 3, 5).to
 generic_classifier_parameter_dict[clf.logistic_regression_description] = logistic_regression_dict
 
 # Decision tree
-decision_tree_dict = {"parameters": {"criterion": ["gini", "entropy"], "splitter": ["best", "random"], "max_features": ["auto", "sqrt", "log2"], "class_weight": [None, "balanced"],
-                                     "max_depth": ([None] + list(range(3, 9, 2))), "min_samples_split": list(range(1, 4)), "min_samples_leaf": list(range(1, 3)),
-                                     "max_leaf_nodes": [None] + list(range(5, 10, 3))}, "requires_random_state": False}
+decision_tree_dict = {"parameters": {"criterion": ["gini", "entropy"], "splitter": ["best", "random"], "max_features": ["auto"], "class_weight": [None, "balanced"],
+                                     "max_depth": [None] + [3, 5], "min_samples_split": [2,3], "min_samples_leaf": [2,3],
+                                     "max_leaf_nodes": [None] + [3, 6]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.decision_tree_description] = decision_tree_dict
 
 # AdaBoost
