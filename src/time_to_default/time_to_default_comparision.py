@@ -1,29 +1,24 @@
 """Primary script used to execute the defaulter prediction"""
 
-import pandas as pd
-from multiprocessing import Manager
-
-from joblib import Parallel
-from joblib import delayed
-import sys
 import os
-import numpy as np
-
+import sys
+from multiprocessing import Manager
 from random import Random
 
+import numpy as np
+import pandas as pd
+from joblib import Parallel
+from joblib import delayed
 from sklearn.model_selection import ShuffleSplit
-from sklearn.model_selection import train_test_split
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 import config.classifiers as cfr
 import visualisation as vis
-from config import constants as const
+import constants as const
 from config import data_sets
-from data_preprocessing import apply_preprocessing, apply_preprocessing_to_train_test_dataset
-from feature_selection.select_features import select_features
+from data_preprocessing import apply_preprocessing_to_train_test_dataset
 from generic_classifier import GenericClassifier
-from result_recorder import ResultRecorder
 from run_statistics import RunStatistics
 from util import get_number_of_processes_to_use
 from time_to_default.time_to_default_result_recorder import TimeToDefaultResultRecorder

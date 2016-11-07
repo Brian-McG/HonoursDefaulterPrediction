@@ -15,26 +15,24 @@ from sklearn.feature_selection import RFECV
 from sklearn.feature_selection import SelectFromModel
 from sklearn.feature_selection import chi2
 from sklearn.feature_selection import f_classif
-from sklearn.feature_selection import mutual_info_classif
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import StratifiedKFold
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.tree import DecisionTreeClassifier
 
-from config.constants import ANOVA_CHI2, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, DECISION_TREE, RANDOM_FOREST
-from config.constants import LOGISTIC_REGRESSION
+from constants import ANOVA_CHI2, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, DECISION_TREE, RANDOM_FOREST
+from constants import LOGISTIC_REGRESSION
 from feature_selection.select_features_result_recorder import FeatureSelectionResultRecorder
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from data_preprocessing import apply_preprocessing, apply_preprocessing_to_train_test_dataset
 from generic_classifier import GenericClassifier
-from result_recorder import ResultRecorder
 from run_statistics import RunStatistics
-from util import verbose_print, get_number_of_processes_to_use, bcr_scorer
+from util import get_number_of_processes_to_use, bcr_scorer
 from config import data_sets
-from config import constants as const
+import constants as const
 import visualisation as vis
 import config.classifiers as cfr
-import matplotlib.pyplot as plt
 
 feature_selection_strategies = [None, ANOVA_CHI2, LOGISTIC_REGRESSION, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, DECISION_TREE, RANDOM_FOREST]
 

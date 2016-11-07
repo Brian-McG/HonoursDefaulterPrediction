@@ -1,53 +1,25 @@
 import os
 import sys
-
 from multiprocessing import Manager
 from random import Random
 
 from joblib import Parallel
 from joblib import delayed
-from sklearn.linear_model import Perceptron
-from sklearn.tree import ExtraTreeClassifier
 
 from config import data_sets
 from data_balance_testing.data_balancer_result_recorder import DataBalancerResultRecorder
-from data_preprocessing import apply_preprocessing
 from generic_classifier import GenericClassifier
-from result_recorder import ResultRecorder
 from run_statistics import RunStatistics
 from util import get_number_of_processes_to_use
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import pandas as pd
 import classifier_parameter_testing.classifier_parameter_tester as classifier_parameter_tester
-from config.constants import DATA_BALANCER_STR
+from constants import DATA_BALANCER_STR
 from visualisation import plot_balancer_results_per_classifier
-from imblearn.combine import SMOTEENN
-from imblearn.combine import SMOTETomek
-from imblearn.over_sampling import ADASYN
-from imblearn.over_sampling import RandomOverSampler
-from imblearn.over_sampling import SMOTE
-from imblearn.under_sampling import ClusterCentroids
-from imblearn.under_sampling import EditedNearestNeighbours
-from imblearn.under_sampling import InstanceHardnessThreshold
-from imblearn.under_sampling import NearMiss
-from imblearn.under_sampling import NeighbourhoodCleaningRule
-from imblearn.under_sampling import OneSidedSelection
-from imblearn.under_sampling import RandomUnderSampler
-from imblearn.under_sampling import TomekLinks
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import VotingClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import BernoulliNB, GaussianNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neural_network import MLPClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.linear_model import SGDClassifier
-
 
 import numpy as np
-import config.constants as const
+import constants as const
 import config.classifiers as cfr
 import visualisation as vis
 

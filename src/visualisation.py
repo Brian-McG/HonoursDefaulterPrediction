@@ -1,7 +1,8 @@
 import os
-from collections import OrderedDict
 from datetime import datetime
-import seaborn as sns
+
+import matplotlib.lines as mlines
+import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -12,11 +13,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy import interp
 from sklearn.decomposition import PCA
 from sklearn.metrics import auc
-import matplotlib.patches as mpatches
-import matplotlib.lines as mlines
-import math
 
-from config import constants as const
+import constants as const
 
 almost_black = "#262626"
 palette = sns.color_palette()

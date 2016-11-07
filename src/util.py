@@ -1,6 +1,6 @@
 import psutil
 
-from config.constants import VERBOSE_MODE
+from constants import VERBOSE_MODE
 
 
 def verbose_print(message=""):

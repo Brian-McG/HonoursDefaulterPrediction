@@ -56,7 +56,7 @@ poly_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_functi
 generic_classifier_parameter_dict[clf.svm_poly_description] = poly_svm_parameter_dict
 
 # Logistic regression
-logistic_regression_dict = {"parameters": {"C": [1] + np.linspace(0.01, 3, 5).tolist(), "fit_intercept": [True, False], "intercept_scaling": [1] + np.linspace(0.01, 10, 10).tolist(),
+logistic_regression_dict = {"parameters": {"C": [1] + np.linspace(0.01, 5, 10).tolist(), "fit_intercept": [True, False], "intercept_scaling": [1] + np.linspace(0.01, 10, 10).tolist(),
                                            "class_weight": [None, "balanced"], "solver": ["liblinear", "sag"]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.logistic_regression_description] = logistic_regression_dict
 

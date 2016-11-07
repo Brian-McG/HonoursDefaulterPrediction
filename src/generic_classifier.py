@@ -1,9 +1,7 @@
-import subprocess
-
 from sklearn.model_selection import StratifiedKFold
 
+import constants as const
 from classifier_statistics import ClassifierStatistics
-from config import constants as const
 from data_preprocessing import apply_preprocessing_to_train_test_dataset
 from ml_technique import MLTechnique, train_and_evaluate_fold
 

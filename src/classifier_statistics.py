@@ -1,9 +1,12 @@
 import numpy as np
+import rpy2.robjects as robjects
+import rpy2.robjects.packages as rpackages
+from rpy2.robjects.packages import importr
 from sklearn.metrics import brier_score_loss
 from sklearn.metrics import matthews_corrcoef
 from sklearn.metrics import roc_auc_score
 
-from config import constants as const
+import constants as const
 
 
 class ClassifierStatistics:
@@ -122,7 +125,6 @@ class ClassifierStatistics:
         avg_false_positive_rate_probability_cutoff = 0
         avg_false_negative_rate_probability_cutoff = 0
         unclassified = 0
-        avg_fit_time = 0
         classification_arr = []
         actual_result_arr = []
         classification_probabilities_arr = []
@@ -131,6 +133,11 @@ class ClassifierStatistics:
         brier_score_arr = []
         fit_time_arr = []
         mcc_arr = []
+        true_positive_rate_arr = []
+        true_negative_rate_arr = []
+        false_positive_rate_arr = []
+        false_negative_rate_arr = []
+        hmeasure_arr = []
 
         avg_mcc = 0
         avg_auc = 0
@@ -140,11 +147,33 @@ class ClassifierStatistics:
         for error_dict in self.results:
             balanced_accuracy = (error_dict["true positive rate"] + error_dict["true negative rate"]) / 2
             mcc = matthews_corrcoef(error_dict["actual_outcome"], error_dict["test_classification"])
-            auc = roc_auc_score(error_dict["actual_outcome"], error_dict["test_probabilities"])
 
-            brier_score = -999
+            brier_score, auc, hmeasure = -9999, -9999, -9999
             if -1 not in error_dict["test_probabilities"]:
                 brier_score = brier_score_loss(error_dict["actual_outcome"], error_dict["test_probabilities"])
+                auc = roc_auc_score(error_dict["actual_outcome"], error_dict["test_probabilities"])
+
+                # Apply H-measure
+                count = 0
+                while True:
+                    try:
+                        hmeasure_r = importr("hmeasure")
+                        actual_outcome = robjects.FloatVector(error_dict["actual_outcome"])
+                        test_probabilities = robjects.FloatVector(error_dict["test_probabilities"])
+                        hmeasure_result = hmeasure_r.HMeasure(actual_outcome, test_probabilities)
+                        hmeasure = float(hmeasure_result[0][0][0])
+                        break
+
+                    except Exception:
+                        if count > 0:
+                            raise
+                        else:
+                            utils = rpackages.importr('utils')
+                            utils.chooseCRANmirror(ind=1)
+                            utils.install_packages("hmeasure")
+
+
+
 
             avg_true_rate += balanced_accuracy
             avg_true_positive_rate += error_dict["true positive rate"]
@@ -173,6 +202,11 @@ class ClassifierStatistics:
             brier_score_arr.append(brier_score)
             mcc_arr.append(mcc)
             fit_time_arr.append(error_dict["fit_time"])
+            hmeasure_arr.append(hmeasure)
+            true_positive_rate_arr.append(error_dict["true positive rate"])
+            true_negative_rate_arr.append(error_dict["true negative rate"])
+            false_positive_rate_arr.append(error_dict["false positive rate"])
+            false_negative_rate_arr.append(error_dict["false negative rate"])
 
         avg_result_dict["avg_true_rate"] = avg_true_rate / float(len(self.results))
         avg_result_dict["avg_true_positive_rate"] = avg_true_positive_rate / float(len(self.results))
@@ -201,5 +235,10 @@ class ClassifierStatistics:
         avg_result_dict["brier_score_arr"] = brier_score_arr
         avg_result_dict["fit_time_arr"] = fit_time_arr
         avg_result_dict["mcc_arr"] = mcc_arr
+        avg_result_dict["true_positive_rate_arr"] = true_positive_rate_arr
+        avg_result_dict["true_negative_rate_arr"] = true_negative_rate_arr
+        avg_result_dict["false_positive_rate_arr"] = false_positive_rate_arr
+        avg_result_dict["false_negative_rate_arr"] = false_negative_rate_arr
+        avg_result_dict["hmeasure_arr"] = hmeasure_arr
 
         return avg_result_dict

@@ -27,11 +27,11 @@ from sklearn.model_selection import ParameterGrid
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from util import get_number_of_processes_to_use
-from config.constants import DATA_BALANCER_STR
+from constants import DATA_BALANCER_STR
 import config.classifier_tester_parameters as ctp
 import config.classifiers as cfr
 from classifier_result_recorder import ClassifierResultRecorder
-from config import constants as const
+import constants as const
 from config import data_sets
 from generic_classifier import GenericClassifier
 from run_statistics import RunStatistics
@@ -62,6 +62,8 @@ def execute_loop(classifier_description, classifier_dict, parameter_dict, sorted
 
         if success:
             avg_results = test_stats.calculate_average_run_accuracy()
+            avg_results = [avg_results[0], avg_results[1], avg_results[2], avg_results[15], avg_results[28], avg_results[3], avg_results[4], avg_results[5], avg_results[6],
+                           avg_results[20], avg_results[21], avg_results[13], avg_results[22], avg_results[29], avg_results[24], avg_results[25]]
             values = [parameter_dict.get(k) if k in parameter_dict else "value_left_unset" for k in sorted_keys] + [data_balancer.__name__ if data_balancer is not None else "None"]
             results_recorder.record_results(values + avg_results)
 

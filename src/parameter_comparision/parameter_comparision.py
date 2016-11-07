@@ -17,7 +17,7 @@ from generic_classifier import GenericClassifier
 from run_statistics import RunStatistics
 from util import get_number_of_processes_to_use
 from config import data_sets
-from config import constants as const
+import constants as const
 import visualisation as vis
 import config.classifiers as cfr
 

@@ -2,8 +2,8 @@ import csv
 import os
 from datetime import datetime
 
-from config import constants as const
-from config.constants import TITLE_ROW_PARAMETER_TESTER
+import constants as const
+from constants import TITLE_ROW_PARAMETER_TESTER
 
 
 class ClassifierResultRecorder:

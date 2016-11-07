@@ -26,7 +26,7 @@ def append_classifier_details(classifier_data_balancer, classifier_parameters_di
 # Generic classifier_parameters
 # Clustering-Launched Classification
 clustering_launched_classifier_data_balancer = EditedNearestNeighbours
-clustering_launched_classifier_parameters = {"d": 0.478947368421052}
+clustering_launched_classifier_parameters = {"d": 0.3}
 append_classifier_details(clustering_launched_classifier_data_balancer, clustering_launched_classifier_parameters, clfrs.clustering_launched_classifier_description,
                           classifier_parameters)
 
@@ -47,12 +47,12 @@ append_classifier_details(svm_rdf_data_balancer, svm_parameters, clfrs.svm_rdf_d
 
 # Support Vector Machines (with linear kernel)
 svm_linear_data_balancer = TomekLinks
-svm_linear_parameters = {"C": 1.06157894736842, "decision_function_shape": "ovr", "cache_size": 1000, "kernel": "linear", "probability": True, "class_weight": "balanced"}
+svm_linear_parameters = {"C": 1.06157894736842, "decision_function_shape": "ovr", "cache_size": 1000, "kernel": "linear", "class_weight": "balanced"}
 append_classifier_details(svm_linear_data_balancer, svm_linear_parameters, clfrs.svm_linear_description, classifier_parameters)
 
 # Support Vector Machines (with polynomial kernel)
 svm_poly_data_balancer = InstanceHardnessThreshold
-svm_poly_parameters = {"C": 3.89111111111111, "cache_size": 1000, "coef0": 0, "gamma": "auto", "kernel": "poly", "degree": 3, "class_weight": None, "probability": True}
+svm_poly_parameters = {"C": 3.89111111111111, "cache_size": 1000, "coef0": 0, "gamma": "auto", "kernel": "poly", "degree": 3, "class_weight": None}
 append_classifier_details(svm_poly_data_balancer, svm_poly_parameters, clfrs.svm_poly_description, classifier_parameters)
 
 # Logistic Regression

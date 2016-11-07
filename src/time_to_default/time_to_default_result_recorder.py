@@ -2,8 +2,8 @@ import csv
 import os
 from datetime import datetime
 
-from config import constants as const
-from config.constants import TITLE_ROW_WITH_DEFAULT_TIME_RANGE
+import constants as const
+from constants import TITLE_ROW_WITH_DEFAULT_TIME_RANGE
 
 
 class TimeToDefaultResultRecorder:
@@ -31,6 +31,7 @@ class TimeToDefaultResultRecorder:
                 else:
                     random_vals = None
                 csv_writer.writerow((result_tuple[2], result_tuple[1], result_tuple[0][0], result_tuple[0][1],
-                                     result_tuple[0][2], result_tuple[0][3], result_tuple[0][4], result_tuple[0][5], result_tuple[0][6], random_vals))
+                                     result_tuple[0][2], result_tuple[0][15], result_tuple[0][28], result_tuple[0][3], result_tuple[0][4], result_tuple[0][5], result_tuple[0][6],
+                                     result_tuple[0][20], result_tuple[0][21], result_tuple[0][13], result_tuple[0][22], result_tuple[0][29], result_tuple[0][24], result_tuple[0][25], random_vals))
                 x += 1
             output_file.close()
