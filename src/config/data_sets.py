@@ -1,11 +1,13 @@
 """Data sets to test against"""
 import os
+import sys
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from config import australian_data_balancer_only_parameters
 from config import german_data_balancer_only_parameters
 from config import lima_tb_classifier_parameters,  default_classifier_parameters, german_classifier_parameters, australian_classifier_parameters
 from config import lima_tb_data_balancer_only_parameters
-from config.constants import LOGISTIC_REGRESSION, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, DECISION_TREE, RANDOM_FOREST, ANOVA_CHI2
+from constants import LOGISTIC_REGRESSION, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, DECISION_TREE, RANDOM_FOREST, ANOVA_CHI2
 
 data_set_arr = []
 
@@ -29,7 +31,7 @@ lima_tb_classification_label = ["Treatment Outcome"]
 lima_tb_time_to_default = "Time to Default (Days)"
 lima_tb_missing_values_strategy = "remove"
 lima_tb_feature_selection_strategy = None
-lima_tb_enabled = False
+lima_tb_enabled = True
 append_data_set_details(lima_tb_path, lima_tb_numeric_columns, lima_tb_categorical_columns, lima_tb_binary_columns, lima_tb_classification_label, lima_tb_time_to_default, lima_tb_missing_values_strategy,
                         lima_tb_feature_selection_strategy, lima_tb_enabled,
                         lima_tb_classifier_parameters, "Lima_TB", lima_tb_data_balancer_only_parameters, None, data_set_arr)
@@ -43,7 +45,7 @@ chw_attrition_classification_label = ["attritted"]
 chw_attrition_time_to_default = None
 chw_attrition_missing_values_strategy = "remove"
 chw_attrition_feature_selection_strategy = None
-chw_attrition_enabled = True
+chw_attrition_enabled = False
 chw_attrition_parameters = australian_classifier_parameters
 append_data_set_details(chw_attrition_path, chw_attrition_numeric_columns, chw_attrition_categorical_columns, chw_attrition_binary_columns, chw_attrition_classification_label,
                         chw_attrition_time_to_default,

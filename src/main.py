@@ -18,7 +18,7 @@ from result_recorder import ResultRecorder
 from run_statistics import RunStatistics
 from util import get_number_of_processes_to_use
 
-const.TEST_REPEAT = 15
+const.TEST_REPEAT = 1
 
 def execute_classifier_run(input_defaulter_set, classifier_parameters, data_balancer, random_values, classifier_dict, classifier_description, roc_plot, result_recorder, numeric_columns, categorical_columns, binary_columns, classification_label, missing_value_strategy):
     if classifier_dict["status"]:
@@ -91,12 +91,15 @@ def main(random_value_arr):
 
             data_set_arr.append((data_set["data_set_description"], result_recorder.results))
             metrics, file_paths = ResultRecorder.save_results_for_multi_dataset(((data_set["data_set_description"], result_recorder.results),), dataset=data_set["data_set_description"])
-            script_path = "\"" + os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/external_signifigance_testing/signifigance_testing.R") + "\""
+            script_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/external_signifigance_testing/signifigance_testing.R")
             if classifier_active_count > 1:
                 for i in range(len(metrics)):
-                    input_arr = ["Rscript", script_path, "\"" + os.path.abspath(file_paths[i]) + "\"", "\"" + data_set["data_set_description"] + "_" +  metrics[i] + "\""]
+                    input_arr = ["Rscript", script_path, os.path.abspath(file_paths[i]), data_set["data_set_description"] + "_" +  metrics[i]]
                     print(" ".join(input_arr))
-                    subprocess.check_call(input_arr, shell=True)
+                    if sys.platform == 'win32':
+                        subprocess.check_call(input_arr, shell=True)
+                    else:
+                        subprocess.check_call(input_arr, shell=False)
             if const.RECORD_RESULTS:
                 vis.plot_mean_roc_curve_of_classifiers(roc_plot, data_set["data_set_description"])
                 if cpu_count == 1:
@@ -106,14 +109,16 @@ def main(random_value_arr):
 
     vis.visualise_dataset_classifier_results(data_set_arr)
     metrics, file_paths = ResultRecorder.save_results_for_multi_dataset(data_set_arr)
-    script_path = "\"" + os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/external_signifigance_testing/signifigance_testing.R") + "\""
+    script_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/external_signifigance_testing/signifigance_testing.R")
 
     if classifier_active_count > 1:
         for i in range(len(metrics)):
-            input_arr = ["Rscript", script_path, "\"" + os.path.abspath(file_paths[i]) + "\"", "\"" + metrics[i] + "\""]
+            input_arr = ["Rscript", script_path, os.path.abspath(file_paths[i]), metrics[i]]
             print(" ".join(input_arr))
-            subprocess.check_call(input_arr, shell=True)
-
+            if sys.platform == 'win32':
+                subprocess.check_call(input_arr, shell=True)
+            else:
+                 subprocess.check_call(input_arr, shell=False)
 
 if __name__ == "__main__":
     # Run main

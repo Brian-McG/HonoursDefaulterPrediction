@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
-
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt

@@ -13,7 +13,7 @@ args <- commandArgs(trailingOnly = F)
 scriptPath <- normalizePath(dirname(sub("^--file=", "", args[grep("^--file=", args)])))
 currentTime <- format(Sys.time(), "%Y-%m-%d_%H-%M-%S")
 options(digits.secs=6)
-outPath <- paste(scriptPath, "\\..\\..\\results\\", "signifigance_tests_", description, "_", currentTime, "_.txt", sep = "")
+outPath <- paste(scriptPath, "/../../results/", "signifigance_tests_", description, "_", currentTime, "_.txt", sep = "")
 outPath <- normalizePath(outPath)
 
 y <- as.matrix(y)
