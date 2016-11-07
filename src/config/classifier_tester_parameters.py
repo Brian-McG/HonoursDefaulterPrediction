@@ -51,8 +51,7 @@ generic_classifier_parameter_dict[clf.svm_linear_description] = linear_svm_param
 
 # Support Vector Machines (poly)
 poly_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_function_shape": ["ovr"], "kernel": ["poly"], "C": np.linspace(0.01, 2, 5).tolist() + [1],
-                                          "gamma": ["auto"] + np.linspace(0.01, 1, 5).tolist(), 'class_weight': [None, 'balanced'], 'degree': [2, 3, 4],
-                                          'coef0': [0, 5, 10], "max_iter": [10000]}, "requires_random_state": False}
+                                          "gamma": ["auto"] + np.linspace(0.01, 1, 5).tolist(), 'class_weight': [None, 'balanced'], 'degree': [2, 3, 4], "max_iter": [10000]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.svm_poly_description] = poly_svm_parameter_dict
 
 # Logistic regression
@@ -61,9 +60,9 @@ logistic_regression_dict = {"parameters": {"C": [1] + np.linspace(0.01, 5, 10).t
 generic_classifier_parameter_dict[clf.logistic_regression_description] = logistic_regression_dict
 
 # Decision tree
-decision_tree_dict = {"parameters": {"criterion": ["gini", "entropy"], "splitter": ["best", "random"], "max_features": ["auto", "sqrt", "log2"], "class_weight": [None, "balanced"],
-                                     "max_depth": ([None] + list(range(3, 9, 2))), "min_samples_split": list(range(1, 4)), "min_samples_leaf": list(range(1, 3)),
-                                     "max_leaf_nodes": [None] + list(range(5, 10, 3))}, "requires_random_state": False}
+decision_tree_dict = {"parameters": {"criterion": ["gini", "entropy"], "splitter": ["best", "random"], "max_features": ["auto"], "class_weight": [None, "balanced"],
+                                     "max_depth": [None] + [3, 5], "min_samples_split": [2,3], "min_samples_leaf": [2,3],
+                                     "max_leaf_nodes": [None] + [3, 6]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.decision_tree_description] = decision_tree_dict
 
 # AdaBoost
