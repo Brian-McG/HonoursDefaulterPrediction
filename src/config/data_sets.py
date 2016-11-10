@@ -48,7 +48,7 @@ chw_attrition_classification_label = ["attritted"]
 chw_attrition_time_to_default = None
 chw_attrition_missing_values_strategy = "remove"
 chw_attrition_feature_selection_strategy = None
-chw_attrition_enabled = False
+chw_attrition_enabled = True
 append_data_set_details(chw_attrition_path, chw_attrition_numeric_columns, chw_attrition_categorical_columns, chw_attrition_binary_columns, chw_attrition_classification_label,
                         chw_attrition_time_to_default,
                         chw_attrition_missing_values_strategy, chw_attrition_feature_selection_strategy, chw_attrition_enabled, india_attrition_classifier_parameters, "India_CHW_attrition", india_attrition_data_balancer_only_parameters, "userCode", data_set_arr)
@@ -70,7 +70,7 @@ german_credit_classification_label = ["Classification Label"]
 german_credit_time_to_default = None
 german_credit_missing_values_strategy = "remove"
 german_credit_feature_selection_strategy = None
-german_credit_enabled = False
+german_credit_enabled = True
 german_credit_parameters = german_classifier_parameters
 append_data_set_details(german_credit_path, german_credit_numeric_columns, german_credit_categorical_columns, german_credit_binary_columns, german_credit_classification_label, german_credit_time_to_default,
                         german_credit_missing_values_strategy, german_credit_feature_selection_strategy, german_credit_enabled, german_credit_parameters, "German_credit", german_data_balancer_only_parameters, None, data_set_arr)
@@ -84,7 +84,7 @@ australian_credit_classification_label = ["Classification Label"]
 australian_credit_time_to_default = None
 australian_credit_missing_values_strategy = "remove"
 australian_credit_feature_selection_strategy = None
-australian_credit_enabled = False
+australian_credit_enabled = True
 australian_credit_parameters = australian_classifier_parameters
 append_data_set_details(australian_credit_path, australian_credit_numeric_columns, australian_credit_categorical_columns, australian_credit_binary_columns, australian_credit_classification_label,
                         australian_credit_time_to_default,
