@@ -5,14 +5,18 @@ from random import Random
 
 from joblib import Parallel
 from joblib import delayed
+from sklearn.linear_model import SGDClassifier
+from sklearn.linear_model import Perceptron
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from config import data_sets
 from data_balance_testing.data_balancer_result_recorder import DataBalancerResultRecorder
 from generic_classifier import GenericClassifier
 from run_statistics import RunStatistics
 from util import get_number_of_processes_to_use
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import pandas as pd
 import classifier_parameter_testing.classifier_parameter_tester as classifier_parameter_tester
 from constants import DATA_BALANCER_STR
@@ -22,8 +26,22 @@ import numpy as np
 import constants as const
 import config.classifiers as cfr
 import visualisation as vis
+from imblearn.under_sampling.cluster_centroids import ClusterCentroids
+from imblearn.under_sampling.edited_nearest_neighbours import EditedNearestNeighbours
+from imblearn.under_sampling.condensed_nearest_neighbour import CondensedNearestNeighbour
+from imblearn.under_sampling.instance_hardness_threshold import InstanceHardnessThreshold
+from imblearn.under_sampling.nearmiss import NearMiss
+from imblearn.under_sampling.neighbourhood_cleaning_rule import NeighbourhoodCleaningRule
+from imblearn.under_sampling.one_sided_selection import OneSidedSelection
+from imblearn.under_sampling.tomek_links import TomekLinks
+from imblearn.under_sampling.random_under_sampler import RandomUnderSampler
+from imblearn.over_sampling.smote import SMOTE
+from imblearn.over_sampling.adasyn import ADASYN
+from imblearn.over_sampling.random_over_sampler import RandomOverSampler
+from imblearn.combine.smote_enn import SMOTEENN
+from imblearn.combine.smote_tomek import SMOTETomek
 
-const.TEST_REPEAT = 10
+const.TEST_REPEAT = 1
 
 def override_parameters(parameter_results):
     data_balancer_arr = {}
@@ -125,6 +143,7 @@ def main(classifier_dict):
             data_set_results.append((data_set["data_set_description"], data_balancer_results))
             vis.visualise_dataset_balancer_results([(data_set["data_set_description"], data_balancer_results)])
     vis.visualise_dataset_balancer_results_multi_dataset(data_set_results)
+    DataBalancerResultRecorder.save_results_for_multi_dataset(data_set_results)
 if __name__ == "__main__":
     if len(sys.argv) < 3 and len(sys.argv) % 2 == 0:
         print('Expected "cdn_perf.py <parameter_result_label> <parameter_results_path>"')

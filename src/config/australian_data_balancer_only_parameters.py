@@ -35,7 +35,7 @@ append_classifier_details(clustering_launched_classifier_data_balancer, clusteri
 
 # Extreme learning machines
 elm_data_balancer = InstanceHardnessThreshold
-elm_parameters = {"layers": [(20, 'sigm')]}
+elm_parameters = {"layers": [(100, 'sigm')]}
 append_classifier_details(elm_data_balancer, elm_parameters, clfrs.elm_description, classifier_parameters)
 
 # Artificial Neural network

@@ -16,7 +16,7 @@ generic_classifier_parameter_dict[clf.clustering_launched_classifier_description
 
 # Extreme learning machine
 elm_parameter_dict = {"parameters": {
-    "layers": [[(20, "sigm")]]}, "requires_random_state": False}
+    "layers": [[(100, "sigm")]]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.elm_description] = elm_parameter_dict
 
 # Artificial neural network
@@ -24,15 +24,15 @@ ann_parameter_dict = {"parameters": {}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.ann_description] = ann_parameter_dict
 
 # Support Vector Machines (RBF)
-rbf_svm_parameter_dict = {"parameters": {"kernel": ["rbf"], "max_iter": [10000]}, "requires_random_state": False}
+rbf_svm_parameter_dict = {"parameters": {"kernel": ["rbf"]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.svm_rdf_description] = rbf_svm_parameter_dict
 
 # Support Vector Machines (linear)
-linear_svm_parameter_dict = {"parameters": {"kernel": ["linear"], "max_iter": [10000]}, "requires_random_state": False}
+linear_svm_parameter_dict = {"parameters": {"kernel": ["linear"]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.svm_linear_description] = linear_svm_parameter_dict
 
 # Support Vector Machines (poly)
-poly_svm_parameter_dict = {"parameters": {"kernel": ["poly"], "max_iter": [10000]}, "requires_random_state": False}
+poly_svm_parameter_dict = {"parameters": {"kernel": ["poly"]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.svm_poly_description] = poly_svm_parameter_dict
 
 # Logistic regression

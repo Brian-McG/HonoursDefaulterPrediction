@@ -28,7 +28,7 @@ from sklearn.model_selection import ParameterGrid
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from util import get_number_of_processes_to_use
 from constants import DATA_BALANCER_STR
-import config.classifier_tester_parameters as ctp
+import config.classifier_data_balancer_only_tester_parameters as ctp
 import config.classifiers as cfr
 from classifier_result_recorder import ClassifierResultRecorder
 import constants as const
@@ -51,9 +51,11 @@ def execute_loop(classifier_description, classifier_dict, parameter_dict, sorted
                 if requires_random_state:
                     generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer, None)
                 else:
+                    print(classifier_dict['classifier'], parameter_dict, data_balancer)
                     generic_classifier = GenericClassifier(classifier_dict['classifier'], parameter_dict, data_balancer, x)
 
                 result_dictionary = generic_classifier.k_fold_train_and_evaluate(defaulter_set_arr.copy(), numerical_columns=numerical_columns, categorical_columns=categorical_columns, binary_columns=binary_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
+                print(result_dictionary)
                 test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
             except Exception as e:
                 success = False
@@ -92,10 +94,10 @@ if __name__ == "__main__":
                     parameter_grid = list(ParameterGrid(parameter_dict["parameters"]))
                     if {} not in parameter_grid and "SVM" not in classifier_description and "Clustering-Launched Classification" not in classifier_description:
                         parameter_grid.append({})
-                    elif "SVM" in classifier_description and {"kernel": parameter_grid[0]["kernel"], "max_iter": parameter_grid[0]["max_iter"]} not in parameter_grid:
-                        parameter_grid.append({"kernel": parameter_grid[0]["kernel"], "max_iter": parameter_grid[0]["max_iter"]})
+                    elif "SVM" in classifier_description and {"kernel": parameter_grid[0]["kernel"]} not in parameter_grid:
+                        parameter_grid.append({"kernel": parameter_grid[0]["kernel"]})
 
-                    Parallel(n_jobs=cpu_count)(
+                    Parallel(n_jobs=1)(
                         delayed(execute_loop)(classifier_description, classifier_dict, parameter_grid[z],  sorted(parameter_grid[0]), input_defaulter_set, result_recorder, z, len(parameter_grid),
                                               parameter_dict["requires_random_state"], data_set["data_set_description"], data_set["numeric_columns"], data_set["categorical_columns"], data_set["binary_columns"], data_set["classification_label"],
                                               data_set["missing_values_strategy"]) for z in

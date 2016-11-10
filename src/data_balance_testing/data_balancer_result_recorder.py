@@ -36,3 +36,41 @@ class DataBalancerResultRecorder:
                                      result_tuple[0][20], result_tuple[0][21], result_tuple[0][13], result_tuple[0][22], result_tuple[0][29], result_tuple[0][24], result_tuple[0][25], random_vals))
                 x += 1
             output_file.close()
+
+    @staticmethod
+    def save_results_for_multi_dataset(dataset_results, dataset="all_dataset"):
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        metric = ["BACC"]
+        index = [14]
+        file_paths = []
+
+        for z in range(len(metric)):
+            file_name = "select_features_{2}_{1}_results_full_{0}.csv".format(current_time, metric[z], dataset)
+            file_path = os.path.dirname(os.path.realpath(__file__)) + "/../../results/" + file_name
+            output_file = open(file_path, "wb")
+            csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
+
+            header = []
+            data = []
+            print(dataset_results)
+            for i in range(len(dataset_results[0][1][0][1])):
+                data.append([])
+                header.append(dataset_results[0][1][0][1][i][0] if dataset_results[0][1][0][1][i][0] is not None else "None")
+
+            print(header)
+            for dataset_result in dataset_results:
+                i = 0
+                for y in range(len(dataset_result[1])):
+                    for x in range(len(dataset_result[1][y][1])):
+                        print(dataset_result[1][y][1][x])
+                        data[i] += dataset_result[1][y][1][x][index[z]]
+                    i += 1
+
+            data = zip(*data)
+            csv_writer.writerow(header)
+            for data_slice in data:
+                csv_writer.writerow(data_slice)
+
+            file_paths.append(file_path)
+
+        return metric, file_paths

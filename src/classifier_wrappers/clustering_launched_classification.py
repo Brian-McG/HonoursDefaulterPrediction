@@ -22,6 +22,8 @@ class ClusteringLaunchedClassifier:
 
     def fit(self, x_resampled, y_resampled):
         data = pd.DataFrame(data=x_resampled)
+        y_resampled = np.array(y_resampled)
+        y_resampled[y_resampled <= 0] = -1
         data.insert(0, 'classification', y_resampled)
 
         self.current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
@@ -46,7 +48,7 @@ class ClusteringLaunchedClassifier:
         # The CLC tool expects an outcome value so it can calculate predictive accuracy. This however, is already calculated in our scripts so we just pass in a dummy value.
         y_arr = []
         for i in range(len(x_testing)):
-            y_arr.append(np.random.randint(2))
+            y_arr.append(0)
         test_data.insert(0, 'classification', y_arr)
 
         test_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/../../dependencies/tmp/testing_fold_{0}_{1}.tsv".format(os.path.basename(self.training_tmp_handle.name), self.current_time))
@@ -76,4 +78,6 @@ class ClusteringLaunchedClassifier:
         os.remove(prediction_output)
         self.training_tmp_handle.close()
 
-        return predictions
+        predictions = np.array(predictions)
+        predictions[predictions <= -1] = 0
+        return predictions.tolist()

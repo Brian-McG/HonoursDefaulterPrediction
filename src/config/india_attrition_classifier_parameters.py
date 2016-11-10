@@ -44,8 +44,8 @@ ann_parameters = {"activation": "relu", "hidden_layer_sizes": (100,), "max_iter"
 append_classifier_details(ann_data_balancer, ann_parameters, clfrs.ann_description, classifier_parameters)
 
 # Support Vector Machines (with RDF kernel)
-svm_rdf_data_balancer = RandomUnderSampler
-svm_parameters = {"cache_size": 1000, "gamma": "auto", "C": 7.896842105, "kernel": "rbf", "class_weight": "balanced", "decision_function_shape": "ovr", "probability": True}
+svm_rdf_data_balancer = ADASYN
+svm_parameters = {"cache_size": 1000, "gamma": 0.0527263157894736, "C": 8.94842105263157, "kernel": "rbf", "class_weight": "balanced", "decision_function_shape": "ovr", "probability": True}
 append_classifier_details(svm_rdf_data_balancer, svm_parameters, clfrs.svm_rdf_description, classifier_parameters)
 
 # Support Vector Machines (with linear kernel)
@@ -55,7 +55,7 @@ append_classifier_details(svm_linear_data_balancer, svm_linear_parameters, clfrs
 
 # Support Vector Machines (with polynomial kernel)
 svm_poly_data_balancer = RandomUnderSampler
-svm_poly_parameters = {"kernel": "poly"}
+svm_poly_parameters = {"kernel": "poly", "gamma": 0.1, "C": 8.9}
 append_classifier_details(svm_poly_data_balancer, svm_poly_parameters, clfrs.svm_poly_description, classifier_parameters)
 
 # Logistic Regression
@@ -75,12 +75,12 @@ append_classifier_details(adaboost_data_balancer, adaboost_parameters, clfrs.ada
 
 # Random forest
 random_forest_data_balancer = ADASYN
-random_forest_parameters = {"n_estimators": 100, "class_weight": "balanced"}
+random_forest_parameters = {"n_estimators": 115, "max_features": "log2", "max_depth": 45, "criterion": "entropy", "class_weight": "balanced"}
 append_classifier_details(random_forest_data_balancer, random_forest_parameters, clfrs.random_forest_description, classifier_parameters)
 
 # K-nearest neighbours
 k_nearest_data_balancer = TomekLinks
-k_nearest_parameters = {}
+k_nearest_parameters = {"weights": "distance", "algorithm": "auto", "leaf_size": 30, "n_neighbours": 20, "p": 3}
 append_classifier_details(k_nearest_data_balancer, k_nearest_parameters, clfrs.k_nearest_description, classifier_parameters)
 
 # Gaussian Naive Bayes

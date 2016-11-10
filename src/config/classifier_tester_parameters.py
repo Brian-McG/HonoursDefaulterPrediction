@@ -41,17 +41,17 @@ generic_classifier_parameter_dict[clf.ann_description] = ann_parameter_dict
 
 # Support Vector Machines (RBF)
 rbf_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_function_shape": ["ovr"], "kernel": ["rbf"], "C": np.linspace(0.01, 10, 20).tolist() + [1],
-                                         "gamma": ["auto"] + np.linspace(0.0001, 1, 20).tolist(), 'class_weight': [None, 'balanced'], "max_iter": [10000]}, "requires_random_state": False}
+                                         "gamma": ["auto"] + np.linspace(0.0001, 1, 20).tolist(), 'class_weight': [None, 'balanced']}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.svm_rdf_description] = rbf_svm_parameter_dict
 
 # Support Vector Machines (linear)
 linear_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_function_shape": ["ovr"], "kernel": ["linear"], "C": np.linspace(0.01, 10, 20).tolist() + [1],
-                                            'class_weight': [None, 'balanced'], "max_iter": [10000]}, "requires_random_state": False}
+                                            'class_weight': [None, 'balanced']}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.svm_linear_description] = linear_svm_parameter_dict
 
 # Support Vector Machines (poly)
-poly_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_function_shape": ["ovr"], "kernel": ["poly"], "C": np.linspace(0.01, 2, 5).tolist() + [1],
-                                          "gamma": ["auto"] + np.linspace(0.01, 1, 5).tolist(), 'class_weight': [None, 'balanced'], 'degree': [2, 3, 4], "max_iter": [10000]}, "requires_random_state": False}
+poly_svm_parameter_dict = {"parameters": {"cache_size": [2048], "decision_function_shape": ["ovr"], "kernel": ["poly"], "C": [1, 0.01, 8],
+                                          "gamma": ["auto"], 'class_weight': ['balanced'], 'degree': [2, 3]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.svm_poly_description] = poly_svm_parameter_dict
 
 # Logistic regression
