@@ -18,7 +18,7 @@ from result_recorder import ResultRecorder
 from run_statistics import RunStatistics
 from util import get_number_of_processes_to_use
 
-const.TEST_REPEAT = 1
+const.TEST_REPEAT = 15
 
 def execute_classifier_run(input_defaulter_set, classifier_parameters, data_balancer, random_values, classifier_dict, classifier_description, roc_plot, result_recorder, numeric_columns, categorical_columns, binary_columns, classification_label, missing_value_strategy):
     if classifier_dict["status"]:
@@ -124,5 +124,5 @@ if __name__ == "__main__":
     # Run main
     random_values = []
     for p in range(1, len(sys.argv)):
-        random_values.append(int(sys.argv[p]))
+        random_values.append(long(sys.argv[p]))
     main(random_values)

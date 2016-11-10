@@ -1,4 +1,4 @@
-"""Contains all classifiers used (except ANNs)"""
+"""Contains all classifiers used"""
 from collections import OrderedDict
 
 from sklearn import svm
@@ -41,10 +41,10 @@ ann_description = "Artificial neural network"
 ann_enabled = False
 append_classifier_details(ann, ann_enabled, ann_description, classifiers)
 
-# Support Vector Machines (with RDF kernel)
+# Support Vector Machines (with RBF kernel)
 svm_rdf = svm.SVC
-svm_rdf_description = "SVM (RDF)"
-svm_rdf_enabled = True
+svm_rdf_description = "SVM (RBF)"
+svm_rdf_enabled = False
 append_classifier_details(svm_rdf, svm_rdf_enabled, svm_rdf_description, classifiers)
 
 # Support Vector Machines (with linear kernel)
@@ -98,5 +98,5 @@ append_classifier_details(gaussian_naive_bayes, gaussian_naive_bayes_enabled, ga
 # Bernoulli Naive Bayes
 bernoulli_naive_bayes = BernoulliNB
 bernoulli_naive_bayes_description = "Bernoulli Naive Bayes"
-bernoulli_naive_bayes_enabled = False
+bernoulli_naive_bayes_enabled = True
 append_classifier_details(bernoulli_naive_bayes, bernoulli_naive_bayes_enabled, bernoulli_naive_bayes_description, classifiers)

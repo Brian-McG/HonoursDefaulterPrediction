@@ -80,7 +80,7 @@ append_classifier_details(random_forest_data_balancer, random_forest_parameters,
 
 # K-nearest neighbours
 k_nearest_data_balancer = TomekLinks
-k_nearest_parameters = {"weights": "distance", "algorithm": "auto", "leaf_size": 30, "n_neighbours": 20, "p": 3}
+k_nearest_parameters = {"weights": "distance", "algorithm": "auto", "leaf_size": 30, "n_neighbors": 20, "p": 3}
 append_classifier_details(k_nearest_data_balancer, k_nearest_parameters, clfrs.k_nearest_description, classifier_parameters)
 
 # Gaussian Naive Bayes
