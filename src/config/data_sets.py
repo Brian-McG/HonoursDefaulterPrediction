@@ -34,7 +34,7 @@ lima_tb_classification_label = ["Treatment Outcome"]
 lima_tb_time_to_default = "Time to Default (Days)"
 lima_tb_missing_values_strategy = "remove"
 lima_tb_feature_selection_strategy = None
-lima_tb_enabled = False
+lima_tb_enabled = True
 append_data_set_details(lima_tb_path, lima_tb_numeric_columns, lima_tb_categorical_columns, lima_tb_binary_columns, lima_tb_classification_label, lima_tb_time_to_default, lima_tb_missing_values_strategy,
                         lima_tb_feature_selection_strategy, lima_tb_enabled,
                         lima_tb_classifier_parameters, "Lima_TB", lima_tb_data_balancer_only_parameters, None, data_set_arr)
@@ -48,7 +48,7 @@ chw_attrition_classification_label = ["attritted"]
 chw_attrition_time_to_default = None
 chw_attrition_missing_values_strategy = "remove"
 chw_attrition_feature_selection_strategy = None
-chw_attrition_enabled = True
+chw_attrition_enabled = False
 append_data_set_details(chw_attrition_path, chw_attrition_numeric_columns, chw_attrition_categorical_columns, chw_attrition_binary_columns, chw_attrition_classification_label,
                         chw_attrition_time_to_default,
                         chw_attrition_missing_values_strategy, chw_attrition_feature_selection_strategy, chw_attrition_enabled, india_attrition_classifier_parameters, "India_CHW_attrition", india_attrition_data_balancer_only_parameters, "userCode", data_set_arr)

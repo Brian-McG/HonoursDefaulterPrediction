@@ -221,9 +221,9 @@
 	\section{Introduction}
 	Classification techniques can be used to flag individuals who have a high probability of certain events occurring. In this paper we outline various issues that may arise when attempting to apply classification techniques to predict minority class events and apply several strategies to counteract them. We focus on the prediction of Tuberculosis (TB) defaulters and the attrition of community health workers (CHW).
 		
-	TB is a global problem and communities often have limited resources to track and follow-up with patients. A patient is considered to have defaulted if their treatment is interrupted for longer than a set duration, typically two months for TB treatment. In 2013 over 210\hspace*{1mm}000 patients defaulted from TB treatment worldwide \cite{world2015TB}. The rate of default in the Americas is the highest at 8\% with Africa at 5\% \cite{world2015TB}. The consequences of defaulting TB treatment include: increased drug resistance, increased health system costs \cite{Lackey:10356751520150601, muture:6660173120110101}, higher risk of mortality, continued risk of transmitting the disease to others \cite{Lackey:10356751520150601} and increased rate of recurrent disease \cite{Jha:10.1371/journal.pone.0008873}. If we can better manage resources towards those patients with a high risk of default then the spread of TB can be reduced. This would also reduce health system costs.
+	TB is a global problem and communities often have limited resources to track and follow-up with patients. A patient is considered to have defaulted if their treatment is interrupted for longer than a set duration, typically two months for TB treatment. In 2013 over 210\hspace*{1mm}000 patients defaulted from TB treatment worldwide \cite{world2015TB}. The rate of default in the Americas is the highest at 8\% with Africa at 5\% \cite{world2015TB}. The consequences of defaulting TB treatment include: increased drug resistance, increased health system costs \cite{Lackey:10356751520150601, muture:6660173120110101}, higher risk of mortality, continued risk of transmitting the disease to others \cite{Lackey:10356751520150601} and increased rate of recurrent disease \cite{Jha:10.1371/journal.pone.0008873}. If we can better manage resources by predicting those patients with a high risk of default then the spread of TB can be reduced. This would also reduce health system costs.
 	
-	Attrition is the loss of workers through resignation or abandonment of the work. If we can flag workers who are at likely to quit quickly enough then various intervention measures could be implemented in order to retain those workers. This could reduce costs because new workers would not have to be trained.
+	Attrition is the loss of workers through resignation or abandonment of the work. If we can flag workers who are likely to quit quickly enough then various intervention measures could be implemented in order to retain those workers. This could reduce costs because new workers would not have to be trained.
 	
 	The aim of this paper is to inform the reader on issues that can occur when building classification models from imbalanced datasets. Bias can occur in the models since most classifiers expect equal weighting of samples for each class. This can lead to poor classification for the minority class, which is often the class of interest. The second aim of this paper is to propose recommendations on classification techniques, data balancing techniques and strategies to improve the overall classification for this problem domain. We examine a number of different data balancing techniques which either over-sample the minority class, under-sample the majority class or provide a combination of an over-sampling and under-sampling technique. We provide a large scale comparison of different classification techniques in order to determine which technique is best suited to these types of problems. As part of our evaluation of each classification technique, we examine how well each classifier works out-of-the-box compared when they are tuned by searching a grid of parameters. Furthermore, we apply a number of feature selection strategies to determine which strategy is best suited to remove redundant and noisy variables.
 	
@@ -425,7 +425,7 @@
 		\centering
 		\vspace{-1em}
 		\makebox[\linewidth]{
-			\includegraphics[scale=0.6]{Parameter_tuning_approach_results_per_classifier_plot_['Lima_TB',_'India_CHW_attrition',_'German_credit',_'Australian_credit']_Balanced_Accuracy_2016-10-30_18-02-09}}
+			\includegraphics[scale=0.6]{Parameter_tuning_approach_results_per_classifier_plot_['Lima_TB',_'India_Attrition',_'German_Credit',_'Australia_Credit']_Balanced_Accuracy_2016-11-10_19-13-31}}
 		\caption{Difference in balanced accuracy from using default parameters with different parameter tuning approaches}
 		\label{fig:parameter_tuning}
 		\vspace{-1em}
@@ -474,7 +474,7 @@
 			Bernoulli NB&0.6966 (0.0471)			&0.2810 (0.0654)		&0.1887	(0.0187)			&0.3143	(0.0901)		&0.6270	(0.0978)			&0.7663	(0.0339)		&0.0007	(0.0001)\\ 
 			RF			&0.6964 (0.0494)			&0.2843	(0.0705)		&0.1916	(0.0135)			&0.3165	(0.0865)		&0.6191	(0.1071)			&0.7737	(0.0457)		&0.0446	(0.0053)\\ 
 			ELM			&0.6953 (0.0515)			&0.2811	(0.0714)		&0.1836	(0.0140)			&0.3130	(0.0843)		&0.6199	(0.1100)			&0.7707	(0.0401)		&0.0050	(0.0010)\\ 
-			SVM (RDF)	&0.6952 (0.0441)			&0.2821	(0.0612)		&0.1944	(0.0139)			&0.3232	(0.0848)		&0.6195	(0.1060)			&0.7709	(0.0496)		&0.0114	(0.0007)\\ 
+			SVM (RBF)	&0.6952 (0.0441)			&0.2821	(0.0612)		&0.1944	(0.0139)			&0.3232	(0.0848)		&0.6195	(0.1060)			&0.7709	(0.0496)		&0.0114	(0.0007)\\ 
 			SVM (poly)	&0.6948 (0.0501)			&\textbf{0.3054 (0.0738)}&n/a						&n/a			&0.5608	(0.1092)			&\textbf{0.8288	(0.0434)}		&0.0018	0.0001\\ 
 			Gaussian NB	&0.6777 (0.0769)			&0.2561	(0.1078)		&0.3021	(0.1664)			&0.3022	(0.0889)		&\textbf{0.7002	(0.1422)}			&0.6551	(0.2359)		&0.0012	(0.0001)\\ 
 			DT			&0.6606 (0.0599)			&0.2402	(0.0931)		&0.2164	(0.0217)			&0.2144	(0.1058)		&0.5507	(0.1290)			&0.7704	(0.0884)		&0.0005	(0.0001)\\ 
@@ -495,9 +495,9 @@
 		\scalebox{0.9}{	
 		\begin{tabular}{l|c|c|c|c|c|c|c} \hline		
 			Classifier&BACC&MCC&BS&H-measure&TPR&TNR&\parbox[t]{1.1cm}{\centering Time to fit\textsuperscript{\textdagger} (s)}\\ \hline 
-			Bernoulli NB&\textbf{0.8188 (0.0121)}	&0.6017	(0.0236)			&0.1526	(0.0087)			&\textbf{0.5312	(0.0275)}	&0.8789	(0.0167)			&0.7587	(0.0201)			&\textbf{0.0202	(0.0006)}\\ 
-			ANN			&0.8182 (0.0138)			&\textbf{0.6123	(0.0280)}	&0.1363	(0.0101)			&0.5261	(0.0285)			&0.8208	(0.0278)			&0.8156	(0.0261)			&4.4187	(1.2427)\\  
-			RF			&0.8118 (0.0135)			&0.6113	(0.0264)			&\textbf{0.1301 (0.0069)}	&0.5205	(0.0267)			&0.7758	(0.0232)			&0.8478	(0.0148)			&1.9288	(0.1000)\\ 
+			RF			&\textbf{0.8276 (0.0121)}	&0.6017	(0.0236)			&0.1526	(0.0087)			&\textbf{0.5312	(0.0275)}	&0.8789	(0.0167)			&0.7587	(0.0201)			&\textbf{0.0202	(0.0006)}\\ 
+			Bernoulli NB&0.8188 (0.0138)			&\textbf{0.6123	(0.0280)}	&0.1363	(0.0101)			&0.5261	(0.0285)			&0.8208	(0.0278)			&0.8156	(0.0261)			&4.4187	(1.2427)\\  
+			ANN			&0.8182 (0.0135)			&0.6113	(0.0264)			&\textbf{0.1301 (0.0069)}	&0.5205	(0.0267)			&0.7758	(0.0232)			&0.8478	(0.0148)			&1.9288	(0.1000)\\ 
 			AdaBoost	&0.8035 (0.0140)			&0.5989	(0.0273)			&0.1623	(0.0039)			&0.4882	(0.0294)			&0.7545	(0.0256)			&\textbf{0.8524	(0.0163)}	&6.5844	(0.2379)\\ 
 			Gaussian NB	&0.8035 (0.0176)			&0.5800	(0.0367)			&0.2015	(0.0223)			&0.4304	(0.0470)			&0.8190	(0.0243)			&0.7879	(0.0356)&0.0255 (0.0042)\\ 
 			LR			&0.8023 (0.0130)			&0.5689	(0.0248)			&0.1473	(0.0056)			&0.4977	(0.0245)			&0.8726	(0.0198)			&0.7320	(0.0192)			&0.4675	(0.0632)\\ 
@@ -564,7 +564,21 @@
 	Unlike our classifiers, there is no clear-cut recommendations on which data balancers to use. For our credit scoring datasets, under-sampling techniques such as EEN and NCR produced the best results. For our Lima TB and India attrition dataset, oversampling techniques such as ADASYN produced the best results. SMOTETomek also performed well on the India attrition dataset.
 	
 	Our observations suggest that over-sampling techniques are best suited to datasets that have a higher imbalance ratio where under-sampling techniques are better suited to datasets that have a lower imbalance ratio. We suggest using one of ADASYN, SMOTETomek, EEN or NCR.
-
+	
+	\begin{figure*}		
+		\centering
+		\vspace*{1.2cm}\hspace*{-1.5cm}\begin{subfigure}{.5\textwidth}
+		\includegraphics[scale=0.5]{classifier_dataset_plt_2016-11-10_12-19-03}
+		\end{subfigure}\hspace*{4cm}\vspace*{-0.5cm}%
+		\hspace*{-2cm}\begin{subfigure}{.5\textwidth}
+			\includegraphics[scale=0.5]{classifier_dataset_plt_2016-11-10_12-22-43}
+		\end{subfigure}
+		\vspace*{-0.5cm}\hspace*{-3cm}\begin{subfigure}{\textwidth}
+			\includegraphics[scale=0.5]{legend}
+		\end{subfigure}	
+		\caption{Comparison of classifiers with different data balancing techniques on Lima TB dataset (left) and India attrition dataset (right). SVM and Logistic regression excluded because of minimal variation.}
+		\label{fig:classifier_vs_balancer}
+	\end{figure*}
 	\begin{figure}
 		\hspace*{-6em}
 		\centering

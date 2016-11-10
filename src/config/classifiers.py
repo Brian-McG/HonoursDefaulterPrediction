@@ -74,7 +74,7 @@ append_classifier_details(decision_tree, decision_tree_enabled, decision_tree_de
 # AdaBoost
 adaboost = AdaBoostClassifier
 adaboost_description = "AdaBoost"
-adaboost_enabled = False
+adaboost_enabled = True
 append_classifier_details(adaboost, adaboost_enabled, adaboost_description, classifiers)
 
 # Random forest
@@ -98,5 +98,5 @@ append_classifier_details(gaussian_naive_bayes, gaussian_naive_bayes_enabled, ga
 # Bernoulli Naive Bayes
 bernoulli_naive_bayes = BernoulliNB
 bernoulli_naive_bayes_description = "Bernoulli Naive Bayes"
-bernoulli_naive_bayes_enabled = True
+bernoulli_naive_bayes_enabled = False
 append_classifier_details(bernoulli_naive_bayes, bernoulli_naive_bayes_enabled, bernoulli_naive_bayes_description, classifiers)

@@ -18,11 +18,11 @@ from result_recorder import ResultRecorder
 from run_statistics import RunStatistics
 from util import get_number_of_processes_to_use
 
-const.TEST_REPEAT = 15
+const.TEST_REPEAT = 1
 
 def execute_classifier_run(input_defaulter_set, classifier_parameters, data_balancer, random_values, classifier_dict, classifier_description, roc_plot, result_recorder, numeric_columns, categorical_columns, binary_columns, classification_label, missing_value_strategy):
     if classifier_dict["status"]:
-        print("=== Executing {0} ===".format(classifier_description))
+        print("=== Executing {0} - {1} ===".format(classifier_description, classifier_parameters))
         test_stats = RunStatistics()
         for i in range(const.TEST_REPEAT):
             generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer, random_values[i])
@@ -67,7 +67,7 @@ def main(random_value_arr):
                         if random_value not in random_value_arr:
                             random_value_arr.append(random_value)
                             break
-            elif len(random_value_arr) != const.TEST_REPEAT:
+            elif len(random_value_arr) < const.TEST_REPEAT:
                 raise RuntimeError("Random value does not match length of test repeat {0} != {1}".format(len(random_value_arr), const.TEST_REPEAT))
 
             cpu_count = get_number_of_processes_to_use()

@@ -1,5 +1,6 @@
 import csv
 import os
+from collections import OrderedDict
 from datetime import datetime
 
 import constants as const
@@ -58,13 +59,20 @@ class DataBalancerResultRecorder:
                 header.append(dataset_results[0][1][0][1][i][0] if dataset_results[0][1][0][1][i][0] is not None else "None")
 
             print(header)
-            for dataset_result in dataset_results:
-                i = 0
-                for y in range(len(dataset_result[1])):
-                    for x in range(len(dataset_result[1][y][1])):
-                        print(dataset_result[1][y][1][x])
-                        data[i] += dataset_result[1][y][1][x][index[z]]
-                    i += 1
+            balancer_result = OrderedDict()
+            for (data_set, dataset_result) in dataset_results:
+                for (classifier_description, result_arr) in dataset_result:
+                    for (balancer_description, results) in result_arr:
+                        if balancer_description in balancer_result:
+                            balancer_result[balancer_description] = balancer_result[balancer_description] + results[index[z]]
+                        else:
+                            balancer_result[balancer_description] = results[index[z]]
+
+            balancer_index = 0
+            for key, value in balancer_result.iteritems():
+                assert key == header[balancer_index]
+                data[balancer_index] = value
+                balancer_index += 1
 
             data = zip(*data)
             csv_writer.writerow(header)

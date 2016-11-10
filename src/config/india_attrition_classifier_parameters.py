@@ -43,7 +43,7 @@ ann_data_balancer = ADASYN
 ann_parameters = {"activation": "relu", "hidden_layer_sizes": (100,), "max_iter": 1000, "solver": "adam"}
 append_classifier_details(ann_data_balancer, ann_parameters, clfrs.ann_description, classifier_parameters)
 
-# Support Vector Machines (with RDF kernel)
+# Support Vector Machines (with RBF kernel)
 svm_rdf_data_balancer = ADASYN
 svm_parameters = {"cache_size": 1000, "gamma": 0.0527263157894736, "C": 8.94842105263157, "kernel": "rbf", "class_weight": "balanced", "decision_function_shape": "ovr", "probability": True}
 append_classifier_details(svm_rdf_data_balancer, svm_parameters, clfrs.svm_rdf_description, classifier_parameters)
@@ -54,18 +54,18 @@ svm_linear_parameters = {"C": 2.11315789473684, "decision_function_shape": "ovr"
 append_classifier_details(svm_linear_data_balancer, svm_linear_parameters, clfrs.svm_linear_description, classifier_parameters)
 
 # Support Vector Machines (with polynomial kernel)
-svm_poly_data_balancer = RandomUnderSampler
-svm_poly_parameters = {"kernel": "poly", "gamma": 0.1, "C": 8.9}
+svm_poly_data_balancer = None
+svm_poly_parameters = {"kernel": "poly", "gamma": 1, "C": 0.3, "degree": 3, "class_weight": "balanced"}
 append_classifier_details(svm_poly_data_balancer, svm_poly_parameters, clfrs.svm_poly_description, classifier_parameters)
 
 # Logistic Regression
-logistic_regression_data_balancer = ADASYN
-logistic_regression_parameters = {"class_weight": "balanced"}
+logistic_regression_data_balancer = None
+logistic_regression_parameters = {"C": 1, "class_weight": "balanced", "fit_intercept": True, "solver": "liblinear", "intercept_scaling": 3.36666666666666}
 append_classifier_details(logistic_regression_data_balancer, logistic_regression_parameters, clfrs.logistic_regression_description, classifier_parameters)
 
 # Decision Tree
-decision_tree_data_balancer = ADASYN
-decision_tree_parameters = {"class_weight": "balanced"}
+decision_tree_data_balancer = OneSidedSelection
+decision_tree_parameters = {"class_weight": "balanced", "splitter": "best", "min_samples_split": 2, "min_samples_leaf": 2, "max_leaf_nodes": None, "max_features": "auto", "max_depth": None, "criterion": "entropy"}
 append_classifier_details(decision_tree_data_balancer, decision_tree_parameters, clfrs.decision_tree_description, classifier_parameters)
 
 # AdaBoost
@@ -89,6 +89,6 @@ gaussian_naive_bayes_parameters = {}
 append_classifier_details(gaussian_naive_bayes_data_balancer, gaussian_naive_bayes_parameters, clfrs.gaussian_naive_bayes_description, classifier_parameters)
 
 # Bernoulli Naive Bayes
-bernoulli_naive_bayes_data_balancer = ADASYN
-bernoulli_naive_bayes_parameters = {}
+bernoulli_naive_bayes_data_balancer = TomekLinks
+bernoulli_naive_bayes_parameters = {"alpha": 0.4, "binarize": 0, "fit_prior": False}
 append_classifier_details(bernoulli_naive_bayes_data_balancer, bernoulli_naive_bayes_parameters, clfrs.bernoulli_naive_bayes_description, classifier_parameters)
