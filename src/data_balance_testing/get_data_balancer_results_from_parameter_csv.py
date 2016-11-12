@@ -40,6 +40,7 @@ from imblearn.over_sampling.adasyn import ADASYN
 from imblearn.over_sampling.random_over_sampler import RandomOverSampler
 from imblearn.combine.smote_enn import SMOTEENN
 from imblearn.combine.smote_tomek import SMOTETomek
+import config.balancer_comparision_input as bci
 
 const.TEST_REPEAT = 10
 
@@ -146,22 +147,20 @@ def main(classifier_dict):
     vis.visualise_dataset_balancer_results_multi_dataset(data_set_results)
     DataBalancerResultRecorder.save_results_for_multi_dataset(data_set_results)
 if __name__ == "__main__":
-    if len(sys.argv) < 3 and len(sys.argv) % 2 == 0:
-        print('Expected "cdn_perf.py <parameter_result_label> <parameter_results_path>"')
-    else:
-        classifiers = []
-        classifier_arr = []
-        data_set_arr = [sys.argv[1]]
-        for i in range(2, len(sys.argv), 2):
-            if sys.argv[i] == "next_dataset":
-                data_set_arr.append(sys.argv[i + 1])
-                classifier_arr.append(classifiers)
-                classifiers = []
-                continue
-            classifiers.append((sys.argv[i], sys.argv[i + 1]))
-        classifier_arr.append(classifiers)
+    classifiers = []
+    classifier_arr = []
 
-        classifier_dict = dict()
-        for i in range(len(data_set_arr)):
-            classifier_dict[data_set_arr[i]] = classifier_arr[i]
-        main(classifier_dict)
+    data_set_arr = [bci.parameters[0]]
+    for i in range(1, len(bci.parameters), 2):
+        if bci.parameters[i] == "next_dataset":
+            data_set_arr.append(bci.parameters[i + 1])
+            classifier_arr.append(classifiers)
+            classifiers = []
+            continue
+        classifiers.append((bci.parameters[i], bci.parameters[i + 1]))
+    classifier_arr.append(classifiers)
+
+    classifier_dict = dict()
+    for i in range(len(data_set_arr)):
+        classifier_dict[data_set_arr[i]] = classifier_arr[i]
+    main(classifier_dict)
