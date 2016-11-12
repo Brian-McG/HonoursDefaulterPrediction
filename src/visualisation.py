@@ -256,7 +256,7 @@ def plot_kaplan_meier_graph_of_time_to_default(time_to_default, data_set_descrip
     plt.close(ax.get_figure())
 
 
-def plot_percentage_difference_graph(results, datasets, name_suffix="", parameter="Balanced Accuracy", x_label="Feature selection approach", difference_from="no feature selection", figsize=(16, 5), legend_y=-0.31, label_rotation=0, y_label_pos=-0.4, y_ticks=None):
+def plot_percentage_difference_graph(results, datasets, name_suffix="", parameter="BARR", x_label="Feature selection approach", difference_from="no feature selection", figsize=(16, 5), legend_y=-0.31, label_rotation=0, y_label_pos=-0.4, y_ticks=None):
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     file_name = "raw_dump_{0}.txt".format(current_time)
     with open(os.path.dirname(os.path.realpath(__file__)) + "/../results/" + file_name, "wb") as output_file:
@@ -311,7 +311,7 @@ def plot_percentage_difference_graph(results, datasets, name_suffix="", paramete
         feature_selection_labels = [results[0][i][0] for i in range(1, len(results[0]))]
         plt.xticks(data_balancers + (bar_width / 2) * len(classifiers), feature_selection_labels, rotation=label_rotation)
         plt.title(datasets[0].replace("_", " "))
-        plt.ylabel("Difference in {0} from {1}".format(parameter, difference_from), y=y_label_pos)
+        plt.ylabel("Change in {0} from {1}".format(parameter, difference_from), y=y_label_pos)
 
     vertical_plt = 0
     for z in range(1, len(results)):
@@ -353,7 +353,7 @@ def plot_percentage_difference_graph(results, datasets, name_suffix="", paramete
     plt.close(fig)
 
 
-def plot_time_to_default_results(time_to_default_results_per_classifier, parameter="Difference in balanced accuracy from no feature selection"):
+def plot_time_to_default_results(time_to_default_results_per_classifier, parameter="Change in balanced accuracy from no feature selection"):
     color = iter(cm.Set1(np.linspace(0, 1, len(time_to_default_results_per_classifier[0][1]) + 1)))
     classifier_arr = []
     for i in range(len(time_to_default_results_per_classifier[0][1]) + 1):
@@ -434,8 +434,8 @@ def visualise_dataset_classifier_results(dataset_results):
     ax.set_axis_on()
     ax.spines['left'].set_color('black')
     ax.spines['bottom'].set_color('black')
-    plt.xlabel("Difference in TPR")
-    plt.ylabel("Difference in TNR")
+    plt.xlabel("Change in TPR")
+    plt.ylabel("Change in TNR")
 
     ax.xaxis.set_label_coords(0.1, 0.52)
     ax.yaxis.set_label_coords(0.53, 0.9)
@@ -491,8 +491,8 @@ def visualise_dataset_balancer_results(results, range=(-0.5, 0.5), colors=("#64B
     ax.set_axis_on()
     ax.spines['left'].set_color('black')
     ax.spines['bottom'].set_color('black')
-    plt.xlabel("Difference in TPR")
-    plt.ylabel("Difference in TNR")
+    plt.xlabel("Change in TPR")
+    plt.ylabel("Change in TNR")
 
     ax.xaxis.set_label_coords(0.1, 0.53)
     ax.yaxis.set_label_coords(0.53, 0.9)
@@ -573,8 +573,8 @@ def visualise_dataset_balancer_results_multi_dataset(dataset_results):
     ax.set_axis_on()
     ax.spines['left'].set_color('black')
     ax.spines['bottom'].set_color('black')
-    plt.xlabel("Difference in TPR")
-    plt.ylabel("Difference in TNR")
+    plt.xlabel("Change in TPR")
+    plt.ylabel("Change in TNR")
 
     ax.xaxis.set_label_coords(0.1, 0.53)
     ax.yaxis.set_label_coords(0.53, 0.9)

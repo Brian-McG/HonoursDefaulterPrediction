@@ -45,17 +45,17 @@ append_classifier_details(ann_data_balancer, ann_parameters, clfrs.ann_descripti
 
 # Support Vector Machines (with RDF kernel)
 svm_rdf_data_balancer = None
-svm_parameters = {"kernel": "rbf"}
+svm_parameters = {"kernel": "rbf", "max_iter": 1000000}
 append_classifier_details(svm_rdf_data_balancer, svm_parameters, clfrs.svm_rdf_description, classifier_parameters)
 
 # Support Vector Machines (with linear kernel)
 svm_linear_data_balancer = EditedNearestNeighbours
-svm_linear_parameters = {"kernel": "linear"}
+svm_linear_parameters = {"kernel": "linear", "max_iter": 1000000}
 append_classifier_details(svm_linear_data_balancer, svm_linear_parameters, clfrs.svm_linear_description, classifier_parameters)
 
 # Support Vector Machines (with polynomial kernel)
 svm_poly_data_balancer = NeighbourhoodCleaningRule
-svm_poly_parameters = {"kernel": "poly"}
+svm_poly_parameters = {"kernel": "poly", "max_iter": 1000000}
 append_classifier_details(svm_poly_data_balancer, svm_poly_parameters, clfrs.svm_poly_description, classifier_parameters)
 
 # Logistic Regression

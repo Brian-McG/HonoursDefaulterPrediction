@@ -107,9 +107,9 @@
 		System Development and Implementation & 0 & 15 &
 		10 \\ \hline
 		Results, Findings and Conclusion & 10 & 20 &
-		18 \\ \hline
+		19 \\ \hline
 		Aim Formulation and Background Work & 10 & 15 &
-		13 \\ \hline
+		12 \\ \hline
 		Quality of Paper Writing and Presentation & \multicolumn{2}{c|}{10} &
 		10 \\ \hline
 		Quality of Deliverables & \multicolumn{2}{c|}{10} &
@@ -446,11 +446,11 @@
 	\label{classifier-results}
 	Table \ref{table-lima-tb-results} and \ref{table-india-attrition-results} contain the results for each classifier on the Lima TB and India attrition datasets respectively. SVM with linear and polynomial kernel saw very long training times when the ability to produce probabilistic output was enabled for the India attrition dataset. We disabled probabilistic output so results for BS and H-measure are unavailable for those classifiers. The CLC classifier does not support probabilistic output and therefore does not contain results for those metrics either. Figure \ref{fig:classifier_comparision} compares the difference in TPR and FPR from the median TPR and FPR calculated for every classifier on each dataset. Classifiers that consistently produce better than average results should be in the upper right quadrant. Classifiers in the upper left and lower right can produce better than average results if the improvement in either TPR or TNR exceeds that of the reduction in TNR or TPR. 
 	
-	For all our datasets, ANN and LR produce high quality classification. LR has two benefits over an ANN, it produces a white-box model that can be interpreted to understand the classification process \cite{Dreiseitl2002352} and its training time is orders of magnitude faster than an ANN. As the ANN can produce a non-linear model it should be able to produce results better than those that are limited to a linear model. However, our statistical tests indicate that that is no statistical difference between the BACC of the ANN and LR ($p=0.46$) across the datasets. It is possible that our datasets are too small and contain too few features to truly utilise the ANN to its full potential. 
+	For all our datasets, ANN and LR produce high quality classification. LR has two benefits over an ANN, it produces a white-box model that can be interpreted to understand the classification process \cite{Dreiseitl2002352} and its training time is orders of magnitude faster than an ANN. As the ANN can produce a non-linear model it should be able to produce results better than those that are limited to a linear model. However, our statistical tests outlined in Table \ref{table-dataset_signifigance} indicate that that is no statistical difference between the BACC of the ANN and LR across the datasets. It is possible that our datasets are too small and contain too few features to truly utilise the ANN to its full potential. 
 	
-	Bernoulli NB produced impressive results for the India attrition dataset showing no significant difference in BACC from the ANN ($p=1.0$). Bernoulli NB has the added benefit that it scales well with data size and number of features. The performance of Bernoulli NB is unexpected as it is designed to operate on binary features. For each dataset we already convert categorical features to multiple binary features as part of the one-hot encoding. However, Bernoulli NB has to apply binarizing on numerical features to transform them into binary features. This process could result in the loss of important information. Since our numerical features are scaled to that of a normal distribution, a binarization threshold of 0 is optimal where input greater than 0 becomes 1 and input lower becomes 0. On our attrition dataset which has 3840 entries per fold and 270 features, once pre-processing is completed, is able to fit a fold in 0.02 seconds. This is the fastest of all the classifiers for the particular dataset. In addition it showed the most stable results in our parameter tuning experiment indicating that minimal tuning is required. Bernoulli NB is therefore well suited for rapid experimentation and prototyping of ideas because of its fast training times and solid classification performance.
+	Bernoulli NB produced impressive results for the India attrition dataset. A Friedman test on the dataset revealed significant differences between classifiers ($\chi^2_{12}=739, p<0.01$). The Nemenyi post-hoc test revealed no significant difference in BACC between the ANN and Bernoulli NB ($p=0.97$). Bernoulli NB has the added benefit that it scales well with data size and number of features. It was the fastest on the attirion dataset which was the largest at 3840 entries per fold and 270 features. The classification performance of Bernoulli NB was unexpected as it is designed to operate on binary features. For each dataset we already convert categorical features to multiple binary features as part of the one-hot encoding. However, Bernoulli NB has to apply binarizing on numerical features to transform them into binary features. This process could result in the loss of important information. Since our numerical features are scaled to that of a normal distribution, a binarization threshold of 0 is optimal where input greater than 0 becomes 1 and input lower becomes 0. The classifier also showed the most stable results in our parameter tuning experiment indicating that minimal tuning is required. Bernoulli NB is therefore well suited for rapid experimentation and prototyping of ideas because of its fast training times and solid classification performance.
 
-	The ELM showed BACC on par with SVM with RBF kernel ($p=0.99$) and ANN ($p=1.0$) on the two credit scoring datasets matching that of Huang \textit{et al.} \cite{6035797, Huang2006489}. However, on our TB and attrition dataset the ELM was significantly worse than that of the ANN ($p<0.01$) but obtained similar results to that of the SVM with RBF kernel ($p=1.0$). The ELM does deliver on its claim that it can learn significantly faster than an ANN. It is 13 times faster on the attrition dataset, 64 times faster on the TB dataset, 189 times faster on the German credit dataset and 802 times faster on the Australian credit scoring dataset.
+	Huang \textit{et al.} \cite{6035797, Huang2006489} found the ELM produced results similar to that of SVM (RBF) and ANN. For our datasets, the average BARR for the ELM was worse than that of the ANN and SVM (RBF). Our Friedman and post-hoc tests, summarised in Table \ref{table-dataset_signifigance}, revealed that the ELM was significantly worse than the ANN ($p<0.01$) but was not significantly worse than the SVM (RBF) ($p=0.54$). The ELM does deliver on its claim that it can learn significantly faster than an ANN. It is 13 times faster on the attrition dataset, 64 times faster on the TB dataset, 189 times faster on the German credit dataset and 802 times faster on the Australian credit scoring dataset.
 	
 	We were unable to replicate Luo \textit{et al.}'s \cite{Luo20097562} results for the CLC on the credit scoring datasets. We were only able to achieve a BACC of 0.6048 and 0.5744 on the German and Australian dataset respectively where Luo \textit{et al.} achieved an accuracy of 0.8480 and 0.8652. Since the Australian dataset is balanced, BACC is the same as accuracy. On the Lima TB dataset and India attrition dataset we were unable to achieve results better than random with the CLC classifier. Luo \textit{et al.}'s accuracy of 0.8480 on the German credit scoring dataset is far higher than that seen in the other credit scoring literature utilizing the dataset. The literature typically obtains an accuracy of 0.77 for the dataset \cite{Huang2007847, Nanni20093028, Tsai20082639, Wang2011223}. We tried a variety of different formatting for our datasets to ensure that we had it formatted correctly for the CLC classifier. We tested different values for the classification labels, different placement of the label either as the first column or last column in the dataset and the dataset formatted as either CSV or TSV. Our testing indicated that the classification label should be the first column and input formatted as a TSV file. The exact values of the labels was not found to be important for the classification Based on our observations, we would not recommend the use of CLC for future classification tasks.	
 	
@@ -460,7 +460,7 @@
 	\begin{table*}
 		\centering
 		\small
-		\vspace{-3em}
+		\vspace{-7em}
 		\caption{Lima TB metrics\textsuperscript{*} for each classifier}
 		\label{table-lima-tb-results}	
 		\vspace{-1em}
@@ -488,26 +488,26 @@
 	\begin{table*}
 		\centering
 		\small
-		\vspace{-1em}
+		\vspace{-7em}
 		\caption{India attrition metrics\textsuperscript{*} for each classifier}
 		\label{table-india-attrition-results}	
 		\vspace{-1em}
 		\scalebox{0.9}{	
 		\begin{tabular}{l|c|c|c|c|c|c|c} \hline		
 			Classifier&BACC&MCC&BS&H-measure&TPR&TNR&\parbox[t]{1.1cm}{\centering Time to fit\textsuperscript{\textdagger} (s)}\\ \hline 
-			RF			&\textbf{0.8276 (0.0121)}	&0.6017	(0.0236)			&0.1526	(0.0087)			&\textbf{0.5312	(0.0275)}	&0.8789	(0.0167)			&0.7587	(0.0201)			&\textbf{0.0202	(0.0006)}\\ 
-			Bernoulli NB&0.8188 (0.0138)			&\textbf{0.6123	(0.0280)}	&0.1363	(0.0101)			&0.5261	(0.0285)			&0.8208	(0.0278)			&0.8156	(0.0261)			&4.4187	(1.2427)\\  
-			ANN			&0.8182 (0.0135)			&0.6113	(0.0264)			&\textbf{0.1301 (0.0069)}	&0.5205	(0.0267)			&0.7758	(0.0232)			&0.8478	(0.0148)			&1.9288	(0.1000)\\ 
-			AdaBoost	&0.8035 (0.0140)			&0.5989	(0.0273)			&0.1623	(0.0039)			&0.4882	(0.0294)			&0.7545	(0.0256)			&\textbf{0.8524	(0.0163)}	&6.5844	(0.2379)\\ 
-			Gaussian NB	&0.8035 (0.0176)			&0.5800	(0.0367)			&0.2015	(0.0223)			&0.4304	(0.0470)			&0.8190	(0.0243)			&0.7879	(0.0356)&0.0255 (0.0042)\\ 
-			LR			&0.8023 (0.0130)			&0.5689	(0.0248)			&0.1473	(0.0056)			&0.4977	(0.0245)			&0.8726	(0.0198)			&0.7320	(0.0192)			&0.4675	(0.0632)\\ 
-			SVM (linear)&0.7968 (0.0137)			&0.5632	(0.0258)			&n/a					&n/a			&0.8275	(0.0270)			&0.7661	(0.0191)			&8.4384	(1.2798)\\ 
-			DT			&0.7753 (0.0136)			&0.5321	(0.0271)			&0.1987	(0.0108)			&0.3876	(0.0305)			&0.7530	(0.0246)			&0.7977	(0.0210)			&0.2952	(0.0448)\\ 
-			SVM (RBF)	&0.7726 (0.0135)			&0.5132	(0.0256)			&0.1658	(0.0076)			&0.4345	(0.0276)			&0.8399	(0.0320)			&0.7054	(0.0309)			&6.1570	(0.2249)\\ 
-			ELM			&0.7694 (0.0146)			&0.5135	(0.0289)			&0.1577	(0.0072)			&0.4159	(0.0284)			&0.7778	(0.0242)			&0.7610	(0.0224)			&0.2982	(0.0089)\\ 
-			$k$NN		&0.7651 (0.0152)			&0.5147	(0.0304)			&0.1599	(0.0090)			&0.3978	(0.0289)			&0.7298	0.0250)			&0.8004	0.0197)			&0.0660	(0.0078)\\ 
-			SVM (poly)	&0.5247 (0.0064)			&0.1095	(0.0234)			&n/a			&n/a			&\textbf{0.9865	0.0068)}&0.0630	0.0115)			&1.5029	(0.0550)\\ 
-			CLC			&0.5081 (0.0116)			&0.0361	(0.0451)			&n/a			&n/a			&0.6444	(0.4506)			&0.3718	(0.4461)			&2.3504	(0.3767)\\                  
+			RF			&\textbf{0.8276 (0.0117)}	&\textbf{0.6220 (0.0233)}			&\textbf{0.1322	(0.0042)}			&\textbf{0.5619	(0.0257)}	&\textbf{0.8666	(0.0172)}			&0.7886	(0.0187)			&1.2816	(0.0138)\\ 
+			Bernoulli NB&0.8231 (0.0138)			&0.6200	(0.0266)	&0.1330	(0.0089)			&0.5355	(0.0285)			&0.8314	(0.0248)			&0.8147	(0.0180)			&\textbf{0.0188	(0.0043)}\\  
+			ANN			&0.8182 (0.0138)			&0.6123	(0.0280)			&0.1363	(0.0101)	&0.5261	(0.0285)			&0.8208	(0.0278)			&0.8156	(0.0261)			&3.8548	(1.0586)\\ 
+			LR			&0.8051 (0.0125)			&0.5788	(0.0238)			&0.1364	(0.0055)			&0.5063	(0.0238)			&0.8399	(0.0233)			&0.7704	(0.0182) &0.2717	(0.0114)\\ 
+			AdaBoost	&0.8035 (0.0140)			&0.5989	(0.0273)			&0.1623	(0.0039)			&0.4882	(0.0294)			&0.7545	(0.0256)			&\textbf{0.8524	(0.0163)}&6.3176 (0.2101)\\ 
+			Gaussian NB	&0.8035 (0.0176)			&0.5800	(0.0367)			&0.2015	(0.0223)			&0.4304	(0.0470)			&0.8190	(0.0243)			&0.7879	(0.0356)			&0.0276	(0.0039)\\ 
+			DT			&0.7974 (0.0132)			&0.5664	(0.0259)			&0.1610	(0.0093)					&0.4489	(0.0297)			&0.8169	(0.0238)			&0.7778	(0.0210)			&0.0236	(0.0061)\\ 
+			SVM (linear)&0.7968 (0.0137)			&0.5632	(0.0258)			&n/a			&n/a			&0.8275	(0.0270)			&0.7661	(0.0191)			&7.9526	(1.1028)\\ 
+			SVM (RBF)	&0.7853 (0.0148)			&0.5456	(0.0288)			&0.1556	(0.0078)			&0.4540	(0.0304)			&0.7896	(0.0243)			&0.7811	(0.0195)			&27.6928 (0.5112)\\ 
+			$k$NN		&0.7822 (0.0137)			&0.5546	(0.0268)			&0.1455	(0.0073)			&0.4571	(0.0280)			&0.7327	(0.0266)			&0.8317	(0.0179)			&0.0661	(0.0055)\\ 
+			SVM (poly)	&0.7795 (0.0131)			&0.5357	(0.0256)			&n/a			&n/a			&0.7769	(0.0231)			&0.7822	(0.0195)			&3.2300	(1.1896)\\ 
+			ELM			&0.7694 (0.0146)			&0.5135	(0.0289)			&0.1577	(0.0072)			&0.4159	(0.0284)			&0.7778	(0.0242)&0.7610 (0.0224)			&0.2879	(0.0052)\\ 
+			CLC			&0.5082 (0.0115)			&0.0362	(0.0449)			&n/a			&n/a			&0.6380	(0.4562)			&0.3784	(0.4516)			&2.1972	(0.3599)\\                  
 			\multicolumn{5}{l}{\textsuperscript{*}\footnotesize{\parbox[t]{7.9cm}{Standard deviation in brackets}}}\\
 			\multicolumn{5}{l}{\textsuperscript{\textdagger}\footnotesize{\parbox[t]{7.9cm}{Time to fit individual fold}}}
 			  		
@@ -516,29 +516,29 @@
 
 	\begin{table}
 		\centering
-		\vspace{-1em}
+		\vspace{-5em}
 		\small
-		\caption{Pairwise comparison using Nemenyi multiple comparison against best ranked classifier\textsuperscript{*} across all datasets\textsuperscript{\textdagger}}
+		\caption{Nemenyi post-hoc results\textsuperscript{\textdagger} against best ranked classifier\textsuperscript{*} using all dataset results}
 		\label{table-dataset_signifigance}	
 		\vspace{-1em}
-		\hspace*{-2em}
+		\hspace*{-6em}
 		\scalebox{0.9}{	
 			\begin{tabular}{l|c|c|c|c|c} \hline		
-				Classifier&BACC&MCC&BS&H-measure&Time to fit\textsuperscript{\textdaggerdbl}\\ \hline
-				ANN			&--					&--					&\textbf{1.0}	&--					&<0.0001\\ 
-				Bernoulli NB&0.04842			&0.00563			&<0.0001		&0.00022			&\textbf{0.17008}\\  
-				RF			&\textbf{0.31338}	&\textbf{0.98923}	&--				&\textbf{0.99999}	&<0.0001\\ 
-				Gaussian NB	&<0.0001			&<0.0001			&<0.0001		&<0.0001			&0.02760\\ 
-				AdaBoost	&<0.0001			&0.00036			&<0.0001		&0.00651			&<0.0001\\ 
-				LR			&\textbf{0.46228}	&\textbf{0.08012}	&0.00530		&0.00237			&<0.0001\\ 
-				SVM (linear)&0.00779			&\textbf{0.06460}	&n/a			&n/a				&<0.0001\\ 
-				DT			&<0.0001			&<0.0001			&<0.0001		&<0.0001			&<0.0001\\ 
-				SVM (RBF)	&<0.0001			&<0.0001			&<0.0001		&0.00037			&<0.0001\\ 
-				ELM			&<0.0001			&<0.0001			&0.00085		&<0.0001			&<0.0001\\ 
-				$k$NN		&<0.0001			&<0.0001			&<0.0001		&<0.0001			&--\\ 
-				SVM (poly)	&<0.0001			&<0.0001			&n/a			&n/a				&<0.0001\\ 
-				CLC			&<0.0001			&<0.0001			&n/a			&n/a				&<0.0001\\\hline
-				Friedman	& $\chi^2_{11} = 22$\textsuperscript{\textdaggerdbl}& $\chi^2 (11) = 22$\textsuperscript{\textdaggerdbl}& $\chi^2_{11} = 22$\textsuperscript{\textdaggerdbl}& $\chi^2_{11} = 22$\textsuperscript{\textdaggerdbl}& $\chi^2_{11} = 22$\textsuperscript{\textdaggerdbl}
+				Classifier&BACC&MCC&BS&H-measure&Time to fit\\ \hline
+				ANN			&--					&--					&\textbf{1.0}	&\textbf{0.88858}	&$<0.0001$\\ 
+				Bernoulli NB&\textbf{0.23333}	&\textbf{0.26715}	&$<0.0001$		&$<0.0001$			&\textbf{0.51226}\\  
+				RF			&\textbf{0.99978}	&\textbf{0.99998}	&--				&--					&$<0.0001$\\ 
+				Gaussian NB	&$<0.0001$			&$<0.0001$			&$<0.0001$		&$<0.0001$			&0.04533\\ 
+				AdaBoost	&$<0.0001$			&0.00016			&$<0.0001$		&$<0.0001$			&$<0.0001$\\ 
+				LR			&\textbf{0.71414}	&\textbf{0.22798}	&\textbf{0.0819}&$<0.0001$			&$<0.0001$\\ 
+				SVM (linear)&$0.00438$			&0.00748			&n/a			&n/a				&$<0.0001$\\ 
+				DT			&$<0.0001$			&$<0.0001$			&$<0.0001$		&$<0.0001$			&0.00951\\ 
+				SVM (RBF)	&$<0.0001$			&$<0.0001$			&0.0033			&$<0.0001$			&$<0.0001$\\ 
+				ELM			&$<0.0001$			&$<0.0001$			&$<0.0001$		&$<0.0001$			&$<0.0001$\\ 
+				$k$NN		&$<0.0001$			&$<0.0001$			&$<0.0001$		&$<0.0001$			&--\\ 
+				SVM (poly)	&$<0.0001$			&$<0.0001$			&n/a			&n/a				&$<0.0001$\\ 
+				CLC			&$<0.0001$			&$<0.0001$			&n/a			&n/a				&$<0.0001$\\\hline
+				Friedman	& $\chi^2_{12}=1274$\textsuperscript{\textdaggerdbl}& $\chi^2_{12}=1179$\textsuperscript{\textdaggerdbl}& $\chi^2_{9}=1576$\textsuperscript{\textdaggerdbl}& $\chi^2_{9}=951$\textsuperscript{\textdaggerdbl}& $\chi^2_{12}=3117$\textsuperscript{\textdaggerdbl}
 				\\\hline
 				\multicolumn{6}{l}{\textsuperscript{*}\footnotesize{\parbox[t]{7.9cm}{Represented with a ``--''}}}\\
 				\multicolumn{6}{l}{\textsuperscript{\textdagger}\footnotesize{\parbox[t]{7.9cm}{Displayed as $p$-value with values bolded if they are not significant at $p=0.05$}}}\\

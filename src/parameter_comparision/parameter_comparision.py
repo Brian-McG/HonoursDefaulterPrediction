@@ -21,7 +21,7 @@ import constants as const
 import visualisation as vis
 import config.classifiers as cfr
 
-const.TEST_REPEAT = 3
+const.TEST_REPEAT = 10
 
 
 def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, categorical_columns, binary_columns, classification_label, classifier_parameters, data_balancer, parameter_description, classifier_dict, classifier_description, roc_plot, result_recorder, missing_value_strategy, parameter_index):
