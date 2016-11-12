@@ -41,12 +41,13 @@ from imblearn.over_sampling.random_over_sampler import RandomOverSampler
 from imblearn.combine.smote_enn import SMOTEENN
 from imblearn.combine.smote_tomek import SMOTETomek
 
-const.TEST_REPEAT = 1
+const.TEST_REPEAT = 10
 
 def override_parameters(parameter_results):
     data_balancer_arr = {}
     for (classifier_name, classifier_path) in parameter_results:
         data_balancer_arr[classifier_name] = []
+        print(classifier_path)
         parameter_results = pd.DataFrame.from_csv(classifier_path, index_col=False, encoding="UTF-8")
         data_balancers = classifier_parameter_tester.data_balancers
         for data_balancer in data_balancers:
