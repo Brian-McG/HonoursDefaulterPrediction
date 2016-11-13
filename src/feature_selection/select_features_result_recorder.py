@@ -26,22 +26,20 @@ class FeatureSelectionResultRecorder:
                          "Average true negative rate", "Average false positive rate", "Average false negative rate", "initialisation_values", "features_selected", "feature_summary"]
             csv_writer.writerow(title_row)
             x = 0
-            feature_selection_approach = None
-            feature_summary = None
             for result_tuple in self.results:
                 if x == 0:
                     random_vals = random_values
                 else:
                     random_vals = None
-                if result_tuple[3] == feature_selection_approach:
+                if result_tuple[3] is None:
                     features = None
                 else:
                     features = result_tuple[3]
-                if result_tuple[4] == feature_summary:
+                if result_tuple[4] is None:
                     feature_smmry = None
                 else:
                     feature_smmry = result_tuple[4]
-                feature_selection_approach = result_tuple[3]
+
                 csv_writer.writerow((result_tuple[2], result_tuple[1], result_tuple[0][0], result_tuple[0][1],
                                      result_tuple[0][2], result_tuple[0][15], result_tuple[0][28], result_tuple[0][3], result_tuple[0][4], result_tuple[0][5], result_tuple[0][6],
                                      result_tuple[0][20], result_tuple[0][21], result_tuple[0][13], result_tuple[0][22], result_tuple[0][29], result_tuple[0][24], result_tuple[0][25], random_vals, features, feature_smmry))

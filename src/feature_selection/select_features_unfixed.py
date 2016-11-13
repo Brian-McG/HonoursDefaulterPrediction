@@ -184,7 +184,7 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
         print(feature_summary)
         avg_results = test_stats.calculate_average_run_accuracy()
         roc_plot.append((test_stats.roc_list, classifier_description))
-        result_recorder.record_results(avg_results, classifier_description, feature_selection_strategy, features_selected_dict, feature_summary=feature_summary)
+        result_recorder.record_results(avg_results, classifier_description, feature_selection_strategy, features_selected_dict, feature_summary=[min_features_selected, avg_features_selected, max_features_selected, original_features])
         print("=== Completed {0} ===".format(classifier_description))
 
 
@@ -332,7 +332,7 @@ def main():
             result_recorder_after.save_results_to_file(random_values, "select_features_after_{0}".format(data_set["data_set_description"]))
             result_arr.append(feature_selection_results_after)
             dataset_arr.append(data_set["data_set_description"])
-    vis.plot_percentage_difference_graph(result_arr, dataset_arr, x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(16, 4.5), legend_y=-0.79, label_rotation=8)
+    vis.plot_percentage_difference_graph(result_arr, dataset_arr, x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(16, 4.5), legend_y=-0.79, label_rotation=0, x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"})
 
 
 if __name__ == "__main__":
