@@ -10,6 +10,7 @@ from sklearn.linear_model import Perceptron
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import ExtraTreeClassifier
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from config import data_sets
@@ -48,7 +49,6 @@ def override_parameters(parameter_results):
     data_balancer_arr = {}
     for (classifier_name, classifier_path) in parameter_results:
         data_balancer_arr[classifier_name] = []
-        print(classifier_path)
         parameter_results = pd.DataFrame.from_csv(classifier_path, index_col=False, encoding="UTF-8")
         data_balancers = classifier_parameter_tester.data_balancers
         for data_balancer in data_balancers:
