@@ -150,7 +150,6 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
                 number_of_features = len(features_to_use[i][loop_count])
                 avg_features_selected += number_of_features
 
-                print(feature_selection_strategy, features_to_use)
                 result_dictionary = generic_classifier.train_and_evaluate(train_df.iloc[:, :-1][features_to_use[i][loop_count]].as_matrix(), train_df.iloc[:, -1:].as_matrix().flatten(),
                                                                           test_df.iloc[:, :-1][features_to_use[i][loop_count]].as_matrix(), test_df.iloc[:, -1:].as_matrix().flatten())
                 loop_count += 1
@@ -324,7 +323,7 @@ def main():
             result_arr.append(feature_selection_results_after)
             dataset_arr.append(data_set["data_set_description"])
     vis.plot_percentage_difference_graph(result_arr, dataset_arr, x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(16, 4.5), legend_y=-0.79, label_rotation=0, x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"})
-
+    FeatureSelectionResultRecorder.save_results_for_multi_dataset(result_arr)
 
 if __name__ == "__main__":
     # Run main
