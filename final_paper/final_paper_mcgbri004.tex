@@ -127,7 +127,7 @@
 	
 	
 	% Copyright
-	\setcopyright{acmcopyright}
+	%\setcopyright{acmcopyright}
 	%\setcopyright{acmlicensed}
 	%\setcopyright{rightsretained}
 	%\setcopyright{usgov}
@@ -137,10 +137,10 @@
 	
 	
 	% DOI
-	\doi{n/a}
+	%\doi{n/a}
 	
 	% ISBN
-	\isbn{n/a}
+	%\isbn{n/a}
 	
 	%Conference
 	%\conferenceinfo{PLDI '13}{June 16--19, 2013, Seattle, WA, USA}
@@ -216,12 +216,12 @@
 	% We no longer use \terms command
 	%\terms{Theory}
 	
-	%\keywords{ACM proceedings; \LaTeX; text tagging}
+	\keywords{Machine learning; TB default; data balancing; feature selection}
 	
 	\section{Introduction}
 	Classification techniques can be used to flag individuals who have a high probability of certain events occurring. In this paper we outline various issues that may arise when attempting to apply classification techniques to predict minority class events and apply several strategies to counteract them. We focus on the prediction of Tuberculosis (TB) defaulters and the attrition of community health workers (CHW).
 		
-	TB is a global problem and communities often have limited resources to track and follow-up with patients. A patient is considered to have defaulted if their treatment is interrupted for longer than a set duration, typically two months for TB treatment. In 2013 over 210\hspace*{1mm}000 patients defaulted from TB treatment worldwide \cite{world2015TB}. The rate of default in the Americas is the highest at 8\% with Africa at 5\% \cite{world2015TB}. The consequences of defaulting TB treatment include: increased drug resistance, increased health system costs \cite{Lackey:10356751520150601, muture:6660173120110101}, higher risk of mortality, continued risk of transmitting the disease to others \cite{Lackey:10356751520150601} and increased rate of recurrent disease \cite{Jha:10.1371/journal.pone.0008873}. If we can better manage resources by predicting those patients with a high risk of default then the spread of TB can be reduced. This would also reduce health system costs.
+	TB is a global problem and communities often have limited resources to track and follow-up with patients. A patient is considered to have defaulted if their treatment is interrupted for longer than a set duration; typically two consecutive months for TB treatment \cite{world2015TB}. In 2013 over 210\hspace*{1mm}000 patients defaulted from TB treatment worldwide \cite{world2015TB}. The rate of default in the Americas is the highest at 8\% with Africa at 5\% \cite{world2015TB}. The consequences of defaulting TB treatment include: increased drug resistance, increased health system costs \cite{Lackey:10356751520150601, muture:6660173120110101}, higher risk of mortality, continued risk of transmitting the disease to others \cite{Lackey:10356751520150601} and increased rate of recurrent disease \cite{Jha:10.1371/journal.pone.0008873}. If we can better manage resources by predicting those patients with a high risk of default then the spread of TB can be reduced. This would also reduce health system costs.
 	
 	Attrition is the loss of workers through resignation or abandonment of the work. If we can flag workers who are likely to quit quickly enough then various intervention measures could be implemented in order to retain those workers. This could reduce costs because new workers would not have to be trained.
 	
@@ -235,13 +235,11 @@
 	
 	\section{Background}
 	This section aims to provide an overview of all the techniques and metrics used in this paper.
-	\subsection{Definition of a defaulter}
-	The definition of a defaulter depends on its context. TB literature typically uses the World Health Organisation (WHO) definition that a defaulter is a person whose treatment has been disrupted for two or more consecutive months \cite{chan:2003prevalence, cherkaoui:19326203, Jha:10.1371/journal.pone.0008873,jittimanee:10.1111/j.1440-172X.2007.00650.x,muture:6660173120110101, world2015TB}.
 	
 	\subsection{Classification techniques}
 	We selected a variety of classification techniques to benchmark. We include a selection of well known techniques, ensemble techniques and newer techniques that have shown promising results in other studies. Our choices are based partly on our review of classification techniques used in the credit scoring field in Section \ref{credit-scoring-review}.
 	\subsubsection{Support Vector Machines}
-	Support Vector Machines (SVM) maps input vectors into a high-dimensional feature space with the use of a kernel function \cite{Danenas20153194}. The kernel function determines the if the mapping is linear or non-linear \cite{Luo20097562}. Linear, polynomial and radial basis function (RBF) are common kernel functions \cite{hsu2003practical}. The polynomial and RBF kernel performs a non-linear mapping into the high-dimensional space \cite{hsu2003practical}. This feature space is then searched to acquire an optimal hyperplane that separates the space with the maximum distance between the two classes \cite{Danenas20153194}. Hsu \textit{et al.} \cite{hsu2003practical} recommends the RBF kernel as a reasonable first choice but notes that it is not suitable when there are a large number of features. The linear kernel is recommend when there are a large number of features \cite{hsu2003practical}s.
+	Support Vector Machines (SVM) maps input vectors into a high-dimensional feature space with the use of a kernel function \cite{Danenas20153194}. The kernel function determines the if the mapping is linear or non-linear \cite{Luo20097562}. Linear, polynomial and radial basis function (RBF) are common kernel functions \cite{hsu2003practical}. The RBF and polynomial kernels perform non-linear mappings. The high-dimensional feature space is searched to acquire an optimal hyperplane that separates the space with the maximum distance between each class \cite{Danenas20153194}. Hsu \textit{et al.} \cite{hsu2003practical} recommends the RBF kernel as the first choice and linear kernel for large number of features.
 	
 	\subsubsection{Artificial Neural Network}
 	An ANN is comprised of an input layer, $k$ number of hidden layers and an output layer. Neurons in each layer are connected to the neurons in the next layer. A numeric weight is defined between each pair of connected neurons. An activation function defines if a neuron will fire \cite{Wang2003}. The activation function bounds the value of a neuron to a specific range to limit the effect of divergent neurons \cite{Wang2003}. By using an activation function, a non-linear combination of weights can be generated \cite{Wang2003}. It has been proven that an ANN is able to approximate any continuous function if has at least one hidden node and an activation function that is both bounded to some range and non-constant \cite{Hornik1991251}.
@@ -409,17 +407,17 @@
 	\subsection{Implementation details}
 	We developed the system in Python 2.7 since it has widespread library support and facilitates quick development. All pre-processing operations such as removal of samples with missing values, creation of dummy variables and scaling of data are executed within the code base. Each experiment was also multi-threaded to reduce the execution time.
 	
-	To support a wide variety of techniques, we used several pre-existing libraries for our classification and data balancing techniques. We used scikit-learn \cite{scikit-learn} for most of the classification techniques with the exception of ELM and CLC. Akusok \textit{et al.}'s \cite{7140733} Python ELM toolbox was used for the implementation of the ELM. The CLC implementation was obtained from the original authors \cite{Chen2006} as a compiled C++ executable. By creating a wrapper, we can support classifiers written in different languages or which have a different interface. We used wrappers to provide a scikit-learn interface for the ELM and CLC classifier. In addition, the CLC classifier expects a tab separated values (TSV) file as input and produces the classification model and predictions as a TSV file. The wrapper is used to accommodate this.
+	To support a wide variety of techniques, we used several pre-existing libraries for our classification and data balancing techniques. We used scikit-learn \cite{scikit-learn} for most of the classification techniques with the exception of ELM and CLC. Akusok \textit{et al.}'s \cite{7140733} ELM toolbox was used for the implementation of the ELM. The CLC implementation was obtained from the original authors \cite{Chen2006} as a compiled C++ executable. By creating a wrapper, we can support classifiers written in different languages or which have a different interface. We used wrappers to provide a scikit-learn interface for the ELM and CLC classifier. In addition, the CLC classifier expects a tab separated values (TSV) file as input and produces the classification model and predictions as a TSV file. The wrapper is used to accommodate this.
 	
 	Different data balancing techniques can be used per classifier. For the data balancing algorithms, we used Lema\^{i}tre \textit{et al.}'s \cite{lemaitre2016imbalanced} imbalanced-learn package to provide a scikit-learn compatible implementation.
 	
-	Our statistical tests were conducted in R because of the lack of availability of a suitable package in Python. We used the PMCMR \cite{pmcmr} package for all statistical testing.
+	We used the PMCMR \cite{pmcmr} package in R for our statistical tests because of the lack of availability of a suitable package in Python.
 	
 	\section{Results and discussion}
 	\label{results}
 	This section presents and discusses the results of the experiments outlined in Section \ref{method-approach}.
 	\subsection{Parameter Tuning}
-	The results of the parameter tuning experiment are summarised in Figure \ref{fig:parameter_tuning}. For all the datasets, there is a net gain in balanced accuracy from using a data balancer. However, as expected, the Australian credit dataset which is already balanced, only sees very minor improvements. Gaussian naive Bayes is the only classifier which sees a large improvement for the Australia dataset. This is likely because the IHT balancer which was used with it was able to remove samples which are noisy for building the classifier model. 
+	The results of the parameter tuning experiment are summarised in Figure \ref{fig:parameter_tuning}. For all the datasets, there is a net gain in balanced accuracy from using a data balancer. However, as expected, the Australian credit dataset which is already balanced, only sees very minor improvements. Gaussian NB is the only classifier which sees a large improvement for the Australia dataset. This is likely because the IHT balancer which was used with it was able to remove samples which are noisy for building the classifier model. 
 	
 	\begin{figure*}
 		\centering

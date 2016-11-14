@@ -35,7 +35,7 @@ import config.classifiers as cfr
 
 feature_selection_strategies = [None, ANOVA_CHI2, LOGISTIC_REGRESSION, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, DECISION_TREE, RANDOM_FOREST]
 
-const.TEST_REPEAT = 10
+const.TEST_REPEAT = 1
 
 
 def select_features(input_defaulter_set, numeric_columns, categorical_columns, classification_label, classifier_parameters, random_state=None, selection_strategy=ANOVA_CHI2):
@@ -132,7 +132,6 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
     if classifier_dict["status"]:
         print("=== Executing {0} ===".format(classifier_description))
         test_stats = RunStatistics()
-        features_selected_dict = OrderedDict()
         avg_features_selected = 0
         min_features_selected = sys.maxint
         max_features_selected = -sys.maxint - 1
@@ -148,18 +147,10 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
             for train, test in kf.split(input_defaulter_set_copy.iloc[:, :-1], input_defaulter_set_copy.iloc[:, -1:].as_matrix().flatten()):
                 train_df, test_df = apply_preprocessing_to_train_test_dataset(input_defaulter_set_copy, train, test, numeric_columns, categorical_columns, binary_columns, classification_label,
                                                                               missing_value_strategy, create_dummy_variables=True)
-                if original_features != -1 and original_features != len(train_df.columns) - 1:
-                    raise RuntimeError("inconsistent number of features")
-                original_features = len(train_df.columns) - 1
-                for b in range(len(train_df.columns[:-1])):
-                    if train_df.columns[b] not in features_selected_dict:
-                        features_selected_dict[train_df.columns[b]] = [1, b+1]
-                    else:
-                        features_selected_dict[train_df.columns[b]][0] += 1
-                        features_selected_dict[train_df.columns[b]].append(b+1)
                 number_of_features = len(features_to_use[i][loop_count])
                 avg_features_selected += number_of_features
 
+                print(feature_selection_strategy, features_to_use)
                 result_dictionary = generic_classifier.train_and_evaluate(train_df.iloc[:, :-1][features_to_use[i][loop_count]].as_matrix(), train_df.iloc[:, -1:].as_matrix().flatten(),
                                                                           test_df.iloc[:, :-1][features_to_use[i][loop_count]].as_matrix(), test_df.iloc[:, -1:].as_matrix().flatten())
                 loop_count += 1
@@ -184,7 +175,7 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
         print(feature_summary)
         avg_results = test_stats.calculate_average_run_accuracy()
         roc_plot.append((test_stats.roc_list, classifier_description))
-        result_recorder.record_results(avg_results, classifier_description, feature_selection_strategy, features_selected_dict, feature_summary=[min_features_selected, avg_features_selected, max_features_selected, original_features])
+        result_recorder.record_results(avg_results, classifier_description, feature_selection_strategy, features_to_use, feature_summary=[min_features_selected, avg_features_selected, max_features_selected, original_features])
         print("=== Completed {0} ===".format(classifier_description))
 
 

@@ -43,7 +43,7 @@ from imblearn.combine.smote_enn import SMOTEENN
 from imblearn.combine.smote_tomek import SMOTETomek
 import config.balancer_comparision_input as bci
 
-const.TEST_REPEAT = 10
+const.TEST_REPEAT = 1
 
 def override_parameters(parameter_results):
     data_balancer_arr = {}
