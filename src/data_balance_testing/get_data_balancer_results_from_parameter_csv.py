@@ -43,7 +43,7 @@ from imblearn.combine.smote_enn import SMOTEENN
 from imblearn.combine.smote_tomek import SMOTETomek
 import config.balancer_comparision_input as bci
 
-const.TEST_REPEAT = 1
+const.TEST_REPEAT = 10
 
 def override_parameters(parameter_results):
     data_balancer_arr = {}
@@ -86,20 +86,23 @@ def override_parameters(parameter_results):
 
 
 def execute_classifier_run(data_balancer_results, random_values, input_defaulter_set, numerical_columns, categorical_columns, binary_columns, classification_label, missing_value_strategy, classifier_arr, classifier_description, roc_plot):
-    result_arr = []
-    for(data_balancer, parameter_dict) in classifier_arr:
-        print("=== Executing {0} - {1} ===".format(classifier_description, data_balancer.__name__ if data_balancer is not None else "None"))
-        test_stats = RunStatistics()
-        for i in range(const.TEST_REPEAT):
-            generic_classifier = GenericClassifier(cfr.classifiers[classifier_description]["classifier"], parameter_dict, data_balancer, random_values[i])
-            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set.copy(), numerical_columns=numerical_columns, categorical_columns=categorical_columns, binary_columns=binary_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
-            test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
+    if cfr.classifiers[classifier_description]["status"]:
+        result_arr = []
+        for(data_balancer, parameter_dict) in classifier_arr:
+            if "SVM" in classifier_description:
+                parameter_dict["probability"] = True
+            print("=== Executing {0} - {1} ===".format(classifier_description, data_balancer.__name__ if data_balancer is not None else "None"))
+            test_stats = RunStatistics()
+            for i in range(const.TEST_REPEAT):
+                generic_classifier = GenericClassifier(cfr.classifiers[classifier_description]["classifier"], parameter_dict, data_balancer, random_values[i])
+                result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set.copy(), numerical_columns=numerical_columns, categorical_columns=categorical_columns, binary_columns=binary_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
+                test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
 
-        avg_results = test_stats.calculate_average_run_accuracy()
-        roc_plot.append((test_stats.roc_list, classifier_description))
-        result_arr.append((data_balancer.__name__ if data_balancer is not None else "None", avg_results))
-        print("=== Completed {0} - {1} ===".format(classifier_description, data_balancer.__name__ if data_balancer is not None else "None"))
-    data_balancer_results.append((classifier_description, result_arr))
+            avg_results = test_stats.calculate_average_run_accuracy()
+            roc_plot.append((test_stats.roc_list, classifier_description))
+            result_arr.append((data_balancer.__name__ if data_balancer is not None else "None", avg_results))
+            print("=== Completed {0} - {1} ===".format(classifier_description, data_balancer.__name__ if data_balancer is not None else "None"))
+        data_balancer_results.append((classifier_description, result_arr))
 
 
 def main(classifier_dict):
@@ -123,6 +126,7 @@ def main(classifier_dict):
                     if random_value not in random_values:
                         random_values.append(random_value)
                         break
+            random_values = [3782015000, 3662332198, 2200378739, 2828415501, 4152489527, 3414032601, 91311896, 1242560324, 2888949744, 456838635]
             classifier_parameters = override_parameters(classifier_dict[data_set["data_set_description"]])
             manager = Manager()
 

@@ -256,7 +256,7 @@ def plot_kaplan_meier_graph_of_time_to_default(time_to_default, data_set_descrip
     ax.get_figure().savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/kaplan_meier_time_to_default_{0}.png".format(current_time), bbox_inches="tight")
     plt.close(ax.get_figure())
 
-def plot_percentage_difference_graph(results, datasets, name_suffix="", parameter="BARR", x_label="Feature selection approach", difference_from="no feature selection", figsize=(16, 5), legend_y=-0.31, label_rotation=0, y_label_pos=-0.4, y_ticks=None, x_label_replacement_dict=None):
+def plot_percentage_difference_graph(results, datasets, name_suffix="", parameter="BARR", x_label="Feature selection approach", difference_from="no feature selection", figsize=(16, 5), legend_y=-0.31, label_rotation=0, y_label_pos=-0.4, y_ticks=None, x_label_replacement_dict=None, feature_selection_specific=False):
     if x_label_replacement_dict is None:
         x_label_replacement_dict = {}
 
@@ -312,10 +312,14 @@ def plot_percentage_difference_graph(results, datasets, name_suffix="", paramete
                 label=label)
 
         feature_selection_labels = [results[0][i][0] if results[0][i][0] not in x_label_replacement_dict else x_label_replacement_dict[results[0][i][0]] for i in range(1, len(results[0]))]
-        feature_selection_labels = [feature_selection_labels[i-1] + "\n{0}-{1}-{2}".format(results[0][i][1][0][4][0], results[0][i][1][0][4][1], results[0][i][1][0][4][2]) for i in range(1, len(results[0]))]
+        if feature_selection_specific:
+            feature_selection_labels = [feature_selection_labels[i-1] + "\n{0}-{1:.1f}-{2}".format(results[0][i][1][0][4][0], results[0][i][1][0][4][1], results[0][i][1][0][4][2]) for i in range(1, len(results[0]))]
 
         plt.xticks(data_balancers + (bar_width / 2) * len(classifiers), feature_selection_labels, rotation=label_rotation)
-        plt.title(datasets[0].replace("_", " "))
+        bonus = ""
+        if feature_selection_specific:
+            bonus = " ({0})".format(results[0][0][1][0][4][3])
+        plt.title(datasets[0].replace("_", " ") + bonus)
         plt.ylabel("Change in {0} from {1}".format(parameter, difference_from), y=y_label_pos)
 
     vertical_plt = 0
@@ -327,8 +331,6 @@ def plot_percentage_difference_graph(results, datasets, name_suffix="", paramete
                 label = results[z][0][1][i][1]
             else:
                 label = "Mean classification"
-            print(classifier_arr[0])
-            print(classifier_arr[z])
             data_balancers = np.arange(len(classifier_arr[z][i])) * 3
             plt.bar(data_balancers + (i * bar_width), classifier_arr[z][i], bar_width,
                     alpha=opacity,
@@ -337,10 +339,14 @@ def plot_percentage_difference_graph(results, datasets, name_suffix="", paramete
                     label=label)
 
         feature_selection_labels = [results[0][i][0] if results[0][i][0] not in x_label_replacement_dict else x_label_replacement_dict[results[0][i][0]] for i in range(1, len(results[0]))]
-        feature_selection_labels = [feature_selection_labels[i-1] + "\n{0}-{1}-{2}".format(results[z][i][1][0][4][0], results[z][i][1][0][4][1], results[z][i][1][0][4][2]) for i in range(1, len(results[0]))]
+        if feature_selection_specific:
+            feature_selection_labels = [feature_selection_labels[i-1] + "\n{0}-{1:.1f}-{2}".format(results[z][i][1][0][4][0], results[z][i][1][0][4][1], results[z][i][1][0][4][2]) for i in range(1, len(results[0]))]
 
         plt.xticks(data_balancers + (bar_width / 2) * len(classifiers), feature_selection_labels, rotation=label_rotation)
-        plt.title(datasets[z].replace("_", " "))
+        bonus = ""
+        if feature_selection_specific:
+            bonus = " ({0})".format(results[z][0][1][0][4][3])
+        plt.title(datasets[z].replace("_", " ") + bonus)
 
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
@@ -641,4 +647,5 @@ def visualise_dataset_balancer_results_multi_dataset(dataset_results):
 
 
 if __name__ == "__main__":
-    plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Parameter tuning approach", name_suffix="", difference_from="using default parameters", figsize=(16, 5), legend_y=-0.79, label_rotation=0, y_label_pos=-0.3, y_ticks=np.arange(-0.18, 0.09, 0.03), x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"})
+    plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(20, 4.5), legend_y=-0.79, x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"}, feature_selection_specific=True, y_ticks=np.arange(-0.4, 0.11, 0.03))
+#result_arr, dataset_arr, x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(16, 4.5), legend_y=-0.79, label_rotation=0, x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"}

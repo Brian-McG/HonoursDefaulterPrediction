@@ -32,13 +32,13 @@ append_classifier_details(clustering_launched_classifier, clustering_launched_cl
 # Extreme learning machines
 elm = ExtremeLearningMachine
 elm_description = "Extreme Learning Machine"
-elm_enabled = True
+elm_enabled = False
 append_classifier_details(elm, elm_enabled, elm_description, classifiers)
 
 # Artificial Neural network
 ann = MLPClassifier
 ann_description = "Artificial neural network"
-ann_enabled = True
+ann_enabled = False
 append_classifier_details(ann, ann_enabled, ann_description, classifiers)
 
 # Support Vector Machines (with RBF kernel)
@@ -62,41 +62,41 @@ append_classifier_details(svm_poly, svm_poly_enabled, svm_poly_description, clas
 # Logistic Regression
 logistic_regression = LogisticRegression
 logistic_regression_description = "Logistic regression"
-logistic_regression_enabled = True
+logistic_regression_enabled = False
 append_classifier_details(logistic_regression, logistic_regression_enabled, logistic_regression_description, classifiers)
 
 # Decision Tree
 decision_tree = DecisionTreeClassifier
 decision_tree_description = "Decision Tree"
-decision_tree_enabled = True
+decision_tree_enabled = False
 append_classifier_details(decision_tree, decision_tree_enabled, decision_tree_description, classifiers)
 
 # AdaBoost
 adaboost = AdaBoostClassifier
 adaboost_description = "AdaBoost"
-adaboost_enabled = True
+adaboost_enabled = False
 append_classifier_details(adaboost, adaboost_enabled, adaboost_description, classifiers)
 
 # Random forest
 random_forest = RandomForestClassifier
 random_forest_description = "Random forest"
-random_forest_enabled = True
+random_forest_enabled = False
 append_classifier_details(random_forest, random_forest_enabled, random_forest_description, classifiers)
 
 # K-nearest neighbours
 k_nearest = KNeighborsClassifier
 k_nearest_description = "K-nearest neighbours"
-k_nearest_enabled = True
+k_nearest_enabled = False
 append_classifier_details(k_nearest, k_nearest_enabled, k_nearest_description, classifiers)
 
 # Gaussian Naive Bayes
 gaussian_naive_bayes = GaussianNB
 gaussian_naive_bayes_description = "Gaussian Naive Bayes"
-gaussian_naive_bayes_enabled = True
+gaussian_naive_bayes_enabled = False
 append_classifier_details(gaussian_naive_bayes, gaussian_naive_bayes_enabled, gaussian_naive_bayes_description, classifiers)
 
 # Bernoulli Naive Bayes
 bernoulli_naive_bayes = BernoulliNB
 bernoulli_naive_bayes_description = "Bernoulli Naive Bayes"
-bernoulli_naive_bayes_enabled = True
+bernoulli_naive_bayes_enabled = False
 append_classifier_details(bernoulli_naive_bayes, bernoulli_naive_bayes_enabled, bernoulli_naive_bayes_description, classifiers)

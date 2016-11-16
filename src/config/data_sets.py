@@ -34,7 +34,7 @@ lima_tb_classification_label = ["Treatment Outcome"]
 lima_tb_time_to_default = "Time to Default (Days)"
 lima_tb_missing_values_strategy = "remove"
 lima_tb_feature_selection_strategy = None
-lima_tb_enabled = True
+lima_tb_enabled = False
 append_data_set_details(lima_tb_path, lima_tb_numeric_columns, lima_tb_categorical_columns, lima_tb_binary_columns, lima_tb_classification_label, lima_tb_time_to_default, lima_tb_missing_values_strategy,
                         lima_tb_feature_selection_strategy, lima_tb_enabled,
                         lima_tb_classifier_parameters, "Lima_TB", lima_tb_data_balancer_only_parameters, None, data_set_arr)
@@ -70,7 +70,7 @@ german_credit_classification_label = ["Classification Label"]
 german_credit_time_to_default = None
 german_credit_missing_values_strategy = "remove"
 german_credit_feature_selection_strategy = None
-german_credit_enabled = True
+german_credit_enabled = False
 german_credit_parameters = german_classifier_parameters
 append_data_set_details(german_credit_path, german_credit_numeric_columns, german_credit_categorical_columns, german_credit_binary_columns, german_credit_classification_label, german_credit_time_to_default,
                         german_credit_missing_values_strategy, german_credit_feature_selection_strategy, german_credit_enabled, german_credit_parameters, "German_credit", german_data_balancer_only_parameters, None, data_set_arr)
@@ -84,7 +84,7 @@ australian_credit_classification_label = ["Classification Label"]
 australian_credit_time_to_default = None
 australian_credit_missing_values_strategy = "remove"
 australian_credit_feature_selection_strategy = None
-australian_credit_enabled = True
+australian_credit_enabled = False
 australian_credit_parameters = australian_classifier_parameters
 append_data_set_details(australian_credit_path, australian_credit_numeric_columns, australian_credit_categorical_columns, australian_credit_binary_columns, australian_credit_classification_label,
                         australian_credit_time_to_default,
@@ -132,3 +132,17 @@ append_data_set_details(australian_credit_path, australian_credit_numeric_column
 #                         parkinsons_missing_values_strategy, parkinsons_enabled,
 #                         parkinsons_classifier_parameters, "Parkinsons", data_set_arr)
 
+# # Australian credit data set
+# australian_credit_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/../../data/test_imbalance/haberman.csv")
+# australian_credit_numeric_columns = ["A1", "A2"]
+# australian_credit_categorical_columns = ["A3"]
+# australian_credit_binary_columns = []
+# australian_credit_classification_label = ["class_label"]
+# australian_credit_time_to_default = None
+# australian_credit_missing_values_strategy = "remove"
+# australian_credit_feature_selection_strategy = None
+# australian_credit_enabled = True
+# australian_credit_parameters = default_classifier_parameters
+# append_data_set_details(australian_credit_path, australian_credit_numeric_columns, australian_credit_categorical_columns, australian_credit_binary_columns, australian_credit_classification_label,
+#                         australian_credit_time_to_default,
+#                         australian_credit_missing_values_strategy, australian_credit_feature_selection_strategy, australian_credit_enabled, default_classifier_parameters, "Test imbalance", default_classifier_parameters, None, data_set_arr)

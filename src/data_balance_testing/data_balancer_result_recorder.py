@@ -4,6 +4,7 @@ from collections import OrderedDict
 from datetime import datetime
 
 import constants as const
+from config import visualisation_input
 from constants import TITLE_ROW_BALANCER_RESULT
 
 
@@ -41,9 +42,11 @@ class DataBalancerResultRecorder:
     @staticmethod
     def save_results_for_multi_dataset(dataset_results, dataset="all_dataset"):
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        metric = ["BACC"]
-        index = [14]
+        metric = ["BACC", "hmeasure"]
+        index = [14, 30]
         file_paths = []
+        classifier_skip = ["AdaBoost", "Decision Tree", "Logistic regression", "Random forest", "SVM (RBF)", "SVM (linear)", "SVM (polynomial)"]
+        data_set_skip = ["Lima_TB", "German_credit", "Australian_credit"]
 
         for z in range(len(metric)):
             file_name = "select_features_{2}_{1}_results_full_{0}.csv".format(current_time, metric[z], dataset)
@@ -53,7 +56,6 @@ class DataBalancerResultRecorder:
 
             header = []
             data = []
-            print(dataset_results)
             for i in range(len(dataset_results[0][1][0][1])):
                 data.append([])
                 header.append(dataset_results[0][1][0][1][i][0] if dataset_results[0][1][0][1][i][0] is not None else "None")
@@ -61,12 +63,15 @@ class DataBalancerResultRecorder:
             print(header)
             balancer_result = OrderedDict()
             for (data_set, dataset_result) in dataset_results:
-                for (classifier_description, result_arr) in dataset_result:
-                    for (balancer_description, results) in result_arr:
-                        if balancer_description in balancer_result:
-                            balancer_result[balancer_description] = balancer_result[balancer_description] + results[index[z]]
-                        else:
-                            balancer_result[balancer_description] = results[index[z]]
+                if data_set not in data_set_skip:
+                    print(data_set)
+                    for (classifier_description, result_arr) in dataset_result:
+                        if classifier_description not in classifier_skip:
+                            for (balancer_description, results) in result_arr:
+                                if balancer_description in balancer_result:
+                                    balancer_result[balancer_description] = balancer_result[balancer_description] + results[index[z]]
+                                else:
+                                    balancer_result[balancer_description] = results[index[z]]
 
             balancer_index = 0
             for key, value in balancer_result.iteritems():
@@ -82,3 +87,6 @@ class DataBalancerResultRecorder:
             file_paths.append(file_path)
 
         return metric, file_paths
+
+if __name__ == "__main__":
+    DataBalancerResultRecorder.save_results_for_multi_dataset(visualisation_input.results)

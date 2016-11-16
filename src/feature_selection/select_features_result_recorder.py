@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 
 import constants as const
+from config import visualisation_input
 
 
 class FeatureSelectionResultRecorder:
@@ -50,8 +51,8 @@ class FeatureSelectionResultRecorder:
     @staticmethod
     def save_results_for_multi_dataset(dataset_results, dataset="all_dataset"):
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        metric = ["BACC"]
-        index = [14]
+        metric = ["BACC", "hmeasure", "fit_time"]
+        index = [14, 30, 18]
         file_paths = []
 
         for z in range(len(metric)):
@@ -67,10 +68,10 @@ class FeatureSelectionResultRecorder:
                     header.append(dataset_results[0][i][0] if dataset_results[0][i][0] is not None else "None")
 
             for dataset_result in dataset_results:
+                print("data")
                 i = 0
                 for y in range(len(dataset_result)):
                     for x in range(len(dataset_result[y][1])):
-                        print(dataset_result[y][1][x][0])
                         data[i] += dataset_result[y][1][x][0][index[z]]
                     i += 1
 
@@ -82,3 +83,6 @@ class FeatureSelectionResultRecorder:
             file_paths.append(file_path)
 
         return metric, file_paths
+
+if __name__ == "__main__":
+    FeatureSelectionResultRecorder.save_results_for_multi_dataset(visualisation_input.results)
