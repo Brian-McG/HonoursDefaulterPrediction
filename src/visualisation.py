@@ -256,7 +256,7 @@ def plot_kaplan_meier_graph_of_time_to_default(time_to_default, data_set_descrip
     ax.get_figure().savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/kaplan_meier_time_to_default_{0}.png".format(current_time), bbox_inches="tight")
     plt.close(ax.get_figure())
 
-def plot_percentage_difference_graph(results, datasets, name_suffix="", parameter="BARR", x_label="Feature selection approach", difference_from="no feature selection", figsize=(16, 5), legend_y=-0.31, label_rotation=0, y_label_pos=-0.4, y_ticks=None, x_label_replacement_dict=None, feature_selection_specific=False):
+def plot_percentage_difference_graph(results, datasets, name_suffix="", parameter="BACC", x_label="Feature selection approach", difference_from="no feature selection", figsize=(16, 5), legend_y=-0.31, label_rotation=0, y_label_pos=-0.4, y_ticks=None, x_label_replacement_dict=None, feature_selection_specific=False):
     if x_label_replacement_dict is None:
         x_label_replacement_dict = {}
 
@@ -296,7 +296,7 @@ def plot_percentage_difference_graph(results, datasets, name_suffix="", paramete
     opacity = 0.9
     num_columns = 1 if len(results) == 1 else 2
     subplt_val = (100 * round(len(results) / 2.0)) + (10 * num_columns) + 1
-    plt.subplots_adjust(hspace=0.4, wspace=0.1)
+    plt.subplots_adjust(hspace=0.42, wspace=0.1)
     ax1 = plt.subplot(subplt_val)
 
     for i in range(len(classifier_arr[0])):
@@ -647,5 +647,7 @@ def visualise_dataset_balancer_results_multi_dataset(dataset_results):
 
 
 if __name__ == "__main__":
-    plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(20, 4.5), legend_y=-0.79, x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"}, feature_selection_specific=True, y_ticks=np.arange(-0.4, 0.11, 0.03))
+    plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(21, 4.5), legend_y=-0.79, x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"}, feature_selection_specific=True, y_ticks=np.arange(-0.18, 0.1, 0.03))
+    #plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Parameter tuning approach", name_suffix="", difference_from="using default parameters", figsize=(16, 5), legend_y=-0.62, label_rotation=0, y_label_pos=-0.3, y_ticks=np.arange(-0.04, 0.29, 0.04))
+    #plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(20, 4.5), legend_y=-0.67, x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"}, feature_selection_specific=False, y_ticks=np.arange(-0.4, 0.11, 0.05))
 #result_arr, dataset_arr, x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(16, 4.5), legend_y=-0.79, label_rotation=0, x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"}
