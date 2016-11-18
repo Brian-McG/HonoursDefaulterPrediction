@@ -45,8 +45,8 @@ class DataBalancerResultRecorder:
         metric = ["BACC", "hmeasure"]
         index = [14, 30]
         file_paths = []
-        classifier_skip = ["AdaBoost", "Decision Tree", "Logistic regression", "Random forest", "SVM (RBF)", "SVM (linear)", "SVM (polynomial)"]
-        data_set_skip = ["Lima_TB", "German_credit", "Australian_credit"]
+        classifier_skip = ["Decision Tree", "Logistic regression", "Random forest", "SVM (linear)"]
+        data_set_skip = ["Australian_credit", "German_credit", "India_CHW_attrition"]
 
         for z in range(len(metric)):
             file_name = "select_features_{2}_{1}_results_full_{0}.csv".format(current_time, metric[z], dataset)
