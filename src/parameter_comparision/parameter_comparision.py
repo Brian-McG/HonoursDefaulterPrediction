@@ -103,7 +103,7 @@ def main(random_values):
                 parameter_comparision_results.append((parameter_description[parameter_index], parameter_comparision_result_recorder.results, parameter_description[parameter_index]))
             result_arr.append(parameter_comparision_results)
             data_set_arr.append(data_set["data_set_description"])
-            result_recorder_after.save_results_to_file(random_values, "Parameter tuning")
+            result_recorder_after.save_results_to_file(random_values, data_set["data_set_description"])
     # Save results to file and plot graphs
     vis.plot_percentage_difference_graph(result_arr, data_set_arr, x_label="Parameter tuning approach", name_suffix="", difference_from="using default parameters", figsize=(16, 5), legend_y=-0.62, label_rotation=0, y_label_pos=-0.3)
     ParameterComparisionResultRecorder.save_results_for_multi_dataset(result_arr)
