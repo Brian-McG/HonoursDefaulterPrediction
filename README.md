@@ -1,4 +1,4 @@
-# Honours Project: An Analysis of Classiﬁcation Techniques for the Prediction of Tuberculosis Defaulters and Community Health Worker Attrition
+# Honours Project: An Analysis of Classification Techniques for the Prediction of Tuberculosis Defaulters and Community Health Worker Attrition
 
 ## Getting Started
   - Download [Anaconda Python 2.7](https://www.continuum.io/downloads) for respective OS
@@ -26,7 +26,6 @@
 ### Precursors
   - Ensure that you are in the Anaconda environment
   - Ensure that you are in the in the src directory of the project
-  - All results are output to the _results_ folder at the base of this project
 
 ### Formatting a dataset
   - All features are required to have a label
@@ -38,14 +37,14 @@
   - Requires path to dataset, the list of binary/categorical/numerical features, the classification label, a field to remove duplicates if necessary, a descriptive name for the dataset and the dataset enabled status
   - In addition, requires two python files, one with parameters to use with each classifier and the other which uses default parameters but requires the data_balancer to be set. These files can be created in config folder, the existing dataset configuration files can be used as a template and must be imported into data_sets.py.
   - It is recommended to run the grid search (outlined below) whose output can be used as a guide to set the parameters for each classifier
-  - Visulisation code that utilises the _plot_percentage_difference_graph_ may need to be updated as it is optimised for 4 active datasets as used in the study
+  - Visualisation code that utilises the _plot_percentage_difference_graph_ may need to be updated as it is optimised for 4 active datasets as used in the study
   
 ### Adding support for a new classifier
   - Adding support for a new classifier involves editing config/classifiers.py and adding the classifier class, classifier description and enabled status to the classifier dictionary. Existing entries can be used as a template.
   - Add a new entry for the classifier in classifier_tester_parameters.py
   - Run a parameter grid search for each dataset with the classifier
   - The classifier parameter files for each dataset must then be updated with parameters for the new classifier
-  - Visulisation code may need to be updated to ensure that sufficient colors are available as they are optimised for the amount used in the study
+  - Visualisation code may need to be updated to ensure that sufficient colors are available as they are optimised for the amount used in the study
   
 ### Enabling and disabling classifiers and datasets
   - Simply edit config/classifiers.py and config/data_sets.py and edit the \<classifier_or_dataset\>_enabled parameter for each classifier and dataset.
@@ -70,7 +69,7 @@
   - Ensure a grid search has been done compelted for the classifiers and datasets one wants to test
   - Edit config/balancer_comparision_input.py which points to the parameter grid results for the classifiers on each dataset. 
   - The existing entries can be used as a template, the current entries point to result/parameter_grid_search/\<data_set_name\>/\<grid_search_classifier_result\>.csv but can can be updated as required.
-  - <b>Note:</b> this design approach was taken because grid searching can be done in a distributed manner and therefore each grid search result for each classifier is in a seperate file.
+  - <b>Note:</b> this design approach was taken because grid searching can be done in a distributed manner and therefore each grid search result for each classifier is in a separate file.
   - Execute: ```python data_balance_testing/get_data_balancer_results_from_parameter_csv.py <random_seeds>```
   - random_seeds is optional but if provided must match the number of runs (10 by default)
 
@@ -84,6 +83,6 @@
   - random_seeds is optional but if provided must match the number of runs (10 by default)
 
 ### Executing time_to_default analysis
-  - Optionally one can output a Kaplan meier graph which shows a visual dipiction of how fast individuals are to default, this is done by executing: ```python time_to_default/generate_time_to_default_graphs.py```
+  - Optionally one can output a Kaplan meier graph which shows a visual depiction of how fast individuals are to default, this is done by executing: ```python time_to_default/generate_time_to_default_graphs.py```
   - An analysis of how the classification varies for each metric when training and testing on different default ranges is done by executing: ```python time_to_default/time_to_default_comparision.py```
   
