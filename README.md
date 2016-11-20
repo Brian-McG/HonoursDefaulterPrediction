@@ -2,7 +2,7 @@
 
 ## Getting Started
   - Download and install [Anaconda Python 2.7](https://www.continuum.io/downloads) for respective OS
-  - Ensure this project is extracted and that you have change directory to it in terminal
+  - Ensure this project is extracted and that you have changed directory to it in terminal
   - Ensure you are in the Anaconda environment, on Ubuntu this is done by ```source <path_to_anaconda_install>/bin/activate```. On Windows this is best done by adding Anaconda to Path.
   - Run ```conda install --file conda_requirements.txt```
   - Run ```pip install -r requirements.txt``` to install the required packages
@@ -25,6 +25,7 @@
 
 ## Important notices
   - The CLC classifier can only be used on Windows as it was provided as a compiled C++ executable for Windows
+  - The CHW attrition dataset has been removed due to the research usage agreement with Dimagi. If the dataset is enabled, the code will not be able to locate the dataset.
 
 ## How to execute common tasks in this project
 ### Precursors
