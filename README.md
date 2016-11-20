@@ -2,6 +2,7 @@
 
 ## Getting Started
   - Download and install [Anaconda Python 2.7](https://www.continuum.io/downloads) for respective OS
+  - Ensure this project is extracted and that you have change directory to it in terminal
   - Ensure you are in the Anaconda environment, on Ubuntu this is done by ```source <path_to_anaconda_install>/bin/activate```. On Windows this is best done by adding Anaconda to Path.
   - Run ```conda install --file conda_requirements.txt```
   - Run ```pip install -r requirements.txt``` to install the required packages
