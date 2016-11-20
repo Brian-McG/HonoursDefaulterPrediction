@@ -1,4 +1,4 @@
-"""Primary script used to execute the classification"""
+"""Primary script used to execute the classfiier comparison"""
 import os
 import subprocess
 import sys
@@ -9,6 +9,7 @@ import pandas as pd
 from joblib import Parallel
 from joblib import delayed
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import config.classifiers as cfr
 import constants as const
 import visualisation as vis
@@ -107,7 +108,7 @@ def main(random_value_arr):
             # Save results and execute statistical tests
             data_set_arr.append((data_set["data_set_description"], result_recorder.results))
             metrics, file_paths = ResultRecorder.save_results_for_multi_dataset(((data_set["data_set_description"], result_recorder.results),), dataset=data_set["data_set_description"])
-            script_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/external_signifigance_testing/signifigance_testing.R")
+            script_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/../external_significance_testing/significance_testing.R")
             if classifier_active_count > 1:
                 for i in range(len(metrics)):
                     input_arr = ["Rscript", script_path, os.path.abspath(file_paths[i]), data_set["data_set_description"] + "_" + metrics[i]]
@@ -125,7 +126,7 @@ def main(random_value_arr):
 
     vis.visualise_dataset_classifier_results(data_set_arr)
     metrics, file_paths = ResultRecorder.save_results_for_multi_dataset(data_set_arr)
-    script_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/external_signifigance_testing/signifigance_testing.R")
+    script_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/../external_significance_testing/significance_testing.R")
 
     if classifier_active_count > 1:
         for i in range(len(metrics)):

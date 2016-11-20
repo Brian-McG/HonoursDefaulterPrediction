@@ -23,7 +23,7 @@ class ResultRecorder:
         if len(self.results) > 0:
             current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             file_name = "{0}_data_{1}-folds_{2}.csv".format(data_set_description, const.NUMBER_OF_FOLDS, current_time)
-            output_file = open(os.path.dirname(os.path.realpath(__file__)) + "/../results/" + file_name, "wb")
+            output_file = open(os.path.dirname(os.path.realpath(__file__)) + "/../../results/" + file_name, "wb")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
 
             if display_time_to_fit_results:
@@ -52,7 +52,7 @@ class ResultRecorder:
 
         for z in range(len(metric)):
             file_name = "classifier_{2}_{1}_results_full_{0}.csv".format(current_time, metric[z], dataset)
-            file_path = os.path.dirname(os.path.realpath(__file__)) + "/../results/" + file_name
+            file_path = os.path.dirname(os.path.realpath(__file__)) + "/../../results/" + file_name
             output_file = open(file_path, "wb")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
 

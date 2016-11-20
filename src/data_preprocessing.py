@@ -2,7 +2,6 @@
 
 import pandas as pd
 from sklearn import preprocessing
-from sklearn.preprocessing import Imputer
 
 
 def apply_preprocessing_to_train_test_dataset(input_defaulter_set, train_indices, test_indices, numerical_columns, categorical_columns, binary_columns, classification_label, missing_value_strategy,

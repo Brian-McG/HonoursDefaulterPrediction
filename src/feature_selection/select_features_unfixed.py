@@ -129,17 +129,17 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
         print("=== Completed {0} ===".format(classifier_description))
 
 
-def main():
+def main(random_values):
     result_arr = []
     dataset_arr = []
-    random_values = []
-    random = Random()
-    for i in range(const.TEST_REPEAT):
-        while True:
-            random_value = random.randint(const.RANDOM_RANGE[0], const.RANDOM_RANGE[1])
-            if random_value not in random_values:
-                random_values.append(random_value)
-                break
+    if len(random_values) == 0:
+        random = Random()
+        for i in range(const.TEST_REPEAT):
+            while True:
+                random_value = random.randint(const.RANDOM_RANGE[0], const.RANDOM_RANGE[1])
+                if random_value not in random_values:
+                    random_values.append(random_value)
+                    break
     for data_set in data_sets.data_set_arr:
         if data_set["status"]:
             # Load in data set
@@ -254,4 +254,7 @@ def main():
 
 if __name__ == "__main__":
     # Run main
-    main()
+    random_values = []
+    for p in range(1, len(sys.argv)):
+        random_values.append(int(sys.argv[p]))
+    main(random_values)

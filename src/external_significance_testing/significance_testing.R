@@ -1,5 +1,5 @@
 # Calculates Friedman test and Nemenyi post-hoc test on input data
-# Example call: Rscript "C:\Users\bmcge\Documents\University\HonoursDefaulterPrediction\src\external_signifigance_testing\signifigance_testing.R" "C:\Users\bmcge\Documents\University\HonoursDefaulterPrediction\results\test.csv" "BACC"
+# Example call: Rscript "C:\Users\bmcge\Documents\University\HonoursDefaulterPrediction\src\external_significance_testing\significance_testing.R" "C:\Users\bmcge\Documents\University\HonoursDefaulterPrediction\results\test.csv" "BACC"
 
 require(PMCMR)
 args<-commandArgs(TRUE)

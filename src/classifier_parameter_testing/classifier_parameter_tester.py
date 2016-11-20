@@ -1,4 +1,7 @@
 """Calculates optimal parameters for each classifier by searching a grid of testing parameters defined in config/classifier_tester_parameters. The search is parallelised to improve execution time."""
+
+IS_DATA_BALANCER_ONLY = False
+
 import os
 import sys
 import warnings
@@ -28,7 +31,10 @@ from sklearn.model_selection import ParameterGrid
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from util import get_number_of_processes_to_use
 from constants import DATA_BALANCER_STR
-import config.classifier_data_balancer_only_tester_parameters as ctp
+if not IS_DATA_BALANCER_ONLY:
+    import config.classifier_tester_parameters as ctp
+else:
+    import config.classifier_data_balancer_only_tester_parameters as ctp
 import config.classifiers as cfr
 from classifier_result_recorder import ClassifierResultRecorder
 import constants as const

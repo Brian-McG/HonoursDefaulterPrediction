@@ -36,10 +36,11 @@ import config.classifiers as cfr
 # The different feature selection strategies
 feature_selection_strategies = [None, LOGISTIC_REGRESSION, DECISION_TREE, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, RANDOM_FOREST]
 
+NUMBER_OF_FEATURES_TO_SELECT = 15
 const.TEST_REPEAT = 10
 
 
-def select_features(input_defaulter_set, numeric_columns, categorical_columns, classification_label, classifier_parameters, random_state=None, number_of_features_to_select=10,
+def select_features(input_defaulter_set, numeric_columns, categorical_columns, classification_label, classifier_parameters, random_state=None, number_of_features_to_select=15,
                     selection_strategy=LOGISTIC_REGRESSION):
     """Selects set number of features using input feature selection strategy"""
     if random_state is not None:
@@ -128,7 +129,7 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
                 train_df, test_df = apply_preprocessing_to_train_test_dataset(defaulter_set_copy, train, test, numeric_columns, categorical_columns, binary_columns, classification_label,
                                                                               missing_value_strategy, create_dummy_variables=True)
                 train_df, _, _ = select_features(train_df, numeric_columns_with_dummy, categorical_columns_with_dummy, classification_label,
-                                                 all_classifier_parameters, random_state=random_values[i], selection_strategy=feature_selection_strategy)
+                                                 all_classifier_parameters, random_state=random_values[i], selection_strategy=feature_selection_strategy, number_of_features_to_select=NUMBER_OF_FEATURES_TO_SELECT)
                 test_df = test_df[train_df.columns]
                 for b in range(len(train_df.columns[:-1])):
                     if train_df.columns[b] not in features_selected_dict:
@@ -160,17 +161,17 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
         print("=== Completed {0} ===".format(classifier_description))
 
 
-def main():
+def main(random_values):
     result_arr = []
     dataset_arr = []
-    random_values = []
-    random = Random()
-    for i in range(const.TEST_REPEAT):
-        while True:
-            random_value = random.randint(const.RANDOM_RANGE[0], const.RANDOM_RANGE[1])
-            if random_value not in random_values:
-                random_values.append(random_value)
-                break
+    if len(random_values) == 0:
+        random = Random()
+        for i in range(const.TEST_REPEAT):
+            while True:
+                random_value = random.randint(const.RANDOM_RANGE[0], const.RANDOM_RANGE[1])
+                if random_value not in random_values:
+                    random_values.append(random_value)
+                    break
     for data_set in data_sets.data_set_arr:
         if data_set["status"]:
             # Load in data set
@@ -241,4 +242,7 @@ def get_feature_importances(estimator):
 
 if __name__ == "__main__":
     # Run main
-    main()
+    random_values = []
+    for p in range(1, len(sys.argv)):
+        random_values.append(int(sys.argv[p]))
+    main(random_values)

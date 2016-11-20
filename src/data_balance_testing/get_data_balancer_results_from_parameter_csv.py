@@ -116,7 +116,16 @@ def execute_classifier_run(data_balancer_results, random_values, input_defaulter
         data_balancer_results.append((classifier_description, result_arr))
 
 
-def main(classifier_dict):
+def main(classifier_dict, random_values):
+    if len(random_values) == 0:
+        random = Random()
+        for i in range(const.TEST_REPEAT):
+            while True:
+                random_value = random.randint(const.RANDOM_RANGE[0], const.RANDOM_RANGE[1])
+                if random_value not in random_values:
+                    random_values.append(random_value)
+                    break
+
     data_set_results = []
     for data_set in data_sets.data_set_arr:
         if data_set["status"] and data_set["data_set_description"] in classifier_dict:
@@ -136,15 +145,6 @@ def main(classifier_dict):
             result_recorder = DataBalancerResultRecorder()
             cpu_count = get_number_of_processes_to_use()
 
-            # Generate the random seeds to use
-            random_values = []
-            random = Random()
-            for i in range(const.TEST_REPEAT):
-                while True:
-                    random_value = random.randint(const.RANDOM_RANGE[0], const.RANDOM_RANGE[1])
-                    if random_value not in random_values:
-                        random_values.append(random_value)
-                        break
             classifier_parameters = override_parameters(classifier_dict[data_set["data_set_description"]])
             manager = Manager()
 
@@ -190,4 +190,8 @@ if __name__ == "__main__":
     classifier_dict = dict()
     for i in range(len(data_set_arr)):
         classifier_dict[data_set_arr[i]] = classifier_arr[i]
-    main(classifier_dict)
+
+    random_values = []
+    for p in range(1, len(sys.argv)):
+        random_values.append(int(sys.argv[p]))
+    main(classifier_dict, random_values)
