@@ -21,7 +21,7 @@ class ParameterComparisionResultRecorder:
         """Records results for each dataset to file as well as the random seeds used"""
         if len(self.results) > 0:
             current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            file_name = "{0}_data_{1}-folds_{2}.csv".format(data_set_description, const.NUMBER_OF_FOLDS, current_time)
+            file_name = "{0}_parameter_comparision_{1}.csv".format(data_set_description, current_time)
             output_file = open(os.path.dirname(os.path.realpath(__file__)) + "/../../results/" + file_name, "wb")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
 
