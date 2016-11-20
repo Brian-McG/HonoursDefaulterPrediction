@@ -10,7 +10,7 @@ import constants as const
 
 
 class ClassifierStatistics:
-    """Contains functionality to calculate predictive accuracy rates"""
+    """Contains functionality to calculate several metrics for a run of k-fold cross validation"""
 
     def __init__(self, error_list=None, roc_list=None):
         if error_list is None:
@@ -22,10 +22,7 @@ class ClassifierStatistics:
 
     @staticmethod
     def process_results(test_classification, actual_outcome, fit_time, test_probabilities=None, probability_cutoff=const.CUTOFF_RATE):
-        """Compares the test_classification and actual_outcome. It returns a dictionary with the true positive,
-        true negative, false positive and false negative rate."""
-
-        # print(cohen_kappa_score(test_classification, actual_outcome))
+        """Processes the results and returns a dictionary with the summarised results"""
 
         fold_result_dict = {}
         true_positive_count = 0
@@ -108,8 +105,7 @@ class ClassifierStatistics:
         self.roc_list.append((roc_tpr, roc_fpr))
 
     def calculate_average_results(self):
-        """Averages true positive, true negative, false positive and false negative rate contained in errors"""
-
+        """Calculates the metrics of a run of k-fold cross validation and returns a dictionary with the results"""
         avg_result_dict = {}
         avg_true_rate = 0
         avg_true_positive_rate = 0

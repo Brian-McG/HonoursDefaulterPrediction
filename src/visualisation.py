@@ -1,7 +1,9 @@
+"""Used to plot graphs and plots of results"""
 import os
 from collections import OrderedDict
 from datetime import datetime
 import matplotlib
+
 matplotlib.use('Agg')
 import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
@@ -194,7 +196,7 @@ def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description
         plt.close(fig)
 
 
-def plot_balancer_results_per_classifier(data_balancer_results_per_classifier, parameter=(2,"Balanced Accuracy")):
+def plot_balancer_results_per_classifier(data_balancer_results_per_classifier, parameter=(2, "Balanced Accuracy")):
     classifier_arr = []
     color = iter(cm.Set1(np.linspace(0, 1, len(data_balancer_results_per_classifier) + 1)))
     mean_classifier_arr = [0] * len(data_balancer_results_per_classifier[0][1])
@@ -256,7 +258,9 @@ def plot_kaplan_meier_graph_of_time_to_default(time_to_default, data_set_descrip
     ax.get_figure().savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/kaplan_meier_time_to_default_{0}.png".format(current_time), bbox_inches="tight")
     plt.close(ax.get_figure())
 
-def plot_percentage_difference_graph(results, datasets, name_suffix="", parameter="BACC", x_label="Feature selection approach", difference_from="no feature selection", figsize=(16, 5), legend_y=-0.31, label_rotation=0, y_label_pos=-0.4, y_ticks=None, x_label_replacement_dict=None, feature_selection_specific=False):
+
+def plot_percentage_difference_graph(results, datasets, name_suffix="", parameter="BACC", x_label="Feature selection approach", difference_from="no feature selection", figsize=(16, 5), legend_y=-0.31,
+                                     label_rotation=0, y_label_pos=-0.4, y_ticks=None, x_label_replacement_dict=None, feature_selection_specific=False):
     if x_label_replacement_dict is None:
         x_label_replacement_dict = {}
 
@@ -313,7 +317,8 @@ def plot_percentage_difference_graph(results, datasets, name_suffix="", paramete
 
         feature_selection_labels = [results[0][i][0] if results[0][i][0] not in x_label_replacement_dict else x_label_replacement_dict[results[0][i][0]] for i in range(1, len(results[0]))]
         if feature_selection_specific:
-            feature_selection_labels = [feature_selection_labels[i-1] + "\n{0}-{1:.1f}-{2}".format(results[0][i][1][0][4][0], results[0][i][1][0][4][1], results[0][i][1][0][4][2]) for i in range(1, len(results[0]))]
+            feature_selection_labels = [feature_selection_labels[i - 1] + "\n{0}-{1:.1f}-{2}".format(results[0][i][1][0][4][0], results[0][i][1][0][4][1], results[0][i][1][0][4][2]) for i in
+                                        range(1, len(results[0]))]
 
         plt.xticks(data_balancers + (bar_width / 2) * len(classifiers), feature_selection_labels, rotation=label_rotation)
         bonus = ""
@@ -340,7 +345,8 @@ def plot_percentage_difference_graph(results, datasets, name_suffix="", paramete
 
         feature_selection_labels = [results[0][i][0] if results[0][i][0] not in x_label_replacement_dict else x_label_replacement_dict[results[0][i][0]] for i in range(1, len(results[0]))]
         if feature_selection_specific:
-            feature_selection_labels = [feature_selection_labels[i-1] + "\n{0}-{1:.1f}-{2}".format(results[z][i][1][0][4][0], results[z][i][1][0][4][1], results[z][i][1][0][4][2]) for i in range(1, len(results[0]))]
+            feature_selection_labels = [feature_selection_labels[i - 1] + "\n{0}-{1:.1f}-{2}".format(results[z][i][1][0][4][0], results[z][i][1][0][4][1], results[z][i][1][0][4][2]) for i in
+                                        range(1, len(results[0]))]
 
         plt.xticks(data_balancers + (bar_width / 2) * len(classifiers), feature_selection_labels, rotation=label_rotation)
         bonus = ""
@@ -360,14 +366,13 @@ def plot_percentage_difference_graph(results, datasets, name_suffix="", paramete
     plt.xlabel(x_label, x=0, y=-2)
     feature_selection_labels = [results[0][i][0] for i in range(1, len(results[0]))]
 
-
     plt.locator_params(axis='y', nbins=15)
     name = "{3}_results_per_classifier_plot{0}_{4}_{1}_{2}".format(name_suffix, parameter, current_time, x_label, datasets)
     plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/{0}".format(name.replace(" ", "_")), bbox_extra_artists=(legend,), bbox_inches='tight')
     plt.close(fig)
 
 
-def plot_time_to_default_results(time_to_default_results_per_classifier, parameter="Change in balanced accuracy from no feature selection"):
+def plot_time_to_default_results(time_to_default_results_per_classifier, parameter="Balanced accuracy"):
     color = iter(cm.Set1(np.linspace(0, 1, len(time_to_default_results_per_classifier[0][1]) + 1)))
     classifier_arr = []
     for i in range(len(time_to_default_results_per_classifier[0][1]) + 1):
@@ -468,7 +473,8 @@ def visualise_dataset_classifier_results(dataset_results):
         for (result_arr, classifier_description) in dataset_result:
             if data_set_index == 0:
                 classifier_labels.append(mpatches.Patch(facecolor=color_dict[classifier_description], hatch=hatches[i % len(hatches)], label=classifier_description, alpha=0.8, edgecolor="black"))
-            ax.scatter(result_arr[3] - median_true_pos, result_arr[4] - median_true_neg, marker=markers[data_set_index], hatch=hatches[i % len(hatches)], s=200, alpha=0.8, color=colors[i], edgecolor="black", zorder=data_set_index, lw=0.8)
+            ax.scatter(result_arr[3] - median_true_pos, result_arr[4] - median_true_neg, marker=markers[data_set_index], hatch=hatches[i % len(hatches)], s=200, alpha=0.8, color=colors[i],
+                       edgecolor="black", zorder=data_set_index, lw=0.8)
             i += 1
         data_set_index += 1
 
@@ -479,7 +485,9 @@ def visualise_dataset_classifier_results(dataset_results):
     plt.close(fig)
 
 
-def visualise_dataset_balancer_results(results, range=(-0.5, 0.5), colors=("#64B3DE", "#1f78b4", "#B9B914", "#FBAC44", "#bc1659", "#33a02c", "grey" , "#b15928", "#6a3d9a", "#e31a1c", "#6ABF20", "#ff7f00", "#6a3d9a"), exclude=("SVM (linear)", "Logistic regression", "Random forest")):
+def visualise_dataset_balancer_results(results, range=(-0.5, 0.5),
+                                       colors=("#64B3DE", "#1f78b4", "#B9B914", "#FBAC44", "#bc1659", "#33a02c", "grey", "#b15928", "#6a3d9a", "#e31a1c", "#6ABF20", "#ff7f00", "#6a3d9a"),
+                                       exclude=("SVM (linear)", "Logistic regression", "Random forest")):
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     file_name = "raw_dump_{0}.txt".format(current_time)
     with open(os.path.dirname(os.path.realpath(__file__)) + "/../results/" + file_name, "wb") as output_file:
@@ -538,8 +546,11 @@ def visualise_dataset_balancer_results(results, range=(-0.5, 0.5), colors=("#64B
                     if data_set_index == 0 and balancer_index == 0:
                         classifier_labels[0].append(mpatches.Patch(color=colors[i], label=classifier_description, alpha=0.8))
                         classifier_labels[1].append(classifier_description)
-                    ax.scatter(results[3] -  none_true_pos_per_classifier[classifier_description], results[4] - none_true_neg_per_classifier[classifier_description], marker=markers[balancer_index % len(markers)], hatch=hatches[balancer_index % len(hatches)], s=size[balancer_index % len(markers)], alpha=0.8, color=colors[i], edgecolor="black" if colors[i] != "black" else "grey", zorder=balancer_index % len(markers), lw=0.8)
-                    pt = ax.scatter(-99999999999, -9999999999, marker=markers[balancer_index % len(markers)], hatch=hatches[balancer_index % len(hatches)], s=200, alpha=0.8, color="white", edgecolor="black", zorder=data_set_index, lw=0.8)
+                    ax.scatter(results[3] - none_true_pos_per_classifier[classifier_description], results[4] - none_true_neg_per_classifier[classifier_description],
+                               marker=markers[balancer_index % len(markers)], hatch=hatches[balancer_index % len(hatches)], s=size[balancer_index % len(markers)], alpha=0.8, color=colors[i],
+                               edgecolor="black" if colors[i] != "black" else "grey", zorder=balancer_index % len(markers), lw=0.8)
+                    pt = ax.scatter(-99999999999, -9999999999, marker=markers[balancer_index % len(markers)], hatch=hatches[balancer_index % len(hatches)], s=200, alpha=0.8, color="white",
+                                    edgecolor="black", zorder=data_set_index, lw=0.8)
                     if i == 0:
                         balancer_labels[0].append(pt)
                         balancer_labels[1].append(balancer_description)
@@ -629,8 +640,11 @@ def visualise_dataset_balancer_results_multi_dataset(dataset_results):
                     balancer_labels[0].append(mpatches.Patch(facecolor=colors[i % len(colors)], hatch=hatches[hatch_index], label=key, alpha=0.8, edgecolor="black"))
                     balancer_labels[1].append(key)
 
-                ax.scatter(value - balancer_result_pos["None"], balancer_result_neg[key] - balancer_result_neg["None"], marker=markers[data_set_index % len(markers)], hatch=hatches[hatch_index], s=sizes[data_set_index % len(markers)], alpha=0.8, color=colors[i % len(colors)], edgecolor="black" if colors[i % len(colors)] != "black" else "grey", zorder=i % len(markers), lw=0.8)
-                pt = ax.scatter(-99999999999, -9999999999, marker=markers[data_set_index % len(markers)], s=sizes[data_set_index % len(markers)], alpha=0.8, color="white", edgecolor="black", zorder=data_set_index, lw=0.8)
+                ax.scatter(value - balancer_result_pos["None"], balancer_result_neg[key] - balancer_result_neg["None"], marker=markers[data_set_index % len(markers)], hatch=hatches[hatch_index],
+                           s=sizes[data_set_index % len(markers)], alpha=0.8, color=colors[i % len(colors)], edgecolor="black" if colors[i % len(colors)] != "black" else "grey",
+                           zorder=i % len(markers), lw=0.8)
+                pt = ax.scatter(-99999999999, -9999999999, marker=markers[data_set_index % len(markers)], s=sizes[data_set_index % len(markers)], alpha=0.8, color="white", edgecolor="black",
+                                zorder=data_set_index, lw=0.8)
                 if i == 0:
                     data_set_labels[0].append(pt)
                     data_set_labels[1].append(data_set)
@@ -647,7 +661,10 @@ def visualise_dataset_balancer_results_multi_dataset(dataset_results):
 
 
 if __name__ == "__main__":
-    plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(21, 4.5), legend_y=-0.79, x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"}, feature_selection_specific=True, y_ticks=np.arange(-0.18, 0.1, 0.03))
-    #plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Parameter tuning approach", name_suffix="", difference_from="using default parameters", figsize=(16, 5), legend_y=-0.62, label_rotation=0, y_label_pos=-0.3, y_ticks=np.arange(-0.04, 0.29, 0.04))
-    #plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(20, 4.5), legend_y=-0.67, x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"}, feature_selection_specific=False, y_ticks=np.arange(-0.4, 0.11, 0.05))
-#result_arr, dataset_arr, x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(16, 4.5), legend_y=-0.79, label_rotation=0, x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"}
+    plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Feature selection approach", name_suffix="_after",
+                                     difference_from="no feature selection", figsize=(21, 4.5), legend_y=-0.79,
+                                     x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"},
+                                     feature_selection_specific=True, y_ticks=np.arange(-0.18, 0.1, 0.03))
+    # plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Parameter tuning approach", name_suffix="", difference_from="using default parameters", figsize=(16, 5), legend_y=-0.62, label_rotation=0, y_label_pos=-0.3, y_ticks=np.arange(-0.04, 0.29, 0.04))
+    # plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(20, 4.5), legend_y=-0.67, x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"}, feature_selection_specific=False, y_ticks=np.arange(-0.4, 0.11, 0.05))
+    # result_arr, dataset_arr, x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(16, 4.5), legend_y=-0.79, label_rotation=0, x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"}

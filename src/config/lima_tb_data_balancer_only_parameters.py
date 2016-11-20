@@ -1,4 +1,4 @@
-"""Contains all classifier_parameters used (except ANNs)"""
+"""Contains all classifier parameters for Lima TB dataset only using balancers and default parameters for rest"""
 from imblearn.combine import SMOTEENN
 from imblearn.over_sampling import ADASYN
 from imblearn.over_sampling import RandomOverSampler

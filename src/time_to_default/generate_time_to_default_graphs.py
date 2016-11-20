@@ -1,3 +1,4 @@
+"""Plots a Kaplan meier graph of time to deafult"""
 import os
 import sys
 

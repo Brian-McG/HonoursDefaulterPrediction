@@ -1,3 +1,4 @@
+"""Classifier testing parameters"""
 import numpy as np
 from sklearn.linear_model import Perceptron
 from sklearn.linear_model import SGDClassifier
@@ -9,7 +10,6 @@ import classifiers as clf
 
 generic_classifier_parameter_dict = {}
 
-# Generic classifiers
 # Clustering-launched classification
 clc_parameter_dict = {"parameters": {"d": np.linspace(0.01, 1, 20)}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.clustering_launched_classifier_description] = clc_parameter_dict
@@ -61,7 +61,7 @@ generic_classifier_parameter_dict[clf.logistic_regression_description] = logisti
 
 # Decision tree
 decision_tree_dict = {"parameters": {"criterion": ["gini", "entropy"], "splitter": ["best", "random"], "max_features": ["auto"], "class_weight": [None, "balanced"],
-                                     "max_depth": [None] + [3, 5], "min_samples_split": [2,3], "min_samples_leaf": [2,3],
+                                     "max_depth": [None] + [3, 5], "min_samples_split": [2, 3], "min_samples_leaf": [2, 3],
                                      "max_leaf_nodes": [None] + [3, 6]}, "requires_random_state": False}
 generic_classifier_parameter_dict[clf.decision_tree_description] = decision_tree_dict
 

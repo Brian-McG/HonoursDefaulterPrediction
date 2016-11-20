@@ -3,10 +3,10 @@ from sklearn.model_selection import StratifiedKFold
 import constants as const
 from classifier_statistics import ClassifierStatistics
 from data_preprocessing import apply_preprocessing_to_train_test_dataset
-from ml_technique import MLTechnique, train_and_evaluate_fold
+from ml_technique import train_and_evaluate_fold
 
 
-class GenericClassifier(MLTechnique):
+class GenericClassifier:
     """Contains functionality to train and evaluate a classifier."""
 
     def __init__(self, classifier_class, classifier_parameters, data_balancer_class, state):
@@ -51,11 +51,13 @@ class GenericClassifier(MLTechnique):
             index += 1
 
         # Error rates
-        avg_accuracy_dict = self.ml_stats.calculate_average_results()
+        avg_metric_dict = self.ml_stats.calculate_average_results()
 
-        return avg_accuracy_dict
+        return avg_metric_dict
 
     def train_and_evaluate(self, x_train, y_train, x_test, y_test):
+        """Trains on the input training set and evaluates on the test set.
+           Returns a dictionary of metrics"""
         try:
             classifier = self.classifier_class(random_state=self.classifier_state, **self.classifier_parameters)
         except TypeError:
@@ -65,8 +67,8 @@ class GenericClassifier(MLTechnique):
         train_and_evaluate_fold(self, x_train, y_train, x_test, y_test, classifier, 0, data_balancer=self.data_balancer)
 
         # Error rates
-        avg_accuracy_dict = self.ml_stats.calculate_average_results()
+        avg_metric_dict = self.ml_stats.calculate_average_results()
 
-        return avg_accuracy_dict
+        return avg_metric_dict
 
 

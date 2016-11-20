@@ -1,3 +1,4 @@
+"""Input for balancer comparision experiment"""
 import os
 
 parameters = [

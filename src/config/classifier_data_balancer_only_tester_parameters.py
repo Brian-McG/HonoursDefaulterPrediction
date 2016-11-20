@@ -1,3 +1,4 @@
+"""Default + data balancer testing parameters"""
 import numpy as np
 from sklearn.linear_model import Perceptron
 from sklearn.linear_model import SGDClassifier

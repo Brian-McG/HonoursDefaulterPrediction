@@ -1,4 +1,4 @@
-"""Contains all classifier_parameters used (except ANNs)"""
+"""Contains all classifier parameters for Indian attrition dataset only using balancers and default parameters for rest"""
 from imblearn.combine import SMOTEENN
 from imblearn.combine import SMOTETomek
 from imblearn.over_sampling import ADASYN

@@ -1,4 +1,4 @@
-"""Primary script used to execute the defaulter prediction"""
+"""Selects the k features that result in the highest BACC using different feature selection approaches"""
 
 import os
 import sys
@@ -35,10 +35,11 @@ import config.classifiers as cfr
 
 feature_selection_strategies = [None, ANOVA_CHI2, LOGISTIC_REGRESSION, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, DECISION_TREE, RANDOM_FOREST]
 
-const.TEST_REPEAT = 1
+const.TEST_REPEAT = 10
 
 
 def select_features(input_defaulter_set, numeric_columns, categorical_columns, classification_label, classifier_parameters, random_state=None, selection_strategy=ANOVA_CHI2):
+    """Selects set number of features using input feature selection strategy"""
     if random_state is not None:
         random_state = (random_state + 885) % const.RANDOM_RANGE[1]
     x_columns = numeric_columns | categorical_columns
@@ -47,7 +48,6 @@ def select_features(input_defaulter_set, numeric_columns, categorical_columns, c
     if selection_strategy is None or selection_strategy == "None":
         return input_defaulter_set, numeric_columns, categorical_columns
     split_arr = selection_strategy.split("-")
-    # print("INFO: Number of features before selection: {0}".format(len(numeric_columns) + len(categorical_columns)))
     for selection_strategy_split in split_arr:
         if ANOVA_CHI2 == selection_strategy_split:
             X_numeric = pd.concat([input_defaulter_set[numeric_columns]], axis=1)
@@ -78,46 +78,6 @@ def select_features(input_defaulter_set, numeric_columns, categorical_columns, c
                     indices_dropped.append(i)
             X = X[[X.columns.values[i] for i in range(len(X.columns.values)) if i in indices_usable]]
 
-        elif LOGISTIC_REGRESSION == selection_strategy_split:
-            estimator = LogisticRegression(random_state=random_state, **classifier_parameters[LOGISTIC_REGRESSION]["classifier_parameters"])
-            selector = SelectFromModel(estimator, threshold="0.3*median")
-            selector = selector.fit(X.as_matrix(), y.as_matrix().flatten())
-            indices_usable = selector.get_support(indices=True)
-            y = X.columns.values
-            X = X[[X.columns.values[i] for i in range(len(X.columns.values)) if i in indices_usable]]
-
-        elif BERNOULLI_NAIVE_BAYES == selection_strategy_split:
-            estimator = BernoulliNB(**classifier_parameters[BERNOULLI_NAIVE_BAYES]["classifier_parameters"])
-            selector = SelectFromModel(estimator, threshold="0.3*median")
-            selector = selector.fit(X.as_matrix(), y.as_matrix().flatten())
-            indices_usable = selector.get_support(indices=True)
-            y = X.columns.values
-            X = X[[X.columns.values[i] for i in range(len(X.columns.values)) if i in indices_usable]]
-
-        elif SVM_LINEAR == selection_strategy_split:
-            estimator = svm.SVC(random_state=random_state, **classifier_parameters[SVM_LINEAR]["classifier_parameters"])
-            selector = SelectFromModel(estimator, threshold="0.3*median")
-            selector = selector.fit(X.as_matrix(), y.as_matrix().flatten())
-            indices_usable = selector.get_support(indices=True)
-            y = X.columns.values
-            X = X[[X.columns.values[i] for i in range(len(X.columns.values)) if i in indices_usable]]
-
-        elif DECISION_TREE == selection_strategy_split:
-            estimator = DecisionTreeClassifier(random_state=random_state, **classifier_parameters[DECISION_TREE]["classifier_parameters"])
-            selector = SelectFromModel(estimator, threshold="0.3*median")
-            selector = selector.fit(X.as_matrix(), y.as_matrix().flatten())
-            indices_usable = selector.get_support(indices=True)
-            y = X.columns.values
-            X = X[[X.columns.values[i] for i in range(len(X.columns.values)) if i in indices_usable]]
-
-        elif RANDOM_FOREST == selection_strategy_split:
-            forest = RandomForestClassifier(random_state=random_state, **classifier_parameters[RANDOM_FOREST]["classifier_parameters"])
-            selector = SelectFromModel(forest, threshold="0.3*median")
-            selector.fit(X.as_matrix(), y.as_matrix().flatten())
-            indices_usable = selector.get_support(indices=True)
-            y = X.columns.values
-            X = X[[X.columns.values[i] for i in range(len(X.columns.values)) if i in indices_usable]]
-
         else:
             raise RuntimeError("Unexpected selection_strategy - {0}".format(selection_strategy_split))
 
@@ -129,6 +89,7 @@ def select_features(input_defaulter_set, numeric_columns, categorical_columns, c
 
 def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, categorical_columns, binary_columns, classification_label, all_classifier_parameters, classifier_parameters,
                            data_balancer, feature_selection_strategy, classifier_dict, classifier_description, roc_plot, features_to_use, result_recorder, missing_value_strategy):
+    """Applies feature selection then runs const.TEST_REPEAT runs of stratified k-fold validation"""
     if classifier_dict["status"]:
         print("=== Executing {0} ===".format(classifier_description))
         test_stats = RunStatistics()
@@ -140,7 +101,6 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
             # Apply feature selection
             generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer, random_values[i])
             kf = StratifiedKFold(n_splits=const.NUMBER_OF_FOLDS, shuffle=True, random_state=generic_classifier.k_fold_state)
-            result_dictionary = None
 
             loop_count = 0
             input_defaulter_set_copy = input_defaulter_set.copy()
@@ -159,15 +119,6 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
                 if number_of_features > max_features_selected:
                     max_features_selected = number_of_features
                 test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
-
-                # if grid_scores is not None and classifier_dict["classifier"].__name__ == "AdaBoostClassifier":
-                #     # Plot number of features VS. cross-validation scores
-                #     plt.figure()
-                #     plt.title("{0} - {1} - {2}".format(feature_selection_strategy, loop_count, number_of_features))
-                #     plt.xlabel("Number of features selected")
-                #     plt.ylabel("Cross validation score (nb of correct classifications)")
-                #     plt.plot(range(1, len(grid_scores) + 1), rfecv.grid_scores_)
-                #     plt.show()
 
         avg_features_selected /= float(const.NUMBER_OF_FOLDS * const.TEST_REPEAT)
         feature_summary = "{3} - Average features selected from folds - {0}, Min features selected - {1}, Max features selected - {2}, Original Number of features - {4}".format(avg_features_selected, min_features_selected, max_features_selected, feature_selection_strategy, original_features)
@@ -193,8 +144,14 @@ def main():
         if data_set["status"]:
             # Load in data set
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
+            # Remove duplicates
+            if data_set["duplicate_removal_column"] is not None:
+                input_defaulter_set.drop_duplicates(data_set["duplicate_removal_column"], inplace=True)
+            # Only retain the important fields
             input_defaulter_set = input_defaulter_set[data_set["numeric_columns"] + data_set["categorical_columns"] + [name for name, _, _ in data_set["binary_columns"]] + data_set["classification_label"]]
+            # Remove entries with missing inputs
             input_defaulter_set = input_defaulter_set.dropna(axis=0)
+            # Reset index to prevent issues further in the pipeline
             input_defaulter_set = input_defaulter_set.reset_index(drop=True)
 
             feature_selection_results_after = []
@@ -203,25 +160,6 @@ def main():
             cpu_count = get_number_of_processes_to_use()
 
             for feature_selection_strategy in feature_selection_strategies:
-                # if grid_scores is not None:
-                #     # Plot number of features VS. cross-validation scores
-                #     plt.figure()
-                #     plt.xlabel("Number of features selected")
-                #     plt.ylabel("Cross validation score (nb of correct classifications)")
-                #     plt.plot(range(1, len(grid_scores) + 1), rfecv.grid_scores_)
-                #     plt.show()
-
-                # Apply feature selection
-                # feature_selection_df_from_dummies, _, _ = select_features(input_defaulter_set_with_dummy_variables, numeric_columns, categorical_columns, data_set["classification_label"],
-                #                                                           data_set["data_set_classifier_parameters"], random_state=random_values[0], selection_strategy=feature_selection_strategy)
-                #
-                # feature_selection_df_without_dummies, remaining_numeric, remaining_categorical = select_features(input_defaulter_set_without_dummy_variables, data_set["numeric_columns"],
-                #                                                                                                  data_set["categorical_columns"], data_set["classification_label"],
-                #                                                                                                  data_set["data_set_classifier_parameters"], random_state=random_values[0],
-                #                                                                                                  selection_strategy=feature_selection_strategy)
-                # new_input_defaulter_set_without_dummy_variables = apply_preprocessing(feature_selection_df_without_dummies, remaining_numeric, remaining_categorical, data_set["classification_label"],
-                #                                                                       data_set["missing_values_strategy"], create_dummy_variables=True)
-
                 manager = Manager()
                 feature_selection_result_recorder_after = FeatureSelectionResultRecorder(result_arr=manager.list())
 
@@ -234,12 +172,8 @@ def main():
                         break
 
                     features_to_use.append([])
-                    # Apply feature selection
+                    # Apply RFE process for each feature selection approach
                     kf = StratifiedKFold(n_splits=const.NUMBER_OF_FOLDS, shuffle=True, random_state=random_values[i])
-                    avg_features_selected = 0
-                    min_features_selected = sys.maxint
-                    max_features_selected = -sys.maxint - 1
-                    loop_count = 0
                     input_defaulter_set_copy = input_defaulter_set.copy()
                     for train, test in kf.split(input_defaulter_set_copy.iloc[:, :-1], input_defaulter_set_copy.iloc[:, -1:].as_matrix().flatten()):
                         numeric_columns_with_dummy = apply_preprocessing(input_defaulter_set_copy, data_set["numeric_columns"], [], [], data_set["classification_label"], data_set["missing_values_strategy"],
@@ -250,7 +184,6 @@ def main():
                         train_df, test_df = apply_preprocessing_to_train_test_dataset(input_defaulter_set_copy, train, test, data_set["numeric_columns"], data_set["categorical_columns"], data_set["binary_columns"], data_set["classification_label"],
                                                                                       data_set["missing_values_strategy"], create_dummy_variables=True)
 
-                        grid_scores = None
                         estimator = None
                         if LOGISTIC_REGRESSION == feature_selection_strategy:
                             estimator = LogisticRegression(random_state=random_values[i], **data_set["data_set_classifier_parameters"].classifier_parameters[LOGISTIC_REGRESSION]["classifier_parameters"])
@@ -288,12 +221,6 @@ def main():
                                 columns = train_df.iloc[:, :-1].columns
                                 active_columns = rfecv.get_support()
                                 using_columns = [columns[z] for z in range(len(active_columns)) if active_columns[z]]
-                                if grid_scores is None:
-                                    grid_scores = rfecv.grid_scores_
-                                else:
-                                    grid_scores = [grid_scores[z] + rfecv.grid_scores_[z] for z in range(len(grid_scores))]
-                                number_of_features = len(using_columns)
-                                avg_features_selected += number_of_features
                             except ValueError:
                                 features_to_use = None
                                 break

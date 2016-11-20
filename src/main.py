@@ -1,4 +1,4 @@
-"""Primary script used to execute the defaulter prediction"""
+"""Primary script used to execute the classification"""
 import os
 import subprocess
 import sys
@@ -20,13 +20,18 @@ from util import get_number_of_processes_to_use
 
 const.TEST_REPEAT = 15
 
-def execute_classifier_run(input_defaulter_set, classifier_parameters, data_balancer, random_values, classifier_dict, classifier_description, roc_plot, result_recorder, numeric_columns, categorical_columns, binary_columns, classification_label, missing_value_strategy):
+
+def execute_classifier_run(input_defaulter_set, classifier_parameters, data_balancer, random_values, classifier_dict, classifier_description, roc_plot, result_recorder, numeric_columns,
+                           categorical_columns, binary_columns, classification_label, missing_value_strategy):
+    """Executes const.TEST_REPEAT runs of stratified k-fold validation using input classifier with input parameters"""
     if classifier_dict["status"]:
         print("=== Executing {0} - {1} ===".format(classifier_description, classifier_parameters))
         test_stats = RunStatistics()
         for i in range(const.TEST_REPEAT):
             generic_classifier = GenericClassifier(classifier_dict["classifier"], classifier_parameters, data_balancer, random_values[i])
-            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set.copy(), numerical_columns=numeric_columns, categorical_columns=categorical_columns, binary_columns=binary_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
+            result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set.copy(), numerical_columns=numeric_columns, categorical_columns=categorical_columns,
+                                                                             binary_columns=binary_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy,
+                                                                             apply_preprocessing=True)
             test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
 
         avg_results = test_stats.calculate_average_run_accuracy()
@@ -36,6 +41,7 @@ def execute_classifier_run(input_defaulter_set, classifier_parameters, data_bala
 
 
 def main(random_value_arr):
+    """Executes the classification process"""
     data_set_arr = []
 
     classifier_active_count = 0
@@ -47,11 +53,15 @@ def main(random_value_arr):
         if data_set["status"]:
             # Load in data set
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
+            # Remove duplicates
             if data_set["duplicate_removal_column"] is not None:
                 input_defaulter_set.drop_duplicates(data_set["duplicate_removal_column"], inplace=True)
-            input_defaulter_set = input_defaulter_set[data_set["numeric_columns"] + data_set["categorical_columns"] + [name for name, _, _ in data_set["binary_columns"]] + data_set["classification_label"]]
-
+            # Only retain the important fields
+            input_defaulter_set = input_defaulter_set[
+                data_set["numeric_columns"] + data_set["categorical_columns"] + [name for name, _, _ in data_set["binary_columns"]] + data_set["classification_label"]]
+            # Remove entries with missing inputs
             input_defaulter_set.dropna(axis=0, inplace=True)
+            # Reset index to prevent issues further in the pipeline
             input_defaulter_set.reset_index(drop=True, inplace=True)
 
             manager = Manager()
@@ -71,12 +81,17 @@ def main(random_value_arr):
                 raise RuntimeError("Random value does not match length of test repeat {0} != {1}".format(len(random_value_arr), const.TEST_REPEAT))
 
             cpu_count = get_number_of_processes_to_use()
-            cpu_count = 1
             # Execute enabled classifiers
-            Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(input_defaulter_set, data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"], data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], random_value_arr, classifier_dict, classifier_description, roc_plot, result_recorder, data_set["numeric_columns"], data_set["categorical_columns"], data_set["binary_columns"], data_set["classification_label"], data_set["missing_values_strategy"]) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
+            Parallel(n_jobs=cpu_count)(
+                delayed(execute_classifier_run)(input_defaulter_set, data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["classifier_parameters"],
+                                                data_set["data_set_classifier_parameters"].classifier_parameters[classifier_description]["data_balancer"], random_value_arr, classifier_dict,
+                                                classifier_description, roc_plot, result_recorder, data_set["numeric_columns"], data_set["categorical_columns"], data_set["binary_columns"],
+                                                data_set["classification_label"], data_set["missing_values_strategy"]) for classifier_description, classifier_dict in cfr.classifiers.iteritems())
 
             roc_plot = sorted(roc_plot, key=lambda tup: tup[1])
             result_recorder.results = sorted(result_recorder.results, key=lambda tup: tup[1])
+
+            # Output results to terminal
             for (result_arr, classifier_description) in result_recorder.results:
                 print("\n=== {0} ===".format(classifier_description))
                 print("Matthews correlation coefficient: {0} ({1})".format(result_arr[0], result_arr[20]))
@@ -89,12 +104,13 @@ def main(random_value_arr):
                 print("Average false positive rate: {0} ({1})".format(result_arr[5], result_arr[26]))
                 print("Average false negative rate: {0} ({1})".format(result_arr[6], result_arr[27]))
 
+            # Save results and execute statistical tests
             data_set_arr.append((data_set["data_set_description"], result_recorder.results))
             metrics, file_paths = ResultRecorder.save_results_for_multi_dataset(((data_set["data_set_description"], result_recorder.results),), dataset=data_set["data_set_description"])
             script_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/external_signifigance_testing/signifigance_testing.R")
             if classifier_active_count > 1:
                 for i in range(len(metrics)):
-                    input_arr = ["Rscript", script_path, os.path.abspath(file_paths[i]), data_set["data_set_description"] + "_" +  metrics[i]]
+                    input_arr = ["Rscript", script_path, os.path.abspath(file_paths[i]), data_set["data_set_description"] + "_" + metrics[i]]
                     print(" ".join(input_arr))
                     if sys.platform == 'win32':
                         subprocess.check_call(input_arr, shell=True)
@@ -118,7 +134,8 @@ def main(random_value_arr):
             if sys.platform == 'win32':
                 subprocess.check_call(input_arr, shell=True)
             else:
-                 subprocess.check_call(input_arr, shell=False)
+                subprocess.check_call(input_arr, shell=False)
+
 
 if __name__ == "__main__":
     # Run main

@@ -7,7 +7,7 @@ from sklearn.metrics import matthews_corrcoef
 
 
 class RunStatistics:
-    """Contains functionality to calculate predictive accuracy rates across runs"""
+    """Contains functionality to calculate metrics rates across runs"""
 
     def __init__(self, run_accuracy_list=None, run_roc_list=None):
         if run_accuracy_list is None:
@@ -18,11 +18,13 @@ class RunStatistics:
         self.roc_list = run_roc_list
 
     def append_run_result(self, test_dict, roc_result_list):
+        """Adds a result"""
         self.errors.append(test_dict)
         self.roc_list.append(roc_result_list)
 
     @staticmethod
     def calculate_std_deviation(value_arr):
+        """Returns standard deviation of value_arr"""
         avg_balanced_acc = 0
         for value in value_arr:
             avg_balanced_acc += value
@@ -35,6 +37,7 @@ class RunStatistics:
         return math.sqrt(balanced_accuracy_std_deviation)
 
     def calculate_average_run_accuracy(self):
+        """Calculates averaged metrics across runs"""
         overall_true_rate, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate, true_positive_rate_cutoff, true_negative_rate_cutoff, \
         false_positive_rate_cutoff, false_negative_rate_cutoff, unclassified_cutoff, matthews_correlation_coefficient, brier_score, auc_score, fit_time, hmeasure = [0] * 15
         balanced_accuracy_arr = []
@@ -79,7 +82,6 @@ class RunStatistics:
             false_positive_arr += result_dictionary["false_positive_rate_arr"]
             false_negative_arr += result_dictionary["false_negative_rate_arr"]
 
-
         avg_run_results = [None] * 31
         avg_run_results[0] = matthews_correlation_coefficient / float(count)
         avg_run_results[1] = brier_score / float(count)
@@ -114,5 +116,3 @@ class RunStatistics:
         avg_run_results[30] = hmeasure_arr
 
         return avg_run_results
-
-

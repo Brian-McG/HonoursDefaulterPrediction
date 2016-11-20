@@ -1,4 +1,4 @@
-"""Contains all classifier_parameters used (except ANNs)"""
+"""Contains all classifier parameters for Australian credit dataset"""
 from imblearn.combine import SMOTEENN
 from imblearn.over_sampling import ADASYN
 from imblearn.under_sampling import ClusterCentroids
@@ -42,7 +42,8 @@ append_classifier_details(ann_data_balancer, ann_parameters, clfrs.ann_descripti
 
 # Support Vector Machines (with RDF kernel)
 svm_rdf_data_balancer = ADASYN
-svm_parameters = {"cache_size": 1000, "gamma": 0.0527263157894736, "C": 3.69052631578947, "kernel": "rbf", "class_weight": None, "decision_function_shape": "ovr", "probability": True, "max_iter": 1000000}
+svm_parameters = {"cache_size": 1000, "gamma": 0.0527263157894736, "C": 3.69052631578947, "kernel": "rbf", "class_weight": None, "decision_function_shape": "ovr", "probability": True,
+                  "max_iter": 1000000}
 append_classifier_details(svm_rdf_data_balancer, svm_parameters, clfrs.svm_rdf_description, classifier_parameters)
 
 # Support Vector Machines (with linear kernel)
@@ -62,7 +63,8 @@ append_classifier_details(logistic_regression_data_balancer, logistic_regression
 
 # Decision Tree
 decision_tree_data_balancer = NeighbourhoodCleaningRule
-decision_tree_parameters = {"criterion": "gini", "max_depth": 8, "max_features": "sqrt", "max_leaf_nodes": None, "min_samples_leaf": 2, "min_samples_split": 2, "splitter": "random", "class_weight": "balanced"}
+decision_tree_parameters = {"criterion": "gini", "max_depth": 8, "max_features": "sqrt", "max_leaf_nodes": None, "min_samples_leaf": 2, "min_samples_split": 2, "splitter": "random",
+                            "class_weight": "balanced"}
 append_classifier_details(decision_tree_data_balancer, decision_tree_parameters, clfrs.decision_tree_description, classifier_parameters)
 
 # AdaBoost

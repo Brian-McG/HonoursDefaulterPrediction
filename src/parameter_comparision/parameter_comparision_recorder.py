@@ -6,6 +6,7 @@ import constants as const
 
 
 class ParameterComparisionResultRecorder:
+    """Records results for the parameter comparision to file"""
     def __init__(self, result_arr=None):
         if result_arr is None:
             self.results = []
@@ -13,10 +14,11 @@ class ParameterComparisionResultRecorder:
             self.results = result_arr
 
     def record_results(self, result_dict, classifier_dict, feature_selection_strategy):
+        """Records an individual result"""
         self.results.append((result_dict, classifier_dict, feature_selection_strategy))
 
     def save_results_to_file(self, random_values, data_set_description):
-        """Records results to file. If file_name is None, then a default filename of data_<number of folds>_<timestamp>.csv"""
+        """Records results for each dataset to file as well as the random seeds used"""
         if len(self.results) > 0:
             current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             file_name = "{0}_data_{1}-folds_{2}.csv".format(data_set_description, const.NUMBER_OF_FOLDS, current_time)
@@ -39,6 +41,7 @@ class ParameterComparisionResultRecorder:
 
     @staticmethod
     def save_results_for_multi_dataset(dataset_results, dataset="all_dataset"):
+        """Records un-average results for all datasets with each metric to a different file"""
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         metric = ["BACC"]
         index = [14]

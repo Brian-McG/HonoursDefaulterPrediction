@@ -7,6 +7,7 @@ from constants import TITLE_ROW_WITH_TIME_TO_FIT, TITLE_ROW
 
 
 class ResultRecorder:
+    """Records results for the parameter comparision to file"""
     def __init__(self, result_arr=None):
         if result_arr is None:
             self.results = []
@@ -14,6 +15,7 @@ class ResultRecorder:
             self.results = result_arr
 
     def record_results(self, result_dict, classifier_dict):
+        """Records an individual result"""
         self.results.append((result_dict, classifier_dict))
 
     def save_results_to_file(self, random_values, data_set_description, display_time_to_fit_results=True):

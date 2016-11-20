@@ -1,4 +1,4 @@
-"""Primary script used to execute the defaulter prediction"""
+"""Compares classifier default parameters to default with balancer to tuned parameters"""
 
 import os
 import sys
@@ -25,6 +25,7 @@ const.TEST_REPEAT = 10
 
 
 def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, categorical_columns, binary_columns, classification_label, classifier_parameters, data_balancer, parameter_description, classifier_dict, classifier_description, roc_plot, result_recorder, missing_value_strategy, parameter_index):
+    """Executes stratified k-fold cross validation for const.TEST_REPEAT runs for specific classifier using input parameters"""
     if classifier_dict["status"]:
         print("=== Executing {0} ===".format(classifier_description))
         test_stats = RunStatistics()
@@ -65,8 +66,14 @@ def main(random_values):
         if data_set["status"]:
             # Load in data set
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
+            # Remove duplicates
+            if data_set["duplicate_removal_column"] is not None:
+                input_defaulter_set.drop_duplicates(data_set["duplicate_removal_column"], inplace=True)
+            # Only retain the important fields
             input_defaulter_set = input_defaulter_set[data_set["numeric_columns"] + data_set["categorical_columns"]  + [name for name, _, _ in data_set["binary_columns"]] + data_set["classification_label"]]
+            # Remove entries with missing inputs
             input_defaulter_set = input_defaulter_set.dropna(axis=0)
+            # Reset index to prevent issues further in the pipeline
             input_defaulter_set = input_defaulter_set.reset_index(drop=True)
 
             parameter_comparision_results = []
@@ -97,6 +104,7 @@ def main(random_values):
             result_arr.append(parameter_comparision_results)
             data_set_arr.append(data_set["data_set_description"])
             result_recorder_after.save_results_to_file(random_values, "Parameter tuning")
+    # Save results to file and plot graphs
     vis.plot_percentage_difference_graph(result_arr, data_set_arr, x_label="Parameter tuning approach", name_suffix="", difference_from="using default parameters", figsize=(16, 5), legend_y=-0.62, label_rotation=0, y_label_pos=-0.3)
     ParameterComparisionResultRecorder.save_results_for_multi_dataset(result_arr)
 

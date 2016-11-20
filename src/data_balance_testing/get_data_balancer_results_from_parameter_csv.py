@@ -1,3 +1,4 @@
+"""Uses the optimal paramters for each classifier to test data balancers for each dataset."""
 import os
 import sys
 from multiprocessing import Manager
@@ -43,9 +44,12 @@ from imblearn.combine.smote_enn import SMOTEENN
 from imblearn.combine.smote_tomek import SMOTETomek
 import config.balancer_comparision_input as bci
 
+# Number of runs
 const.TEST_REPEAT = 10
 
+
 def override_parameters(parameter_results):
+    """Overrides default classifier parameters with """
     data_balancer_arr = {}
     for (classifier_name, classifier_path) in parameter_results:
         data_balancer_arr[classifier_name] = []
@@ -58,12 +62,15 @@ def override_parameters(parameter_results):
                 parameter_headers.append(str(parameter_header))
                 if parameter_header == DATA_BALANCER_STR:
                     break
+            # Gets best parameter set for the data balancer
             if "Average true rate" in data_balance_df:
                 best_parameters = data_balance_df.loc[data_balance_df["Average true rate"].argmax()]
             elif "Balanced Accuracy" in data_balance_df:
                 best_parameters = data_balance_df.loc[data_balance_df["Balanced Accuracy"].argmax()]
             parameter_dict = {}
             data_balancer = None
+
+            # Converts the textual parameters to the correct type
             for parameter_header in parameter_headers:
                 if parameter_header != DATA_BALANCER_STR:
                     if type(best_parameters[parameter_header]) == unicode:
@@ -85,17 +92,21 @@ def override_parameters(parameter_results):
     return data_balancer_arr
 
 
-def execute_classifier_run(data_balancer_results, random_values, input_defaulter_set, numerical_columns, categorical_columns, binary_columns, classification_label, missing_value_strategy, classifier_arr, classifier_description, roc_plot):
+def execute_classifier_run(data_balancer_results, random_values, input_defaulter_set, numerical_columns, categorical_columns, binary_columns, classification_label, missing_value_strategy,
+                           classifier_arr, classifier_description, roc_plot):
+    """Executes each classifier with each data balancer and their respective parameter_dict with const.TEST_REPEAT runs of stratified k-fold validation"""
     if cfr.classifiers[classifier_description]["status"]:
         result_arr = []
-        for(data_balancer, parameter_dict) in classifier_arr:
+        for (data_balancer, parameter_dict) in classifier_arr:
             if "SVM" in classifier_description:
                 parameter_dict["probability"] = True
             print("=== Executing {0} - {1} ===".format(classifier_description, data_balancer.__name__ if data_balancer is not None else "None"))
             test_stats = RunStatistics()
             for i in range(const.TEST_REPEAT):
                 generic_classifier = GenericClassifier(cfr.classifiers[classifier_description]["classifier"], parameter_dict, data_balancer, random_values[i])
-                result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set.copy(), numerical_columns=numerical_columns, categorical_columns=categorical_columns, binary_columns=binary_columns, classification_label=classification_label, missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
+                result_dictionary = generic_classifier.k_fold_train_and_evaluate(input_defaulter_set.copy(), numerical_columns=numerical_columns, categorical_columns=categorical_columns,
+                                                                                 binary_columns=binary_columns, classification_label=classification_label,
+                                                                                 missing_value_strategy=missing_value_strategy, apply_preprocessing=True)
                 test_stats.append_run_result(result_dictionary, generic_classifier.ml_stats.roc_list)
 
             avg_results = test_stats.calculate_average_run_accuracy()
@@ -111,13 +122,21 @@ def main(classifier_dict):
         if data_set["status"] and data_set["data_set_description"] in classifier_dict:
             # Load in data set
             input_defaulter_set = pd.DataFrame.from_csv(data_set["data_set_path"], index_col=None, encoding="UTF-8")
-            input_defaulter_set = input_defaulter_set[data_set["numeric_columns"] + data_set["categorical_columns"] + [name for name, _, _ in data_set["binary_columns"]] + data_set["classification_label"]]
+            # Remove duplicates
+            if data_set["duplicate_removal_column"] is not None:
+                input_defaulter_set.drop_duplicates(data_set["duplicate_removal_column"], inplace=True)
+            # Only retain the important fields
+            input_defaulter_set = input_defaulter_set[
+                data_set["numeric_columns"] + data_set["categorical_columns"] + [name for name, _, _ in data_set["binary_columns"]] + data_set["classification_label"]]
+            # Remove entries with missing inputs
             input_defaulter_set = input_defaulter_set.dropna(axis=0)
+            # Reset index to prevent issues further in the pipeline
             input_defaulter_set = input_defaulter_set.reset_index(drop=True)
 
             result_recorder = DataBalancerResultRecorder()
             cpu_count = get_number_of_processes_to_use()
 
+            # Generate the random seeds to use
             random_values = []
             random = Random()
             for i in range(const.TEST_REPEAT):
@@ -126,7 +145,6 @@ def main(classifier_dict):
                     if random_value not in random_values:
                         random_values.append(random_value)
                         break
-            random_values = [3782015000, 3662332198, 2200378739, 2828415501, 4152489527, 3414032601, 91311896, 1242560324, 2888949744, 456838635]
             classifier_parameters = override_parameters(classifier_dict[data_set["data_set_description"]])
             manager = Manager()
 
@@ -134,12 +152,15 @@ def main(classifier_dict):
             data_balancer_results = manager.list()
 
             # Execute enabled classifiers
-            Parallel(n_jobs=cpu_count)(delayed(execute_classifier_run)(data_balancer_results, random_values, input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["binary_columns"], data_set["classification_label"], data_set["missing_values_strategy"], classifier_dict, classifier_description, roc_plot) for classifier_description, classifier_dict in classifier_parameters.iteritems())
+            Parallel(n_jobs=cpu_count)(
+                delayed(execute_classifier_run)(data_balancer_results, random_values, input_defaulter_set, data_set["numeric_columns"], data_set["categorical_columns"], data_set["binary_columns"],
+                                                data_set["classification_label"], data_set["missing_values_strategy"], classifier_dict, classifier_description, roc_plot) for
+                classifier_description, classifier_dict in classifier_parameters.iteritems())
 
             data_balancer_results = sorted(data_balancer_results, key=lambda tup: tup[0])
 
             for (classifier_name, classifier_arr) in data_balancer_results:
-                for(data_balancer_name, result_arr) in classifier_arr:
+                for (data_balancer_name, result_arr) in classifier_arr:
                     result_recorder.record_results(result_arr, classifier_name, data_balancer_name)
 
             result_recorder.save_results_to_file(random_values, "data_balancer")
@@ -150,6 +171,8 @@ def main(classifier_dict):
             vis.visualise_dataset_balancer_results([(data_set["data_set_description"], data_balancer_results)])
     vis.visualise_dataset_balancer_results_multi_dataset(data_set_results)
     DataBalancerResultRecorder.save_results_for_multi_dataset(data_set_results)
+
+
 if __name__ == "__main__":
     classifiers = []
     classifier_arr = []

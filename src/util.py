@@ -1,3 +1,4 @@
+"""Contains miscellaneous functionality used throughout the project"""
 import psutil
 
 from constants import VERBOSE_MODE

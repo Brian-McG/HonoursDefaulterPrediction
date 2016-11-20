@@ -7,6 +7,7 @@ from config import visualisation_input
 
 
 class FeatureSelectionResultRecorder:
+    """Records feature selection results to file"""
     def __init__(self, result_arr=None):
         if result_arr is None:
             self.results = []
@@ -14,6 +15,7 @@ class FeatureSelectionResultRecorder:
             self.results = result_arr
 
     def record_results(self, result_dict, classifier_dict, feature_selection_strategy, features_selected, feature_summary=None):
+        """Record individual result"""
         self.results.append((result_dict, classifier_dict, feature_selection_strategy, features_selected, feature_summary))
 
     def save_results_to_file(self, random_values, data_set_description):
@@ -50,6 +52,7 @@ class FeatureSelectionResultRecorder:
 
     @staticmethod
     def save_results_for_multi_dataset(dataset_results, dataset="all_dataset"):
+        """Record un-average feature selection results a file for each metric"""
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         metric = ["BACC", "hmeasure", "fit_time"]
         index = [14, 30, 18]

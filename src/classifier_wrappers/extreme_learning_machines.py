@@ -19,6 +19,7 @@ class ExtremeLearningMachine:
         self.elm = None
 
     def fit(self, x_train, class_1):
+        """Fits x_resampled and y_resampled to create a classification model."""
         input_len = len(x_train[0])
         self.elm = ELM(len(x_train[0]), 2, "c")
 
@@ -37,7 +38,6 @@ class ExtremeLearningMachine:
                 b = None
             self.elm.add_neurons(layer_tuple[0], layer_tuple[1], W=w, B=b)
 
-        # TODO generalise this to multiple classes
         class_0 = np.array([0 if item == 1 else 1 for item in class_1])
         class_arr = [None] * len(class_1)
         for i in range(len(class_1)):
@@ -46,8 +46,10 @@ class ExtremeLearningMachine:
         return self.elm.train(x_train, class_arr, "CV" "OP", 'c', k=10)
 
     def predict(self, x_test):
+        """Predicts y for x_test"""
         prediction_weights = self.elm.predict(x_test)
         return np.array([1 if item[1] > item[0] else 0 for item in prediction_weights])
 
     def predict_proba(self, x_test):
+        """Predicts probability of positive class for x_test"""
         return self.elm.predict(x_test)

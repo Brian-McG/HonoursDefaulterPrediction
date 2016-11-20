@@ -1,4 +1,4 @@
-"""Contains all classifier_parameters used (except ANNs)"""
+"""Contains all classifier parameters for Indian attrition dataset"""
 from imblearn.combine import SMOTEENN
 from imblearn.combine import SMOTETomek
 from imblearn.over_sampling import ADASYN
@@ -45,7 +45,8 @@ append_classifier_details(ann_data_balancer, ann_parameters, clfrs.ann_descripti
 
 # Support Vector Machines (with RBF kernel)
 svm_rdf_data_balancer = ADASYN
-svm_parameters = {"cache_size": 1000, "gamma": 0.0527263157894736, "C": 8.94842105263157, "kernel": "rbf", "class_weight": "balanced", "decision_function_shape": "ovr", "probability": True, "max_iter": 1000000}
+svm_parameters = {"cache_size": 1000, "gamma": 0.0527263157894736, "C": 8.94842105263157, "kernel": "rbf", "class_weight": "balanced", "decision_function_shape": "ovr", "probability": True,
+                  "max_iter": 1000000}
 append_classifier_details(svm_rdf_data_balancer, svm_parameters, clfrs.svm_rdf_description, classifier_parameters)
 
 # Support Vector Machines (with linear kernel)
@@ -65,7 +66,8 @@ append_classifier_details(logistic_regression_data_balancer, logistic_regression
 
 # Decision Tree
 decision_tree_data_balancer = OneSidedSelection
-decision_tree_parameters = {"class_weight": "balanced", "splitter": "best", "min_samples_split": 2, "min_samples_leaf": 2, "max_leaf_nodes": None, "max_features": "auto", "max_depth": None, "criterion": "entropy"}
+decision_tree_parameters = {"class_weight": "balanced", "splitter": "best", "min_samples_split": 2, "min_samples_leaf": 2, "max_leaf_nodes": None, "max_features": "auto", "max_depth": None,
+                            "criterion": "entropy"}
 append_classifier_details(decision_tree_data_balancer, decision_tree_parameters, clfrs.decision_tree_description, classifier_parameters)
 
 # AdaBoost

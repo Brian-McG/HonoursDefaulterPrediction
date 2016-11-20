@@ -1,14 +1,12 @@
-from abc import ABCMeta, abstractmethod
-
 import numpy as np
 from sklearn.metrics import roc_curve
 
-from data_preprocessing import apply_preprocessing
 from util import verbose_print
 from timeit import default_timer as timer
 
 
 def train_and_evaluate_fold(generic_classifier, x_train, y_train, x_test, y_test, classifier, index, data_balancer=None):
+    """Trains on input data and evaluates on test data for a specific classifier, can also apply data balancing using an input data_balancer."""
     if data_balancer is not None:
         x_train, y_train = data_balancer.fit_sample(x_train, y_train)
 
@@ -57,12 +55,3 @@ def train_and_evaluate_fold(generic_classifier, x_train, y_train, x_test, y_test
             print(e)
 
     generic_classifier.ml_stats.calculate_and_append_fold_accuracy(test_classification, y_test, tpr, fpr, fit_time, test_probabilities=test_probabilities)
-
-
-class MLTechnique:
-    """An abstract class that encapsulates the concept of a machine learning technique"""
-    __metaclass__ = ABCMeta
-
-    @abstractmethod
-    def k_fold_train_and_evaluate(self, defaulter_set, state):
-        pass
