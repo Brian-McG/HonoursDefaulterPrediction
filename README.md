@@ -18,9 +18,12 @@
   - Run R by calling ```R``` in terminal then ```install.packages("PMCMR")```
 
 ## Output formatting
- - All results and plots are output to the _results_ folder.
- - Results are formatted as CSV files and contain the necessary information to replicate the experiment
- - Graphs and plots are produced as PNG images
+  - All results and plots are output to the _results_ folder.
+  - Results are formatted as CSV files and contain the necessary information to replicate the experiment
+  - Graphs and plots are produced as PNG images
+
+## Important notices
+  - The CLC classifier can only be used on Windows as it was provided as a compiled C++ executable for Windows
 
 ## How to execute common tasks in this project
 ### Precursors
