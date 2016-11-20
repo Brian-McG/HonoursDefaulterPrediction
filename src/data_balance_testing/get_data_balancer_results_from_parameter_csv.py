@@ -163,7 +163,7 @@ def main(classifier_dict, random_values):
                 for (data_balancer_name, result_arr) in classifier_arr:
                     result_recorder.record_results(result_arr, classifier_name, data_balancer_name)
 
-            result_recorder.save_results_to_file(random_values, "data_balancer")
+            result_recorder.save_results_to_file(random_values, data_set["data_set_description"])
             plot_balancer_results_per_classifier(data_balancer_results, (2, "Balanced Accuracy"))
             plot_balancer_results_per_classifier(data_balancer_results, (3, "Average true positive rate"))
             plot_balancer_results_per_classifier(data_balancer_results, (4, "Average true negative rate"))

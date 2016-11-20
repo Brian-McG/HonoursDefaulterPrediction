@@ -25,9 +25,7 @@ class FeatureSelectionResultRecorder:
             file_name = "{0}_data_{1}-folds_{2}.csv".format(data_set_description, const.NUMBER_OF_FOLDS, current_time)
             output_file = open(os.path.dirname(os.path.realpath(__file__)) + "/../../results/" + file_name, "wb")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
-            title_row = ["Feature selection strategy", "Classifier description", "Matthews correlation coefficient", "Cohen Kappa score", "Average true rate", "Average true positive rate",
-                         "Average true negative rate", "Average false positive rate", "Average false negative rate", "initialisation_values", "features_selected", "feature_summary"]
-            csv_writer.writerow(title_row)
+            csv_writer.writerow(const.TITLE_ROW_FEATURE_SELECTION)
             x = 0
             for result_tuple in self.results:
                 if x == 0:
@@ -71,7 +69,6 @@ class FeatureSelectionResultRecorder:
                     header.append(dataset_results[0][i][0] if dataset_results[0][i][0] is not None else "None")
 
             for dataset_result in dataset_results:
-                print("data")
                 i = 0
                 for y in range(len(dataset_result)):
                     for x in range(len(dataset_result[y][1])):

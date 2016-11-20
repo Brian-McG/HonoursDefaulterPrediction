@@ -35,7 +35,7 @@ import config.classifiers as cfr
 
 feature_selection_strategies = [None, ANOVA_CHI2, LOGISTIC_REGRESSION, BERNOULLI_NAIVE_BAYES, SVM_LINEAR, DECISION_TREE, RANDOM_FOREST]
 
-const.TEST_REPEAT = 10
+const.TEST_REPEAT = 1
 
 
 def select_features(input_defaulter_set, numeric_columns, categorical_columns, classification_label, classifier_parameters, random_state=None, selection_strategy=ANOVA_CHI2):
@@ -107,6 +107,7 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
             for train, test in kf.split(input_defaulter_set_copy.iloc[:, :-1], input_defaulter_set_copy.iloc[:, -1:].as_matrix().flatten()):
                 train_df, test_df = apply_preprocessing_to_train_test_dataset(input_defaulter_set_copy, train, test, numeric_columns, categorical_columns, binary_columns, classification_label,
                                                                               missing_value_strategy, create_dummy_variables=True)
+                original_features = len(train_df.columns) - 1
                 number_of_features = len(features_to_use[i][loop_count])
                 avg_features_selected += number_of_features
 

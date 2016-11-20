@@ -22,4 +22,5 @@ TITLE_ROW_WITH_TIME_TO_FIT = ["Classifier description"] + BASE_METRICS + ["Avera
 TITLE_ROW_PARAMETER_TESTER = BASE_METRICS
 
 TITLE_ROW_BALANCER_RESULT = ["Data balancer"] + TITLE_ROW
-TITLE_ROW_PARAMETER_COMPARISON = ["Feature selection strategy", "Classifier description"] + BASE_METRICS + ["initialisation_values"]
+TITLE_ROW_PARAMETER_COMPARISON = ["Parameter selection", "Classifier description"] + BASE_METRICS + ["initialisation_values"]
+TITLE_ROW_FEATURE_SELECTION = ["Feature selection strategy", "Classifier description"] + BASE_METRICS + ["initialisation_values", "features_selected", "feature_summary"]

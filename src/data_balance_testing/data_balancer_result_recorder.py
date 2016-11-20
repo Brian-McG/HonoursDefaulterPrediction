@@ -17,15 +17,15 @@ class DataBalancerResultRecorder:
         else:
             self.results = result_arr
 
-    def record_results(self, result_dict, classifier_dict, feature_selection_strategy):
+    def record_results(self, result_dict, classifier_dict, data_balancer):
         """Record individual data balancing result"""
-        self.results.append((result_dict, classifier_dict, feature_selection_strategy))
+        self.results.append((result_dict, classifier_dict, data_balancer))
 
     def save_results_to_file(self, random_values, data_set_description):
         """Records results for each dataset to file as well as the random seeds used"""
         if len(self.results) > 0:
             current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            file_name = "{0}_data_{1}-folds_{2}.csv".format(data_set_description, const.NUMBER_OF_FOLDS, current_time)
+            file_name = "{0}_data_balancer_{1}-folds_{2}.csv".format(data_set_description, const.NUMBER_OF_FOLDS, current_time)
             output_file = open(os.path.dirname(os.path.realpath(__file__)) + "/../../results/" + file_name, "wb")
             csv_writer = csv.writer(output_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
             title_row = TITLE_ROW_BALANCER_RESULT
@@ -36,7 +36,7 @@ class DataBalancerResultRecorder:
                     random_vals = random_values
                 else:
                     random_vals = None
-                csv_writer.writerow((result_tuple[2], result_tuple[1], result_tuple[0][0], result_tuple[0][1],
+                csv_writer.writerow((result_tuple[2] if result_tuple[2] is not None else "None", result_tuple[1], result_tuple[0][0], result_tuple[0][1],
                                      result_tuple[0][2], result_tuple[0][15], result_tuple[0][28], result_tuple[0][3], result_tuple[0][4], result_tuple[0][5], result_tuple[0][6],
                                      result_tuple[0][20], result_tuple[0][21], result_tuple[0][13], result_tuple[0][22], result_tuple[0][29], result_tuple[0][24], result_tuple[0][25], random_vals))
                 x += 1

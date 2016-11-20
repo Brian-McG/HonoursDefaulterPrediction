@@ -13,9 +13,9 @@ class ParameterComparisionResultRecorder:
         else:
             self.results = result_arr
 
-    def record_results(self, result_dict, classifier_dict, feature_selection_strategy):
+    def record_results(self, result_dict, classifier_dict, parameter_selection):
         """Records an individual result"""
-        self.results.append((result_dict, classifier_dict, feature_selection_strategy))
+        self.results.append((result_dict, classifier_dict, parameter_selection))
 
     def save_results_to_file(self, random_values, data_set_description):
         """Records results for each dataset to file as well as the random seeds used"""
