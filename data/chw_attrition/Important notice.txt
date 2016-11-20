@@ -1,0 +1,2 @@
+The CHW dataset has been removed due to research usage agreement with Dimagi which does not allow for public release of the dataset.
+If that dataset is enabled in the code it will fail to find the dataset.

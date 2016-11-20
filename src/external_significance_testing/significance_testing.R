@@ -11,11 +11,11 @@ y = read.csv(args[1], header=TRUE, sep=",")
 description <- args[2]
 
 args <- commandArgs(trailingOnly = F)
-scriptPath <- normalizePath(dirname(sub("^--file=", "", args[grep("^--file=", args)])))
+scriptPath <- normalizePath(dirname(sub("^--file=", "", args[grep("^--file=", args)])), mustWork=FALSE)
 currentTime <- format(Sys.time(), "%Y-%m-%d_%H-%M-%S")
 options(digits.secs=6)
 outPath <- paste(scriptPath, "/../../results/", "signifigance_tests_", description, "_", currentTime, "_.txt", sep = "")
-outPath <- normalizePath(outPath)
+outPath <- normalizePath(outPath, mustWork=FALSE)
 
 y <- as.matrix(y)
 

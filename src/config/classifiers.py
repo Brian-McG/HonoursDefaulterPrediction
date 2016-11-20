@@ -62,7 +62,7 @@ append_classifier_details(svm_poly, svm_poly_enabled, svm_poly_description, clas
 # Logistic Regression
 logistic_regression = LogisticRegression
 logistic_regression_description = "Logistic regression"
-logistic_regression_enabled = False
+logistic_regression_enabled = True
 append_classifier_details(logistic_regression, logistic_regression_enabled, logistic_regression_description, classifiers)
 
 # Decision Tree
