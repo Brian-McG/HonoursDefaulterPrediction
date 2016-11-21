@@ -47,7 +47,7 @@ chw_attrition_binary_columns = []
 chw_attrition_classification_label = ["attritted"]
 chw_attrition_time_to_default = None
 chw_attrition_missing_values_strategy = "remove"
-chw_attrition_enabled = True
+chw_attrition_enabled = False
 append_data_set_details(chw_attrition_path, chw_attrition_numeric_columns, chw_attrition_categorical_columns, chw_attrition_binary_columns, chw_attrition_classification_label,
                         chw_attrition_time_to_default, chw_attrition_missing_values_strategy, chw_attrition_enabled, india_attrition_classifier_parameters, "India_CHW_attrition", india_attrition_data_balancer_only_parameters,
                         "userCode", data_set_arr)

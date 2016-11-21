@@ -19,7 +19,7 @@ from result_recorder import ResultRecorder
 from run_statistics import RunStatistics
 from util import get_number_of_processes_to_use
 
-const.TEST_REPEAT = 1
+const.TEST_REPEAT = 15
 
 
 def execute_classifier_run(input_defaulter_set, classifier_parameters, data_balancer, random_values, classifier_dict, classifier_description, roc_plot, result_recorder, numeric_columns,

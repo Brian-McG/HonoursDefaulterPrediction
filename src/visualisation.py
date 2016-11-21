@@ -82,73 +82,8 @@ def visualise_two_data_sets(x_arr, y_arr, x_arr_two, y_arr_two):
     plt.show()
 
 
-def plot_roc_curve_of_classifier(roc_list, data_set_description, classifier_description="classifier"):
-    if const.RECORD_RESULTS is True and not (None, None) in roc_list:
-        mean_tpr = 0.0
-        mean_fpr = np.linspace(0, 1, 100)
-        fig = plt.figure(figsize=(12, 10))
-        i = 1
-        for (tpr, fpr) in roc_list:
-            mean_tpr += interp(mean_fpr, fpr, tpr)
-            mean_tpr[0] = 0.0
-            roc_auc = auc(fpr, tpr)
-            plt.plot(fpr, tpr, lw=1, label="ROC fold %d (area = %0.2f)" % (i, roc_auc))
-            i += 1
-
-        mean_tpr /= len(roc_list)
-        mean_tpr[-1] = 1.0
-        mean_auc = auc(mean_fpr, mean_tpr)
-        plt.plot(mean_fpr, mean_tpr, "k--", dashes=[8, 4, 2, 4, 2, 4], label="Mean ROC (area = %0.2f)" % mean_auc, lw=2)
-        plt.plot([0, 1], [0, 1], "k--", label="Random classification")
-        plt.xlim([0.0, 1.0])
-        plt.ylim([0.0, 1.05])
-        plt.xlabel("False Positive Rate")
-        plt.ylabel("True Positive Rate")
-        plt.title("{0} ROC curve".format(classifier_description))
-        plt.legend(loc="lower right")
-        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        plt.savefig(os.path.dirname(os.path.realpath(__file__)) + "/../results/{0}_{1}_roc_plot_{2}.png".format(data_set_description, classifier_description, current_time),
-                    bbox_inches="tight")
-        plt.close(fig)
-
-
-def plot_mean_roc_curve_of_balancers(balancer_roc_list, data_set_description, classifier_description):
-    if const.RECORD_RESULTS is True and not (None, None) in balancer_roc_list[0][0]:
-        fig = plt.figure(figsize=(12, 10))
-        monochrome = (cycler("color", ["k"]) * cycler("marker", [""]) *
-                      cycler("linestyle", ["-", "--", "-."]))
-        color = iter(cm.brg(np.linspace(0, 1, len(balancer_roc_list))))
-        plt.rc("axes", prop_cycle=monochrome)
-
-        for (test_run_roc_list, balancer) in balancer_roc_list:
-            mean_tpr = 0.0
-            mean_fpr = np.linspace(0, 1, 100)
-            for test_result in test_run_roc_list:
-                for (tpr, fpr) in test_result:
-                    mean_tpr += interp(mean_fpr, fpr, tpr)
-                    mean_tpr[0] = 0.0
-
-            mean_tpr /= (len(test_result) * len(test_run_roc_list))
-            mean_tpr[-1] = 1.0
-            mean_auc = auc(mean_fpr, mean_tpr)
-            c = next(color)
-            plt.plot(mean_fpr, mean_tpr, c=c, lw=1, alpha=0.7, label="{0} (area = {1:.4f})".format(balancer, mean_auc))
-
-        plt.plot([0, 1], [0, 1], "k--", label="Random classification")
-        plt.xlim([0.0, 1.0])
-        plt.ylim([0.0, 1.0])
-        plt.xlabel("False Positive Rate")
-        plt.ylabel("True Positive Rate")
-        plt.title("{0} ROC curve for each balancer".format(classifier_description))
-        plt.legend(loc="lower right")
-        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        plt.savefig(
-            os.path.dirname(os.path.realpath(__file__)) + "/../results/{0}_{1}_roc_balancer_plot_{2}.png".format(data_set_description, classifier_description, current_time),
-            bbox_inches="tight")
-        plt.close(fig)
-
-
 def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description):
+    """Plots a ROC curve for each classifier"""
     if const.RECORD_RESULTS is True:
         fig = plt.figure(figsize=(8, 6.66))
         monochrome = (cycler("color", ["k"]) * cycler("marker", [""]) *
@@ -197,6 +132,7 @@ def plot_mean_roc_curve_of_classifiers(classifier_roc_list, data_set_description
 
 
 def plot_balancer_results_per_classifier(data_balancer_results_per_classifier, parameter=(2, "Balanced Accuracy")):
+    """Plots a histogram of balancer results for a specific metric to file"""
     classifier_arr = []
     color = iter(cm.Set1(np.linspace(0, 1, len(data_balancer_results_per_classifier) + 1)))
     mean_classifier_arr = [0] * len(data_balancer_results_per_classifier[0][1])
@@ -245,6 +181,7 @@ def plot_balancer_results_per_classifier(data_balancer_results_per_classifier, p
 
 
 def plot_kaplan_meier_graph_of_time_to_default(time_to_default, data_set_description=""):
+    """Plots a Kaplan Meier graph of time to default to file"""
     kmf = KaplanMeierFitter()
     kmf.fit(time_to_default, event_observed=[1] * len(time_to_default))
     ax = kmf.plot(title="{0} Kaplan Meier analysis of time to default".format(data_set_description).replace("_", " "))
@@ -261,9 +198,11 @@ def plot_kaplan_meier_graph_of_time_to_default(time_to_default, data_set_descrip
 
 def plot_percentage_difference_graph(results, datasets, name_suffix="", parameter="BACC", x_label="Feature selection approach", difference_from="no feature selection", figsize=(16, 5), legend_y=-0.31,
                                      label_rotation=0, y_label_pos=-0.4, y_ticks=None, x_label_replacement_dict=None, feature_selection_specific=False):
+    """A generic function which plots the difference between the first entry and the rest of the entries to file"""
     if x_label_replacement_dict is None:
         x_label_replacement_dict = {}
 
+    # Output a raw dump of results to file so that it can be used to tweak visualisation without re-executing experiment
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     file_name = "raw_dump_{0}.txt".format(current_time)
     with open(os.path.dirname(os.path.realpath(__file__)) + "/../results/" + file_name, "wb") as output_file:
@@ -275,6 +214,8 @@ def plot_percentage_difference_graph(results, datasets, name_suffix="", paramete
     for i in range(len(results)):
         classifier_arr.append(list())
     index = 0
+
+    # Calculate difference in BACC from first entry as well as mean difference across classifiers
     for results_per_classifier in results:
         no_feature_selection = results[index][0][1]
         for i in range(len(no_feature_selection) + 1):
@@ -373,6 +314,7 @@ def plot_percentage_difference_graph(results, datasets, name_suffix="", paramete
 
 
 def plot_time_to_default_results(time_to_default_results_per_classifier, parameter="Balanced accuracy"):
+    """Plots the time to default graph of results to file"""
     color = iter(cm.Set1(np.linspace(0, 1, len(time_to_default_results_per_classifier[0][1]) + 1)))
     classifier_arr = []
     for i in range(len(time_to_default_results_per_classifier[0][1]) + 1):
@@ -422,6 +364,7 @@ def plot_time_to_default_results(time_to_default_results_per_classifier, paramet
 
 
 def visualise_dataset_classifier_results(dataset_results):
+    """Plots difference to median TPR and TNR on an x and y axis for multiple datasets"""
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     file_name = "raw_dump_{0}.txt".format(current_time)
     with open(os.path.dirname(os.path.realpath(__file__)) + "/../results/" + file_name, "wb") as output_file:
@@ -488,6 +431,7 @@ def visualise_dataset_classifier_results(dataset_results):
 def visualise_dataset_balancer_results(results, range=(-0.5, 0.5),
                                        colors=("#64B3DE", "#1f78b4", "#B9B914", "#FBAC44", "#bc1659", "#33a02c", "grey", "#b15928", "#6a3d9a", "#e31a1c", "#6ABF20", "#ff7f00", "#6a3d9a"),
                                        exclude=("SVM (linear)", "Logistic regression", "Random forest")):
+    """Plots difference from no balancer for different classifiers and data balancing schemes"""
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     file_name = "raw_dump_{0}.txt".format(current_time)
     with open(os.path.dirname(os.path.realpath(__file__)) + "/../results/" + file_name, "wb") as output_file:
@@ -549,6 +493,7 @@ def visualise_dataset_balancer_results(results, range=(-0.5, 0.5),
                     ax.scatter(results[3] - none_true_pos_per_classifier[classifier_description], results[4] - none_true_neg_per_classifier[classifier_description],
                                marker=markers[balancer_index % len(markers)], hatch=hatches[balancer_index % len(hatches)], s=size[balancer_index % len(markers)], alpha=0.8, color=colors[i],
                                edgecolor="black" if colors[i] != "black" else "grey", zorder=balancer_index % len(markers), lw=0.8)
+                    # Work around to get legend entries correct
                     pt = ax.scatter(-99999999999, -9999999999, marker=markers[balancer_index % len(markers)], hatch=hatches[balancer_index % len(hatches)], s=200, alpha=0.8, color="white",
                                     edgecolor="black", zorder=data_set_index, lw=0.8)
                     if i == 0:
@@ -567,6 +512,7 @@ def visualise_dataset_balancer_results(results, range=(-0.5, 0.5),
 
 
 def visualise_dataset_balancer_results_multi_dataset(dataset_results):
+    """Plots aggregate data balancer results by combining all classifier results for the particular data balancer."""
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     file_name = "raw_dump_{0}.txt".format(current_time)
     with open(os.path.dirname(os.path.realpath(__file__)) + "/../results/" + file_name, "wb") as output_file:
@@ -643,6 +589,7 @@ def visualise_dataset_balancer_results_multi_dataset(dataset_results):
                 ax.scatter(value - balancer_result_pos["None"], balancer_result_neg[key] - balancer_result_neg["None"], marker=markers[data_set_index % len(markers)], hatch=hatches[hatch_index],
                            s=sizes[data_set_index % len(markers)], alpha=0.8, color=colors[i % len(colors)], edgecolor="black" if colors[i % len(colors)] != "black" else "grey",
                            zorder=i % len(markers), lw=0.8)
+                # Work around to get legend entries correct
                 pt = ax.scatter(-99999999999, -9999999999, marker=markers[data_set_index % len(markers)], s=sizes[data_set_index % len(markers)], alpha=0.8, color="white", edgecolor="black",
                                 zorder=data_set_index, lw=0.8)
                 if i == 0:
@@ -661,10 +608,8 @@ def visualise_dataset_balancer_results_multi_dataset(dataset_results):
 
 
 if __name__ == "__main__":
+    # Make tweaks to the visualisation without re-running the experiments
     plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Feature selection approach", name_suffix="_after",
                                      difference_from="no feature selection", figsize=(21, 4.5), legend_y=-0.79,
                                      x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"},
                                      feature_selection_specific=True, y_ticks=np.arange(-0.18, 0.1, 0.03))
-    # plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Parameter tuning approach", name_suffix="", difference_from="using default parameters", figsize=(16, 5), legend_y=-0.62, label_rotation=0, y_label_pos=-0.3, y_ticks=np.arange(-0.04, 0.29, 0.04))
-    # plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(20, 4.5), legend_y=-0.67, x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"}, feature_selection_specific=False, y_ticks=np.arange(-0.4, 0.11, 0.05))
-    # result_arr, dataset_arr, x_label="Feature selection approach", name_suffix="_after", difference_from="no feature selection", figsize=(16, 4.5), legend_y=-0.79, label_rotation=0, x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"}

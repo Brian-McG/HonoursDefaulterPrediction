@@ -26,7 +26,7 @@ def append_classifier_details(classifier_class, status, classifier_description, 
 # Clustering-Launched Classification
 clustering_launched_classifier = ClusteringLaunchedClassifier
 clustering_launched_classifier_description = "Clustering-Launched Classification"
-clustering_launched_classifier_enabled = True
+clustering_launched_classifier_enabled = False
 append_classifier_details(clustering_launched_classifier, clustering_launched_classifier_enabled, clustering_launched_classifier_description, classifiers)
 
 # Extreme learning machines
