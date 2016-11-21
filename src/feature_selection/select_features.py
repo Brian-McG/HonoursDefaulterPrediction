@@ -127,7 +127,7 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
                 categorical_columns_with_dummy = apply_preprocessing(defaulter_set_copy, [], categorical_columns, binary_columns, classification_label, missing_value_strategy,
                                                                      create_dummy_variables=True).columns[:-1]
                 train_df, test_df = apply_preprocessing_to_train_test_dataset(defaulter_set_copy, train, test, numeric_columns, categorical_columns, binary_columns, classification_label,
-                                                                              missing_value_strategy, create_dummy_variables=True)
+                                                                              create_dummy_variables=True)
                 train_df, _, _ = select_features(train_df, numeric_columns_with_dummy, categorical_columns_with_dummy, classification_label,
                                                  all_classifier_parameters, random_state=random_values[i], selection_strategy=feature_selection_strategy, number_of_features_to_select=NUMBER_OF_FEATURES_TO_SELECT)
                 test_df = test_df[train_df.columns]

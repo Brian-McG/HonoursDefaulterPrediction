@@ -46,7 +46,7 @@ class GenericClassifier:
         for train, test in kf.split(defaulter_set.iloc[:, :-1].as_matrix(), defaulter_set.iloc[:, -1:].as_matrix().flatten()):
             if apply_preprocessing:
                 train, test = apply_preprocessing_to_train_test_dataset(defaulter_set, train, test, numerical_columns, categorical_columns, binary_columns, classification_label,
-                                                                        missing_value_strategy, create_dummy_variables=True)
+                                                                        create_dummy_variables=True)
 
             x_train, y_train = train.iloc[:, :-1].as_matrix(), train.iloc[:, -1:].as_matrix().flatten()
             x_test, y_test = test.iloc[:, :-1].as_matrix(), test.iloc[:, -1:].as_matrix().flatten()

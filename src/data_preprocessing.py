@@ -4,8 +4,7 @@ import pandas as pd
 from sklearn import preprocessing
 
 
-def apply_preprocessing_to_train_test_dataset(input_defaulter_set, train_indices, test_indices, numerical_columns, categorical_columns, binary_columns, classification_label, missing_value_strategy,
-                                              duplicate_removal_column=None, create_dummy_variables=True):
+def apply_preprocessing_to_train_test_dataset(input_defaulter_set, train_indices, test_indices, numerical_columns, categorical_columns, binary_columns, classification_label, create_dummy_variables=True):
     """Applies pre-processing to a dataset split into training and testing indices"""
     for categorical_column in categorical_columns:
         input_defaulter_set[categorical_column] = input_defaulter_set[categorical_column].astype('category')

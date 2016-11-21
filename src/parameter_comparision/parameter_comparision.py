@@ -38,7 +38,7 @@ def execute_classifier_run(random_values, input_defaulter_set, numeric_columns, 
             defaulter_set_copy = input_defaulter_set.copy()
             for train, test in kf.split(defaulter_set_copy.iloc[:, :-1], defaulter_set_copy.iloc[:, -1:].as_matrix().flatten()):
                 train_df, test_df = apply_preprocessing_to_train_test_dataset(defaulter_set_copy, train, test, numeric_columns, categorical_columns, binary_columns, classification_label,
-                                                                              missing_value_strategy, create_dummy_variables=True)
+                                                                              create_dummy_variables=True)
                 test_df = test_df[train_df.columns]
 
                 result_dictionary = generic_classifier.train_and_evaluate(train_df.iloc[:, :-1].as_matrix(), train_df.iloc[:, -1:].as_matrix().flatten(), test_df.iloc[:, :-1].as_matrix(), test_df.iloc[:, -1:].as_matrix().flatten())

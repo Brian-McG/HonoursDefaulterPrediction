@@ -43,7 +43,7 @@ def execute_classifier_run(time_range, random_values, defaulters_in_range, defau
 
                 # Preprocess data set
                 train, test = apply_preprocessing_to_train_test_dataset(combined, train_index, test_index, numeric_columns, categorical_columns, binary_columns, classification_label,
-                                                                        missing_values_strategy, create_dummy_variables=True)
+                                                                        create_dummy_variables=True)
 
                 X_train = train.iloc[:, :-1].as_matrix()
                 y_train = train.iloc[:, -1:].as_matrix().flatten()
