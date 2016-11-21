@@ -41,7 +41,7 @@ class FeatureSelectionResultRecorder:
                 else:
                     feature_smmry = result_tuple[4]
 
-                csv_writer.writerow((result_tuple[2], result_tuple[1], result_tuple[0][0], result_tuple[0][1],
+                csv_writer.writerow((result_tuple[2] if result_tuple[2] is not None else "None", result_tuple[1], result_tuple[0][0], result_tuple[0][1],
                                      result_tuple[0][2], result_tuple[0][15], result_tuple[0][28], result_tuple[0][3], result_tuple[0][4], result_tuple[0][5], result_tuple[0][6],
                                      result_tuple[0][20], result_tuple[0][21], result_tuple[0][13], result_tuple[0][22], result_tuple[0][29], result_tuple[0][24], result_tuple[0][25], random_vals, features, feature_smmry))
                 x += 1
