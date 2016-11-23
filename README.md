@@ -9,7 +9,6 @@
   - Run ```python src/install_hmeasure.py``` to ensure the hmeasure package is installed for rpy2
 
 ### Windows
-  - Run ```conda install --file conda_windows_requirements.txt```
   - Install [R](https://cran.r-project.org/bin/windows/base/)
   - Run R by calling ```R``` in terminal then ```install.packages("PMCMR")```
 
