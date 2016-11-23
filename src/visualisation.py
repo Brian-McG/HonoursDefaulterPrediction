@@ -196,12 +196,21 @@ def plot_kaplan_meier_graph_of_time_to_default(time_to_default, data_set_descrip
     plt.close(ax.get_figure())
 
 
-def plot_percentage_difference_graph(results, datasets, name_suffix="", parameter="BACC", x_label="Feature selection approach", difference_from="no feature selection", figsize=(16, 5), legend_y=-0.31,
-                                     label_rotation=0, y_label_pos=-0.4, y_ticks=None, x_label_replacement_dict=None, feature_selection_specific=False):
+def plot_percentage_difference_graph(results, datasets, name_suffix="", parameter="BACC", x_label="Feature selection approach", difference_from="no feature selection", figsize=(16, 5), legend_y=None,
+                                     label_rotation=0, y_label_pos=None, y_ticks=None, x_label_replacement_dict=None, feature_selection_specific=False):
     """A generic function which plots the difference between the first entry and the rest of the entries to file"""
     if x_label_replacement_dict is None:
         x_label_replacement_dict = {}
 
+    if (len(results) == 1 or len(results) == 2) or legend_y is None:
+        legend_y = -0.31
+
+    if len(results) == 1 or len(results) == 2:
+        y_label_pos = 0.5
+    if len(results) < 4 and y_label_pos is None:
+        y_label_pos = 0
+    elif y_label_pos is None:
+        y_label_pos = -0.4
     # Output a raw dump of results to file so that it can be used to tweak visualisation without re-executing experiment
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     file_name = "raw_dump_{0}.txt".format(current_time)
@@ -297,14 +306,29 @@ def plot_percentage_difference_graph(results, datasets, name_suffix="", paramete
 
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-    legend = plt.legend(loc='lower center', bbox_to_anchor=(-0.08, legend_y), fancybox=True, frameon=True, ncol=7)
+    if len(results) >= 4:
+        legend_x = -0.08
+    elif len(results) == 1:
+        legend_x = 0.5
+    elif len(results) == 2:
+        legend_x = 0
+    else:
+        legend_x = 1
+
+    legend = plt.legend(loc='lower center', bbox_to_anchor=(legend_x, legend_y), fancybox=True, frameon=True, ncol=7)
     legend.get_frame().set_facecolor('#ffffff')
 
     if y_ticks is not None:
         plt.yticks(y_ticks)
         plt.ylim(ymin=y_ticks[0])
         plt.ylim(ymax=y_ticks[-1])
-    plt.xlabel(x_label, x=0, y=-2)
+
+    x_label_x_pos = 0
+    if len(results) == 1:
+        x_label_x_pos = 0.5
+    elif len(results) == 3:
+        x_label_x_pos = 1
+    plt.xlabel(x_label, x=x_label_x_pos, y=-2)
     feature_selection_labels = [results[0][i][0] for i in range(1, len(results[0]))]
 
     plt.locator_params(axis='y', nbins=15)
@@ -612,4 +636,4 @@ if __name__ == "__main__":
     plot_percentage_difference_graph(vis_input.results, ["Lima TB", "India Attrition", "German Credit", "Australia Credit"], x_label="Feature selection approach", name_suffix="_after",
                                      difference_from="no feature selection", figsize=(21, 4.5), legend_y=-0.79,
                                      x_label_replacement_dict={"Logistic regression": "LR", "Decision Tree": "DT", "Bernoulli Naive Bayes": "Bernoulli NB", "Random forest": "RF"},
-                                     feature_selection_specific=True, y_ticks=np.arange(-0.18, 0.1, 0.03))
+                                     feature_selection_specific=False)
