@@ -1,0 +1,64 @@
+
+	Friedman rank sum test
+
+data:  y
+Friedman chi-squared = 106.52, df = 9, p-value < 2.2e-16
+
+
+	Pairwise comparisons using Nemenyi multiple comparison test	
+             with q approximation for unreplicated blocked data 
+
+data:  y 
+
+                          AdaBoost Artificial.neural.network
+Artificial.neural.network 2.2e-09  -                        
+Bernoulli.Naive.Bayes     0.00217  0.25083                  
+Decision.Tree             0.83461  3.3e-05                  
+Extreme.Learning.Machine  3.6e-06  0.97163                  
+Gaussian.Naive.Bayes      0.99937  2.2e-07                  
+K.nearest.neighbours      0.99881  3.2e-07                  
+Logistic.regression       3.3e-09  1.00000                  
+Random.forest             0.00448  0.16798                  
+SVM..RBF.                 0.00277  0.22072                  
+                          Bernoulli.Naive.Bayes Decision.Tree
+Artificial.neural.network -                     -            
+Bernoulli.Naive.Bayes     -                     -            
+Decision.Tree             0.31832               -            
+Extreme.Learning.Machine  0.94774               0.00710      
+Gaussian.Naive.Bayes      0.03103               0.99638      
+K.nearest.neighbours      0.03760               0.99787      
+Logistic.regression       0.28340               4.5e-05      
+Random.forest             1.00000               0.43510      
+SVM..RBF.                 1.00000               0.35540      
+                          Extreme.Learning.Machine Gaussian.Naive.Bayes
+Artificial.neural.network -                        -                   
+Bernoulli.Naive.Bayes     -                        -                   
+Decision.Tree             -                        -                   
+Extreme.Learning.Machine  -                        -                   
+Gaussian.Naive.Bayes      0.00015                  -                   
+K.nearest.neighbours      0.00020                  1.00000             
+Logistic.regression       0.97991                  3.2e-07             
+Random.forest             0.88965                  0.05437             
+SVM..RBF.                 0.93155                  0.03760             
+                          K.nearest.neighbours Logistic.regression
+Artificial.neural.network -                    -                  
+Bernoulli.Naive.Bayes     -                    -                  
+Decision.Tree             -                    -                  
+Extreme.Learning.Machine  -                    -                  
+Gaussian.Naive.Bayes      -                    -                  
+K.nearest.neighbours      -                    -                  
+Logistic.regression       4.5e-07              -                  
+Random.forest             0.06489              0.19310            
+SVM..RBF.                 0.04532              0.25083            
+                          Random.forest
+Artificial.neural.network -            
+Bernoulli.Naive.Bayes     -            
+Decision.Tree             -            
+Extreme.Learning.Machine  -            
+Gaussian.Naive.Bayes      -            
+K.nearest.neighbours      -            
+Logistic.regression       -            
+Random.forest             -            
+SVM..RBF.                 1.00000      
+
+P value adjustment method: none 
